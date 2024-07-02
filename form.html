@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url("css/layout/flex.css");
+        @import url("css/main.css");
+        @import url("css/components/header/header.css");
+        @import url("css/components/sidebar/sidebar.css");
+        @import url("css/components/maincontent/maincontent.css");
+        @import url("css/components/button.css");
+        @import url("css/components/form.css");
+        @import url("css/components/searchbar.css");
+    </style>
+    <title>Department Staff</title>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-title">
+            <h1 class="font-heading1">Thông tin nhân viên</h1>
+        </div>
+        <form class="employee-form font-body1">
+            <div class="form-group form-code">
+                <label for="employee-id">Mã nhân viên *</label>
+                <input type="text" id="employee-id" required>
+            </div>
+            <div class="form-group form-position">
+                <label for="position">Vị trí</label>
+                <select id="position">
+                    <option value="" disabled selected></option>
+
+                </select>
+            </div>
+            <div class="form-group form-department">
+                <label for="department">Phòng ban</label>
+                <select id="department">
+                    <option value="" disabled selected></option>
+                    
+                </select>
+            </div>
+            <div class="form-group form-name">
+                <label for="employee-name">Họ và tên *</label>
+                <input type="text" id="employee-name" required>
+            </div>
+            <div class="form-group form-dob">
+                <label for="dob">Ngày sinh</label>
+                <input type="date" id="dob">
+            </div>
+            <div class="form-group form-gender">
+                <label for="gender">Giới tính</label>
+                <div class="gender-options">
+                    <input type="radio" id="male" name="gender" value="male">
+                    <label for="male">Nam</label>
+                    <input type="radio" id="female" name="gender" value="female">
+                    <label for="female">Nữ</label>
+                    <input type="radio" id="other" name="gender" value="other">
+                    <label for="other">Khác</label>
+                </div>
+            </div>
+            <div class="form-group form-id-number">
+                <label for="id-number">Số CMTND</label>
+                <input type="text" id="id-number">
+            </div>
+            <div class="form-group form-id-date">
+                <label for="id-issue-date">Ngày cấp</label>
+                <input type="date" id="id-issue-date">
+            </div>
+            <div class="form-group form-id-place">
+                <label for="id-issue-place">Nơi cấp</label>
+                <input type="text" id="id-issue-place">
+            </div>
+            <div class="form-group">
+                <label for="address">Địa chỉ</label>
+                <input type="text" id="address">
+            </div>
+            <div class="form-group">
+                <label for="mobile">ĐT Di động</label>
+                <input type="text" id="mobile">
+            </div>
+            <div class="form-group">
+                <label for="phone">ĐT Cố định</label>
+                <input type="text" id="phone">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email">
+            </div>
+            <div class="form-group">
+                <label for="bank-account">Tài khoản ngân hàng</label>
+                <input type="text" id="bank-account">
+            </div>
+            <div class="form-group">
+                <label for="bank-name">Tên ngân hàng</label>
+                <input type="text" id="bank-name">
+            </div>
+            <div class="form-group">
+                <label for="bank-branch">Chi nhánh</label>
+                <input type="text" id="bank-branch">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="primary-button green-button cancel-button">Hủy</button>
+                <button type="submit" class="primary-button green-button save-button">Cất</button>
+            </div>
+        </form>
+        
+    </div>
+</body>
+</html>

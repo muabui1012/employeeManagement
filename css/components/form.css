@@ -1,0 +1,45 @@
+.form-container {
+    width: 400px;
+    height: 800px;
+    padding: 32px 0;
+}
+
+.employee-form {
+    display: grid;
+    width: 224px;
+    grid-auto-flow: row;
+    grid-template-columns: auto auto;
+    grid-column-gap: 24px;
+    grid-row-gap: 24px;
+    margin-top: 32px;
+}
+
+.form-actions {
+    margin-top: calc(32px - 24px);
+    grid-column-start: 4;
+
+}
+
+.form-group {
+    display: grid;
+    grid-template-rows: auto 36;
+    grid-row-gap: 8px;
+    min-width: 200px;
+}
+
+.form-group > label {
+    font-family: var(--base-fontfamily);
+    font-weight: var(--body2-weight);
+    font-size: var(--body2-size);
+    line-height: var(--body2-lineheight);
+}
+
+.form-group > input {
+    height: 36px;
+    width: 100%;
+    padding: 0 8px;
+    box-sizing: border-box;
+    border: 1px solid #d1d1d1;
+    border-radius: 4px;
+}
+

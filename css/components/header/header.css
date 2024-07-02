@@ -1,0 +1,79 @@
+.header-container {
+    height: 56px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    
+}
+
+.header-left-side {
+    width: 200px;
+    height: 40px;
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    gap: 16px;
+    padding-left: 16px; 
+}
+
+.header-right-side {
+    flex: 1;
+    display: flex;
+    /* margin-left: 24px; */
+    
+}
+
+.header-right-side-container {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 200px auto 250px;
+    
+}
+
+.menu-logo {
+    height: 28px;
+
+}
+
+.cukcuk-logo {
+    height: 28px;
+}
+
+.department-btn {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    display: flex;
+    align-items: center;
+}
+
+.profile {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    height: 36px;
+}
+
+.profile-item {
+    display: flex;
+    align-items: center;
+}
+
+#profile-avatar {
+   height: 36px;
+   display: flex;
+   align-items: center;
+}
+
+#option-btn {
+    display: flex;
+    align-items: center; 
+}
+
+#fullname {
+    height: 36px;
+    display: flex;
+    align-items: center;
+
+}

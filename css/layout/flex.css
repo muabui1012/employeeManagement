@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+header {
+    width: 100%;
+    height: 56px;
+    background-color: white; 
+}
+
+nav {
+    width: 200px;
+    height: calc(100vh - 56px);
+    background-color: #001833;
+    
+}
+
+.main {
+    flex: 1;
+    margin: 24px;
+    background-color: white;
+    
+}
+

@@ -1,0 +1,96 @@
+.green-button {
+    background-color: var(--light-green-500);
+}
+
+.green-button:hover {
+    background-color: var(--light-green-300);
+}
+
+.green-button:active {
+    background-color: var(--green-500);
+}
+
+.blue-button {
+    background-color: var(--blue-900);
+}
+
+.blue-button:hover {
+    background-color: var(--blue-700);
+}
+
+.blue-button:active {
+    background-color: var(--blue-300);
+}
+
+.grey-button {
+    background-color: var(--grey-100);
+}
+
+.grey-button:hover {
+    background-color: var(--grey-300);
+}
+
+.grey-button:active {
+    background-color: var(--grey-500);
+}
+
+
+
+.primary-button {
+    min-width: 80px;
+    height: 32px;
+    color: white;
+    background-color: var(--light-green-500);
+    border: none;
+    border-radius: 5px;
+    padding: 0 16px;
+    
+}
+
+.secondary-button {
+    min-width: 80px;
+    width: auto;
+    height: 32px;
+    color: white;
+    background-color: var(--light-green-500);
+    border: none;
+    border-radius: 5px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    
+}
+
+.secondary-button-img {
+    height: 20px;
+    margin-right: 5px;
+}
+
+.secondary-button-text {
+    white-space: nowrap;
+    
+}
+
+.icon-button {
+    width: 36px;
+    height: 36px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    
+}
+
+.icon-button > img {
+    width: 20px;
+    height: 20px;   
+}
+
+.transperency-btn {
+    width: 36px;
+    height: 36px;
+    background-color: transparent;
+    color: var(--blue-900);
+    border: none;
+    border-radius: 5px;
+}
