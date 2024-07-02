@@ -8,7 +8,7 @@
     display: grid;
     width: 224px;
     grid-auto-flow: row;
-    grid-template-columns: auto auto;
+    grid-template-rows: ;
     grid-column-gap: 24px;
     grid-row-gap: 24px;
     margin-top: 32px;
