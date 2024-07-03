@@ -1,7 +1,12 @@
+:root {
+    min-height: fit-content;
+}
+
 .container {
     display: flex;
     width: 100%;
     flex-wrap: wrap;
+    min-height: fit-content;
 }
 
 header {
@@ -12,7 +17,8 @@ header {
 
 nav {
     width: 200px;
-    height: calc(100vh - 56px);
+    height: 100%;
+    /* height: calc(100vh - 56px); */
     background-color: #001833;
     
 }
@@ -20,7 +26,8 @@ nav {
 .main {
     flex: 1;
     margin: 24px;
-    background-color: white;
+
+    /* background-color: white; */
     
 }
 

@@ -24,27 +24,34 @@
         </div>
         <div class="form-control">
             <form class="employee-form font-body1">
-                <div class="tab">
+                <div class="tab tab0">
                     <div class="form-group form-code">
                         <label class="field-label font-heading3" for="employee-id">Mã nhân viên <span class="star">*</span></label>
                         <input class="field-box"type="text" id="employee-id" required>
                     </div>
                     <div class="form-group form-position">
-                        <label class="field-label font-heading3" for="position">Vị trí</label>
-                        <select class="field-box" id="position">
-                            <option value="" disabled selected></option>
-    
-                        </select>
+                        <div class="selection-container">
+                            <label class="field-label font-heading3" for="position">Vị trí</label>
+                            <select class="field-box combobox" id="position">
+                                <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
+                                <option value="Hanoi">Nhân viên</option>
+                            </select>
+                            <div class="field-border"></div>
+                        </div>
                     </div>
                     <div class="form-group form-department">
-                        <label class="field-label font-heading3" for="department">Phòng ban</label>
-                        <select class="field-box" id="department">
-                            <option value="" disabled selected></option>
-                            
-                        </select>
+                        <div class="selection-container">
+                            <label class="field-label font-heading3" for="department">Phòng ban</label>
+                            <select class="field-box combobox" id="department">
+                                <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
+                                <option value="Hanoi">Hà Nội</option>
+                                
+                            </select>
+                            <div class="field-border"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="tab hidden">
+                <div class="tab tab1 hidden">
                     <div class="form-group form-name">
                         <label class="field-label font-heading3" for="employee-name">Họ và tên <span class="star">*</span></label>
                         <input class="field-box" type="text" id="employee-name" placeholder="Họ và tên" required>
@@ -73,7 +80,7 @@
                     </div>
                     
                 </div>
-                <div class="tab hidden">
+                <div class="tab tab2 hidden">
                     <div class="form-group form-id-number">
                         <label class="field-label font-heading3 for="id-number">Số CMTND</label>
                         <input class="field-box" type="text" id="id-number">
@@ -87,10 +94,11 @@
                         <input class="field-box" type="text" id="id-issue-place">
                     </div>
                 </div>
-                <div class="tab hidden">
+                <div class="tab tab3 hidden">
                     <div class="form-group">
                         <label class="field-label font-heading3" for="address">Địa chỉ</label>
                         <input class="field-box" type="text" id="address">
+        
                     </div>
                     <div class="form-group">
                         <label class="field-label font-heading3" for="mobile">ĐT Di động</label>
@@ -105,7 +113,7 @@
                         <input class="field-box" type="email" id="email">
                     </div>
                 </div>
-                <div class="tab hidden">
+                <div class="tab tab4 hidden">
                     <div class="form-group">
                         <label class="field-label font-heading3" for="bank-account">Tài khoản ngân hàng</label>
                         <input class="field-box" type="text" id="bank-account">

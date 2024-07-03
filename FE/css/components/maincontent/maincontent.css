@@ -2,6 +2,7 @@
     height: calc(100vh - 56px - 24px - 24px);
     display: flex;
     flex-direction: column;
+    background-color: #fff;
     flex-wrap: wrap;
 }
 
@@ -16,6 +17,7 @@
     display: grid;
     grid-template-columns: 200px auto 100px;
     /* margin-top: 24px; */
+    
 }
 
 .main-header-item {
@@ -37,6 +39,7 @@
 .main-tbl-container {
     height: calc(100vh - 56px - 24px - 24px - 56px);
     display: grid;
+    box-sizing: border-box;
     grid-template-rows: 56px auto 56px;
 }
 

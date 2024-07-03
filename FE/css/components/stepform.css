@@ -4,9 +4,6 @@
     background-color: white;
 }
 
-.form-heading {
-    
-}
 
 .form-title {
     margin-bottom: 8px;
@@ -66,8 +63,46 @@
 .field-box {
     height: 36px;
     width: 200px;
+    padding-left: 12px;
+    padding-right: 8px;
     border-radius: 5px;
     border: 1px solid var(--grey-300);
+    color: var(--grey-500);
+}
+
+.combobox {
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background: white url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
+    position: relative;
+}
+
+.combobox > option {
+    height: 36px;    
+}
+
+.field-border {
+    position: absolute;
+    right: 44px;
+    bottom: 0px;
+    height: 36px;
+    width: 36px;
+    border-left: 1px solid var(--grey-300);
+
+}
+
+.field-box:active {
+    height: 36px;
+    width: 200px;
+    padding-left: 12px;
+    padding-right: 8px;
+    border-radius: 5px;
+    border: 1px solid var(--light-green-300);
+}
+
+.selection-container {
+    position: relative;
 }
 
 .gender-options {
@@ -78,3 +113,16 @@
 .hidden {
     display: none;
 }
+
+.select-text {
+    color: var(--light-green-300);
+}
+
+.select-items {
+    position: absolute;
+    background-color: DodgerBlue;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+  }
