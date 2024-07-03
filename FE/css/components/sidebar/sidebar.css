@@ -32,7 +32,12 @@
 }
 
 .btn-text {
-    color: var(--grey-300);
+    font-family: var(--base-fontfamily);
+    font-weight: var(--body1-weight);
+    font-size: var(--body1-size);
+    line-height: var(--body1-lineheight);
+    letter-spacing: var(--body1-letterspacing);
+    color: white;
 }
 
 .sidebar-footer {
@@ -42,5 +47,6 @@
 }
 
 #employee-btn {
-    background-color: var(--blue-300);
+    background-color: rgba(204, 228, 255, 0.5); 
+
 }
