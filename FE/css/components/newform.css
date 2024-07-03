@@ -1,0 +1,80 @@
+.form-container {
+    width: 300px;
+    padding: 32px 32px;
+    background-color: white;
+}
+
+.form-heading {
+    
+}
+
+.form-title {
+    margin-bottom: 8px;
+}
+
+
+
+.form-control {
+    height: auto;
+    margin: 32px;
+    margin-bottom: 32px;
+
+}
+
+.employee-form {
+    width: calc(300px - 32px - 32px);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.form-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.cancel-btn {
+    background-color: white;
+    color: black;
+    border: 0.5px solid var(--grey-300);
+
+}
+
+.transperency-btn1 {
+    order: -1;
+}
+
+.star {
+    color: red;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tab {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field-box {
+    height: 36px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid var(--grey-300);
+}
+
+.gender-options {
+    display: flex;
+    gap: 8px;
+}
+
+.hidden {
+    display: none;
+}
