@@ -33,8 +33,12 @@
                 <div class="header-right-side font-heading3">
                     <div class="header-right-side-container">
                         <div class="department-btn">
-                            <p>Chi nhánh Hà Nội</p>
-                            <img class="btn-img" src="assets\icon\dashboard.png" alt="home">
+                            <form class="department-form">
+                                <select id="department-form-select">
+                                    <option value="Hanoi">Chi nhánh Hà Nội</option>
+                                    <option value="Hcm">Chi nhánh HCM</option>
+                                </select>
+                            </form>
                         </div>
                         <div class="profile">
                             <div class="profile-item"><img id="profile-avatar" src="assets\icon\avatar-default.png" alt="Avatar"></div>
@@ -220,14 +224,14 @@
                                         <td>02/08/1954</td>
                                         <td>ktkhuzih3830@nowhere.com</td>
                                         <td>104 nhà K, ngõ 72 Linh Nam <span class="crud-containers">
-                                            <button class="icon-button crud-btn" title="edit">
-                                                <img src="assets\icon\close-48.png" alt="edit">
+                                            <button class="small-icon-button crud-btn" title="edit">
+                                                <img class="smc-img" src="assets\icon\pencil.png" alt="edit">
                                             </button>
-                                            <button class="icon-button crud-btn" title="add">
-                                                <img src="assets\icon\close-48.png" alt="add">
+                                            <button class="small-icon-button crud-btn" title="copy">
+                                                <img class="smc-img" src="assets\icon\copy.png" alt="copy">
                                             </button>
-                                            <button class="icon-button crud-btn" title="delete">
-                                                <img src="assets\icon\close-48.png" alt="delete">
+                                            <button class="small-icon-button crud-btn" title="delete">
+                                                <img class="smc-img" src="assets\icon\close-48.png" alt="delete">
                                             </button>
                                         </span></td>
                                     </tr>
@@ -240,10 +244,16 @@
                                 <p id="sum">Tổng: 10</p>
                             </div>
                             <div class="mtcf-item" id = "mtcf-item2">
-                                Số bản ghi/trang: 10
+                                <div>Số bản ghi/trang</div>
+                                
                             </div>
                             <div class="mtcf-item" id = "mtcf-item3">
-                                
+                                <form class="numpage-form">
+                                    <select id="position">
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                    </select>
+                                </form>
                             </div>
                             <div class="mtcf-item" id = "mtcf-item4">
                                 <button class="transperency-btn">

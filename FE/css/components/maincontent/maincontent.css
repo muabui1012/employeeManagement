@@ -81,7 +81,7 @@
     grid-row-start: 3;
     grid-row-end: 4;
     display: grid;
-    grid-template-columns: 100px auto 130px 56px 56px 56px;
+    grid-template-columns: 100px auto 100px 56px 36px 56px;
 }
 
 #mtcf-item1 {
@@ -118,13 +118,14 @@
 }
 
 .main-tbl-container-tbl > table tr {
-    height: 40px;
+    padding: 0px 0px;
+    height: 32px;
 
 }
 
 .main-tbl-container-tbl > table tr:hover {
     background-color: var(--blue-200); 
-    height: 40px;
+    height: 32px;
 
 }
 
@@ -134,12 +135,13 @@
 
 
 .main-tbl-container-tbl > table tr td {
-    padding: 10px;
+    padding: 0px 10px;
     text-align: left;
 }
 
 .main-tbl-container-tbl > table tr th {
-    padding: 10px;
+    padding: 0px 10px;
+
     text-align: left;
 }
 
@@ -161,19 +163,19 @@
 }
 
 .main-tbl-container-tbl > table > thead > tr > th:nth-child(2) {
-    width: 80px; 
+    width: 100px; 
 }
 
 .main-tbl-container-tbl > table > tbody > tr > td:nth-child(2) {
-    width: 80px;
+    width: 100px;
 }
 
 .main-tbl-container-tbl > table > thead > tr > th:nth-child(3) {
-    width: 180px; 
+    width: 200px; 
 }
 
 .main-tbl-container-tbl > table > tbody > tr > td:nth-child(3) {
-    width: 180px;
+    width: 200px;
 }
 
 .main-tbl-container-tbl > table > thead > tr > th:nth-child(4) {
@@ -185,21 +187,40 @@
 }
 
 .main-tbl-container-tbl > table > thead > tr > th:nth-child(5) {
-    width: 60px; 
+    width: 70px; 
 }
 
 .main-tbl-container-tbl > table > tbody > tr > td:nth-child(5) {
-    width: 60px;
+    width: 70px;
 }
 
 .main-tbl-container-tbl > table > thead > tr > th:nth-child(6) {
-    width: 200px; 
+    width: 210px; 
 }
 
 .main-tbl-container-tbl > table > tbody > tr > td:nth-child(6) {
-    width: 200px;
+    width: 210px;
+}
+
+.crud-containers {
+    margin-left: 16px;
+    display: inline;
 }
 
 .crud-btn {
-    display: inline;
+    height: 30px;
 }
+
+.numpage-form select {
+    border: none;
+}
+
+.department-form select {
+    font-family: var(--base-fontfamily);
+    font-weight: var(--heading3-weight);
+    font-size: var(--heading3-size);
+    line-height: var(--heading3-lineheight);
+    letter-spacing: var(--heading3-letterspacing);
+    border: none;
+}
+

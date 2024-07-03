@@ -82,9 +82,34 @@
 }
 
 .icon-button > img {
-    width: 20px;
-    height: 20px;   
+    width: 24px;
+    height: 24px;   
 }
+
+.small-icon-button {
+    width: 32px;
+    height: 32px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--grey-300);
+}
+
+.small-icon-button:hover {
+    width: 32px;
+    height: 32px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--grey-100);
+}
+
+.smc-img {
+    width: 20px;
+    height: 20px;
+
+}
+
 
 .transperency-btn {
     width: 36px;
