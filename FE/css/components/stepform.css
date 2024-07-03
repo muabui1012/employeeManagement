@@ -84,10 +84,10 @@
 
 .field-border {
     position: absolute;
-    right: 44px;
+    right: calc(44px + 35px);
     bottom: 0px;
     height: 36px;
-    width: 36px;
+    width: 1px;
     border-left: 1px solid var(--grey-300);
 
 }
