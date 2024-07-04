@@ -76,6 +76,7 @@
     -webkit-appearance: none;
     background: white url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
     position: relative;
+    margin-top: 8px;
 }
 
 .combobox > option {
@@ -105,6 +106,7 @@
     position: relative;
 }
 
+
 .gender-options {
     display: flex;
     gap: 8px;
@@ -125,4 +127,10 @@
     left: 0;
     right: 0;
     z-index: 99;
-  }
+}
+
+.tab0 {
+    display: flex;
+    gap: 24px;
+}
+
