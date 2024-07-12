@@ -11,6 +11,7 @@
         @import url("css/components/maincontent/maincontent.css");
         @import url("css/components/button.css");
         @import url("css/components/searchbar.css");
+        @import url("css/components/popupform.css");
     </style>
     <title>Danh mục nhân viên | Nhân viên | Cukcuk</title>
 </head>
@@ -19,11 +20,9 @@
         <header>
             <div class="header-container">
                 <div class="header-left-side">
-                    <div class="menu-btn">
-                        <a href="index.html">
-                            <img class="menu-logo" src="assets\img\toggle.png" alt="CukCuk Logo">
-                        </a>
-                    </div>
+                    <a href="index.html" class="menu-btn">
+                        <img class="menu-logo" src="assets\img\toggle.png" alt="CukCuk Logo">
+                    </a>
                     <div>
                         <a href="index.html">
                             <img class="cukcuk-logo" src="assets\cukcuk-logo.png" alt="CukCuk Logo">
@@ -90,7 +89,7 @@
                     <div class="main-header-container">
                         <div class="main-header-item main-header-item-text font-heading2"><p>Quản lý nhân viên</p></div>
                         <div class="main-header-item main-header-item-add-btn">
-                            <button class="green-button secondary-button" id="add-new-btn" title="add new">
+                            <button class="green-button secondary-button" id="add-new-btn" title="add new" onclick="showpopup()">
                                 <img class="secondary-button-img" src="assets\icon\add.png" alt="add">
                                 <p class="secondary-button-text">Thêm mới</p>
                             </button>
@@ -271,5 +270,120 @@
             </div>
         </div>
     </div>
+    <span class="popup-form hidden">
+        <div class="form-container">
+            <div class="form-heading">
+                <h1 class="form-title font-heading1">Thông tin nhân viên</h1>
+                <span class="close-form">
+                    <button class="grey-button icon-button" id="close-btn" title="close">
+                        <img src="assets\icon\close-48.png" alt="close">
+                    </button>
+                </span>
+            </div>
+            <div class="form-control">
+                <form class="employee-form font-body1">
+                    <div class="form-group form-code">
+                        <label class="field-label font-heading3" for="employee-id">Mã nhân viên <span class="star">*</span></label>
+                        <input class="field-box" type="text" id="employee-id" required>
+                    </div>
+                    <div class="form-group form-name">
+                        <label class="field-label font-heading3" for="employee-name">Họ và tên <span class="star">*</span></label>
+                        <input class="field-box" type="text" id="employee-name" placeholder="Họ và tên" required>
+                    </div>
+                    <div class="form-group form-dob">
+                        <label class="field-label font-heading3" for="dob">Ngày sinh</label>
+                        <input class="field-box" type="date" id="dob">
+                    </div>
+                    <div class="form-group form-gender">
+                        <label class="field-label font-heading3" for="gender">Giới tính</label>
+                        <div class="gender-options">
+                            <div>
+                                <input class="" type="radio" id="male" name="gender" value="male">
+                                <label for="male">Nam</label>
+                            </div>
+                            <div>
+                                <input class="" type="radio" id="female" name="gender" value="female">
+                                <label for="female">Nữ</label>
+                            </div>
+                            <div>
+                                <input class="" type="radio" id="other" name="gender" value="other">
+                                <label for="other">Khác</label>
+                    
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group form-position">
+                        <div class="selection-container">
+                            <label class="field-label font-heading3" for="position">Vị trí</label>
+                            <select class="field-box fbp combobox" id="position">
+                                <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
+                                <option value="Hanoi">Nhân viên</option>
+                            </select>
+                            <div class="field-border field-border-p"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-id-number">
+                        <label class="field-label font-heading3 for=" id-number">Số CMTND</label>
+                        <input class="field-box" type="text" id="id-number">
+                    </div>
+                    <div class="form-group form-id-date">
+                        <label class="field-label font-heading3 for=" id-issue-date">Ngày cấp</label>
+                        <input class="field-box" type="date" id="id-issue-date">
+                    </div>      
+                    <div class="form-group form-department">
+                        <div class="selection-container">
+                            <label class="field-label font-heading3" for="position">Phòng ban</label>
+                            <select class="field-box fbp combobox" id="position">
+                                <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
+                                <option value="Hanoi">Nhân viên</option>
+                            </select>
+                            <div class="field-border field-border-p"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group form-id-place">
+                        <label class="field-label font-heading3 for=" id-issue-place">Nơi cấp</label>
+                        <input class="field-box" type="text" id="id-issue-place">
+                    </div>
+                    
+                    <div class="form-group form-address">
+                        <label class="field-label font-heading3" for="address">Địa chỉ</label>
+                        <input class="field-box" type="text" id="address">
+                    
+                    </div>
+                    <div class="form-group form-mobile">
+                        <label class="field-label font-heading3" for="mobile">ĐT Di động</label>
+                        <input class="field-box" type="text" id="mobile">
+                    </div>
+                    <div class="form-group form-phone">
+                        <label class="field-label font-heading3" for="phone">ĐT Cố định</label>
+                        <input class="field-box" type="text" id="phone">
+                    </div>
+                    <div class="form-group form-email">
+                        <label class="field-label font-heading3" for="email">Email</label>
+                        <input class="field-box" type="email" id="email">
+                    </div>
+                    
+                    <div class="form-group form-bank-account">
+                        <label class="field-label font-heading3" for="bank-account">Tài khoản ngân hàng</label>
+                        <input class="field-box" type="text" id="bank-account">
+                    </div>
+                    <div class="form-group form-bank-name">
+                        <label class="field-label font-heading3" for="bank-name">Tên ngân hàng</label>
+                        <input class="field-box" type="text" id="bank-name">
+                    </div>
+                    <div class="form-group form-bank-branch">
+                        <label class="field-label font-heading3" for="bank-branch">Chi nhánh</label>
+                        <input class="field-box" type="text" id="bank-branch">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="form-action">
+            <button class="primary-button grey-button cancel-btn">Hủy</button>
+            <button class="primary-button green-button add-btn">Thêm</button>
+        </div>
+    </span>
+    <script src="js/addpopup.js"></script>
 </body>
 </html>

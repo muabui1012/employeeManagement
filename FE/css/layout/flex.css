@@ -26,6 +26,7 @@ nav {
 .main {
     flex: 1;
     margin: 24px;
+    margin-top: 0px;
 
     /* background-color: white; */
     

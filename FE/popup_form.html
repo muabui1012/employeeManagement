@@ -11,47 +11,28 @@
         @import url("css/components/sidebar/sidebar.css");
         @import url("css/components/maincontent/maincontent.css");
         @import url("css/components/button.css");
-        @import url("css/components/stepform.css");
+        @import url("css/components/popupform.css");
         @import url("css/components/searchbar.css");
     </style>
     <title>Danh mục nhân viên | Nhân viên | Cukcuk</title>
 </head>
 <body>
-    <div class="form-container">
-        <div class="form-heading">
-            <h1 class="form-title font-heading1">Thông tin nhân viên</h1>
-            <h2 class="form-sub-title font-heading2"></h2>
-        </div>
-        <div class="form-control">
-            <form class="employee-form font-body1">
-                <div class="tab tab0">
+    <span class="popup-form hidden">
+        <div class="form-container">
+            <div class="form-heading">
+                <h1 class="form-title font-heading1">Thông tin nhân viên</h1>
+                <span class="close-form">
+                    <button class="grey-button icon-button" id="close-btn" title="close">
+                        <img src="assets\icon\close-48.png" alt="close">
+                    </button>
+                </span>
+            </div>
+            <div class="form-control">
+                <form class="employee-form font-body1">
                     <div class="form-group form-code">
                         <label class="field-label font-heading3" for="employee-id">Mã nhân viên <span class="star">*</span></label>
-                        <input class="field-box"type="text" id="employee-id" required>
+                        <input class="field-box" type="text" id="employee-id" required>
                     </div>
-                    <div class="form-group form-position">
-                        <div class="selection-container">
-                            <label class="field-label font-heading3" for="position">Vị trí</label>
-                            <select class="field-box combobox" id="position">
-                                <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
-                                <option value="Hanoi">Nhân viên</option>
-                            </select>
-                            <div class="field-border"></div>
-                        </div>
-                    </div>
-                    <div class="form-group form-department">
-                        <div class="selection-container">
-                            <label class="field-label font-heading3" for="department">Phòng ban</label>
-                            <select class="field-box combobox" id="department">
-                                <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
-                                <option value="Hanoi">Hà Nội</option>
-                                
-                            </select>
-                            <div class="field-border"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab tab1">
                     <div class="form-group form-name">
                         <label class="field-label font-heading3" for="employee-name">Họ và tên <span class="star">*</span></label>
                         <input class="field-box" type="text" id="employee-name" placeholder="Họ và tên" required>
@@ -74,73 +55,81 @@
                             <div>
                                 <input class="" type="radio" id="other" name="gender" value="other">
                                 <label for="other">Khác</label>
-                        
+                    
                             </div>
                         </div>
                     </div>
-                    
-                </div>
-                <div class="tab tab2s">
+                    <div class="form-group form-position">
+                        <div class="selection-container">
+                            <label class="field-label font-heading3" for="position">Vị trí</label>
+                            <select class="field-box fbp combobox" id="position">
+                                <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
+                                <option value="Hanoi">Nhân viên</option>
+                            </select>
+                            <div class="field-border field-border-p"></div>
+                        </div>
+                    </div>
                     <div class="form-group form-id-number">
-                        <label class="field-label font-heading3 for="id-number">Số CMTND</label>
+                        <label class="field-label font-heading3 for=" id-number">Số CMTND</label>
                         <input class="field-box" type="text" id="id-number">
                     </div>
                     <div class="form-group form-id-date">
-                        <label class="field-label font-heading3 for="id-issue-date">Ngày cấp</label>
+                        <label class="field-label font-heading3 for=" id-issue-date">Ngày cấp</label>
                         <input class="field-box" type="date" id="id-issue-date">
+                    </div>      
+                    <div class="form-group form-department">
+                        <div class="selection-container">
+                            <label class="field-label font-heading3" for="position">Phòng ban</label>
+                            <select class="field-box fbp combobox" id="position">
+                                <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
+                                <option value="Hanoi">Nhân viên</option>
+                            </select>
+                            <div class="field-border field-border-p"></div>
+                        </div>
                     </div>
+                    
                     <div class="form-group form-id-place">
-                        <label class="field-label font-heading3 for="id-issue-place">Nơi cấp</label>
+                        <label class="field-label font-heading3 for=" id-issue-place">Nơi cấp</label>
                         <input class="field-box" type="text" id="id-issue-place">
                     </div>
-                </div>
-                <div class="tab tab3">
-                    <div class="form-group">
+                    
+                    <div class="form-group form-address">
                         <label class="field-label font-heading3" for="address">Địa chỉ</label>
                         <input class="field-box" type="text" id="address">
-        
+                    
                     </div>
-                    <div class="form-group">
+                    <div class="form-group form-mobile">
                         <label class="field-label font-heading3" for="mobile">ĐT Di động</label>
                         <input class="field-box" type="text" id="mobile">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group form-phone">
                         <label class="field-label font-heading3" for="phone">ĐT Cố định</label>
                         <input class="field-box" type="text" id="phone">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group form-email">
                         <label class="field-label font-heading3" for="email">Email</label>
                         <input class="field-box" type="email" id="email">
                     </div>
-                </div>
-                <div class="tab tab4 hidden">
-                    <div class="form-group">
+                    
+                    <div class="form-group form-bank-account">
                         <label class="field-label font-heading3" for="bank-account">Tài khoản ngân hàng</label>
                         <input class="field-box" type="text" id="bank-account">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group form-bank-name">
                         <label class="field-label font-heading3" for="bank-name">Tên ngân hàng</label>
                         <input class="field-box" type="text" id="bank-name">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group form-bank-branch">
                         <label class="field-label font-heading3" for="bank-branch">Chi nhánh</label>
                         <input class="field-box" type="text" id="bank-branch">
                     </div>
-                </div>
-
-            </form>
+                </form>
+            </div>
         </div>
         <div class="form-action">
-            <button class="transperency-btn transperency-btn1">
-                <img src="assets\icon\btn-prev-page.svg" alt="prev">
-            </button>
-            <button class="transperency-btn">
-                <img src="assets\icon\btn-next-page.svg" alt="next">
-            </button>
             <button class="primary-button grey-button cancel-btn">Hủy</button>
             <button class="primary-button green-button add-btn">Thêm</button>
         </div>
-
-    </div>
+    </span>    
 </body>
 </html>

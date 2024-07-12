@@ -8,18 +8,17 @@
 
 .header-left-side {
     width: 200px;
-    height: 40px;
+    height: 56px;
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 56px auto;
     align-items: center;
-    gap: 8px;
-    padding-left: 24px; 
 }
 
 .header-right-side {
     flex: 1;
     display: flex;
-    /* margin-left: 24px; */
+    padding-left: 24px;
+    padding-right: 24px;
     
 }
 
@@ -27,17 +26,25 @@
     height: 100%;
     width: 100%;
     display: grid;
-    grid-template-columns: 200px auto 250px;
+    grid-template-columns: 200px auto 220px;
     
 }
 
-.menu-logo {
-    height: 28px;
+.menu-btn {
+    padding-left: 12px;
+    padding-right: 12px;
+}
 
+.menu-logo {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
 }
 
 .cukcuk-logo {
-    height: 28px;
+    height: 90%;
+    width: 90%;
+    object-fit: contain;
 }
 
 .department-btn {
