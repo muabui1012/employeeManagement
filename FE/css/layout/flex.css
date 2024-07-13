@@ -15,12 +15,16 @@ header {
     background-color: white; 
 }
 
-nav {
+.sidebar {
     width: 200px;
     height: 100%;
     /* height: calc(100vh - 56px); */
     background-color: #001833;
     
+}
+
+.mini-sidebar {
+    width: 56px;
 }
 
 .main {

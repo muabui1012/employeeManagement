@@ -13,6 +13,24 @@
 }
 
 
+.sidebar-mini {
+    color: var(--grey-300);
+    margin: 0px 8px;
+    height: 44px;
+}
+
+.sidebar-btn-mini {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 44px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: var(--blue-900);
+    background-color: var(--blue-900);
+    gap: 12px;
+}
 
 .sidebar-btn {
     display: flex;

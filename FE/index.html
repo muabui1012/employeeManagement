@@ -49,36 +49,36 @@
             </div>
             
         </header>
-        <nav>
+        <nav class="sidebar">
             <div class="sidebar-container font-body1">
                 <div class="sidebar-item">
                     <button class="blue-button sidebar-btn">
                         <img class="btn-img" src="assets\icon\dashboard.png" alt="home">
-                        <p class="btn-text">Trang chủ</p>
+                        <p class="btn-text sidebar-btn-text">Trang chủ</p>
                     </button>
                 </div>
                 <div class="sidebar-item">
                     <button class="blue-button sidebar-btn">
                         <img class="btn-img" src="assets\icon\report.png" alt="home">
-                        <p class="btn-text">Báo cáo</p>
+                        <p class="btn-text sidebar-btn-text">Báo cáo</p>
                     </button>
                 </div>
                 <div class="sidebar-item">
                     <button class="blue-button sidebar-btn" id="employee-btn">
                         <img class="btn-img" src="assets\icon\dic-employee.png" alt="employee">
-                        <p class="btn-text">Nhân viên</p>
+                        <p class="btn-text sidebar-btn-text">Nhân viên</p>
                     </button>
                 </div>
                 <div class="sidebar-item">
                     <button class="blue-button sidebar-btn">
                         <img class="btn-img" src="assets\icon\setting.png" alt="setting">
-                        <p class="btn-text">Cài đặt</p>
+                        <p class="btn-text sidebar-btn-text">Cài đặt</p>
                     </button>
                 </div>
                 <div class="sidebar-item sidebar-footer">
-                    <button class="blue-button sidebar-btn">
+                    <button class="blue-button sidebar-btn" onclick="closeNav()">
                         <img class="btn-img" src="assets\icon\btn-prev-page.svg" alt="hide">
-                        <p class="btn-text">Thu gọn</p>
+                        <p class="btn-text sidebar-btn-text">Thu gọn</p>
                     </button>
                 </div>
             </div>
@@ -215,25 +215,6 @@
                                         <td>ktkhuzih3830@nowhere.com</td>
                                         <td>104 nhà K, ngõ 72 Linh Nam</td>
                                     </tr>
-                                    <tr>
-                                        <td>10</td>
-                                        <td>NV-34296</td>
-                                        <td>Hoàng Hùng Chung</td>
-                                        <td>Nam</td>
-                                        <td>02/08/1954</td>
-                                        <td>ktkhuzih3830@nowhere.com</td>
-                                        <td>104 nhà K, ngõ 72 Linh Nam <span class="crud-containers">
-                                            <button class="small-icon-button crud-btn" title="edit">
-                                                <img class="smc-img" src="assets\icon\pencil.png" alt="edit">
-                                            </button>
-                                            <button class="small-icon-button crud-btn" title="copy">
-                                                <img class="smc-img" src="assets\icon\copy.png" alt="copy">
-                                            </button>
-                                            <button class="small-icon-button crud-btn" title="delete">
-                                                <img class="smc-img" src="assets\icon\close-48.png" alt="delete">
-                                            </button>
-                                        </span></td>
-                                    </tr>
                                     
                                 </tbody>
                             </table>
@@ -270,12 +251,12 @@
             </div>
         </div>
     </div>
-    <span class="popup-form hidden">
+    <span class="popup-form hidden" id="popup-form">
         <div class="form-container">
             <div class="form-heading">
                 <h1 class="form-title font-heading1">Thông tin nhân viên</h1>
                 <span class="close-form">
-                    <button class="grey-button icon-button" id="close-btn" title="close">
+                    <button class="grey-button icon-button" id="close-btn" title="close" onclick="hidepopup()">
                         <img src="assets\icon\close-48.png" alt="close">
                     </button>
                 </span>
@@ -380,10 +361,11 @@
             </div>
         </div>
         <div class="form-action">
-            <button class="primary-button grey-button cancel-btn">Hủy</button>
+            <button class="primary-button grey-button cancel-btn" onclick="hidepopup()">Hủy</button>
             <button class="primary-button green-button add-btn">Thêm</button>
         </div>
     </span>
     <script src="js/addpopup.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
