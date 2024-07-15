@@ -1,0 +1,8 @@
+#employee-btn {
+    background-color: rgba(204, 228, 255, 0.5); 
+
+}
+
+.selected-row {
+    background-color: var(--blue-200);
+}

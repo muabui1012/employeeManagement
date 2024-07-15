@@ -10,11 +10,13 @@ window.onload = function(){
 class NonePage {
     pageTitle = "Cukcuk - Quản lý nhân sự";
     constructor(){
-        this.initEvents();
+        console.log('NonePage construct');
+        this.nonePageInitEvents();
     }
 
-    initEvents(){
+    nonePageInitEvents(){
         try {
+            console.log('NonePage init');
             //Button thu gon
             document.getElementById("close-nav-btn").onclick = closeNav;
         } catch (error) {
@@ -87,7 +89,41 @@ function openNav(){
     }
 }
 
+function highlightRow(event, rowElement) {
+    // Your logic here
+    console.log("Row element clicked:", rowElement.lastChild);
+    selectedList = document.querySelectorAll(".selected-row");
+    selectedList.forEach((item) => {
+        item.classList.remove("selected-row");
+        var itemLastCell = item.lastChild;
+        console.log(itemLastCell);
+        itemLastCell.removeChild(itemLastCell.lastChild);
+    });
+    rowElement.classList.add("selected-row");
+    var lastCell = rowElement.lastChild;
+    var groupButton = document.createElement("span");
+    var editButton = document.createElement("button");
+    var editIcon = document.createElement("img");
+    editIcon.classList.add("smc-img");
+    editIcon.src = "assets\\icon\\pencil.png";
+    editButton.appendChild(editIcon);
+    editButton.classList.add("grey-button");
+    editButton.classList.add("small-icon-button");
+    groupButton.appendChild(editButton);
+    var deleteButton = document.createElement("button");
+    var deleteIcon = document.createElement("img");
+    deleteIcon.classList.add("smc-img");
+    deleteIcon.src = "assets\\icon\\delete-48.png";
+    deleteButton.appendChild(deleteIcon);
+    deleteButton.classList.add("grey-button");
+    deleteButton.classList.add("small-icon-button");
+    groupButton.appendChild(deleteButton);
+    lastCell.appendChild(groupButton); 
+}
+
+
 let employees = [];
+let currentDataPage = 0;
 /**
  * Represents the Employee Page.
  * @class
@@ -103,6 +139,7 @@ class EmployeePage extends NonePage{
      */
     constructor(){
         super();
+        this.initEvents();
     }
     
     
@@ -145,6 +182,10 @@ class EmployeePage extends NonePage{
 
     }
 
+    /**
+     * Loads department data from the API and populates the department select form.
+     * Author: Nghia (14/07/2024) 
+    */
     loadDepartmentData(){
         let url = "https://cukcuk.manhnv.net/api/v1/Departments";
         fetch(url)
@@ -175,11 +216,14 @@ class EmployeePage extends NonePage{
        
     }
 
+    /**
+     * Loads data from the API and displays it.
+     * Author: Nghia (14/07/2024)
+     */
     loadData() {
         var depForm = document.getElementById("department-form-select");
         console.log(depForm.value);
         let url = "https://cukcuk.manhnv.net/api/v1/Employees";
-        
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -196,9 +240,78 @@ class EmployeePage extends NonePage{
             });
     }
 
+    /**
+     * Display data to the table
+     * Author: Nghia (14/07/2024)
+     */
     displayData() {
-        var table = document.querySelector(".main-tbl-container-tbl table tbody");
-        console.log(table);
+        var pageSize = document.getElementById("numpage-select").value;
+        var table = document.querySelector(".main-tbl-container-tbl table");
+        var thead = document.querySelector(".main-tbl-container-tbl table thead");
+        var tbody = document.querySelector(".main-tbl-container-tbl table tbody");
+        var pageData = employees.slice(currentDataPage * pageSize, (currentDataPage + 1) * pageSize);
+        const genderMap = {
+            0: 'Nữ',
+            1: 'Nam',
+            2: 'Khác'
+        }
+        const tableHeadMap = {
+            STT: 'STT',
+            EmployeeCode: 'Mã nhân viên',
+            FullName: 'Họ và tên',
+            Gender: 'Giới tính',
+            DateOfBirth: 'Ngày sinh',
+            Email: 'Email',
+            Address: 'Địa chỉ'
+        }
+
+        // Assuming `employees` is your fetched data
+        if (employees.length > 0) {
+            // Extract column names from the first object's keys
+            // const columnNames = Object.keys(employees[0]);
+            const columnNames = ['STT', 'EmployeeCode', 'FullName', 'Gender', 'DateOfBirth', 'Email', 'Address'];
+            const tr = document.createElement('tr');
+            // Populate the headers
+            columnNames.forEach(colName => {
+                const th = document.createElement('th');
+                th.textContent = tableHeadMap[colName]; // Set the column name as header text
+                tr.appendChild(th); // Append the th to the row
+            });
+
+            thead.appendChild(tr); // Append the row to the thead
+            table.appendChild(thead); // Append the thead to the table
+            // Clear existing rows in tbody
+            while (tbody.firstChild) {
+                tbody.removeChild(tbody.firstChild);
+            }
+
+            // Iterate over pageData to populate tbody
+            var len = columnNames.length;
+            pageData.forEach((employee, i) => {
+                const row = document.createElement('tr');
+                columnNames.forEach(colName => {
+                    const cell = document.createElement('td');
+                    if (colName === 'STT') {
+                        cell.textContent = i + 1; // Set cell text to the row number
+                    } else
+                    if (colName === 'Gender') {
+                        cell.textContent = genderMap[employee[colName]];
+                    } else 
+                    cell.textContent = employee[colName]; // Set cell text to employee data
+                    row.appendChild(cell); // Append the cell to the row
+                    
+                });
+                row.addEventListener('click', (function(index) {
+                    return function(event) {
+                        highlightRow(event, row);
+                    };
+                })(i));
+            
+                tbody.appendChild(row); // Append the row to the tbody
+            });        
+        }
+        
+    
     }
 
     /**
