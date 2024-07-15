@@ -1,4 +1,7 @@
-//Close the sidebar
+
+/**
+ * Closes the sidebar by adding appropriate classes and updating button functionality.
+ */
 function closeNav(){
     nav = document.getElementsByClassName("sidebar");
     nav[0].classList.add("mini-sidebar");
@@ -22,7 +25,9 @@ function closeNav(){
     footer_btn.onclick = openNav;
 }
 
-//open the sidebar
+/**
+ * Opens the sidebar by removing appropriate classes and updating button functionality.
+ */
 function openNav(){
     console.log("jfkafjakl");
     nav = document.getElementsByClassName("sidebar");
