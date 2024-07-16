@@ -23,7 +23,7 @@
 }
 
 .grey-button {
-    background-color: var(--grey-100);
+    background-color: var(--grey-200);
 }
 
 .grey-button:hover {

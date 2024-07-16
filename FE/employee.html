@@ -12,12 +12,14 @@
         @import url("css/components/button.css");
         @import url("css/components/searchbar.css");
         @import url("css/components/popupform.css");
+        @import url("css/components/scrolltable.css");
+        @import url("css/components/dialog.css");
         @import url("css/pages/employee.css");
     </style>
     <title>Danh mục nhân viên | Nhân viên | Cukcuk</title>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="to-blur">
         <header>
             <div class="header-container">
                 <div class="header-left-side">
@@ -35,7 +37,9 @@
                         <div class="department-btn">
                             <form class="department-form">
                                 <select id="department-form-select">
-                                    
+                                    <option value="HCM">Hồ Chí Minh</option>
+                                    <option value="Hanoi">Hà Nội</option>
+                                    <option value="Danang">Đà Nẵng</option>
                                 </select>
                             </form>
                         </div>
@@ -83,11 +87,11 @@
                 </div>
             </div>
         </div> 
-        <div class="main">
+        <div class="main" id="mainid">
             <div class="main-container font-body2">
                 <div class="main-header">
                     <div class="main-header-container">
-                        <div class="main-header-item main-header-item-text font-heading2"><p>Quản lý nhân viên</p></div>
+                        <div class="main-header-item main-header-item-text font-heading2"><p>Quản lý nhân viên</p><span id="main-loader" class="loader"></span></div>
                         <div class="main-header-item main-header-item-add-btn">
                             <button id = "add-new-btn" class="green-button secondary-button" id="add-new-btn" title="add new">
                                 <img class="secondary-button-img" src="assets\icon\add.png" alt="add">
@@ -103,8 +107,8 @@
                                 <form>
                                     <div class="search-container">
                                         <div class="search-box">
-                                            <input type="text" class="search-input" placeholder="Tìm kiếm theo mã, họ tên">
-                                            <img src="assets\icon\search.png" class="search-icon" alt="Search">
+                                            <input id="search-input" type="text" class="search-input" placeholder="Tìm kiếm theo mã, họ tên">
+                                            <img id="search-input-icon" src="assets\icon\search.png" class="search-icon" alt="Search">
                                         </div>
                                     </div>
                                 </form>
@@ -121,14 +125,8 @@
                             </div>
                         </div>
                         <div class="main-tbl-container-tbl">
-                            <table>
-                                <thead>
-                                    
-                                </thead>
-                                <tbody>
-                                    
-                                    
-                                </tbody>
+                            <table class="scrolldown">
+                                
                             </table>
                         </div>
                         <div class="main-tbl-container-footer" class="font-body1">
@@ -150,12 +148,12 @@
                                 </form>
                             </div>
                             <div class="mtcf-item" id = "mtcf-item4">
-                                <button class="transperency-btn">
+                                <button id="prev-page-btn" class="transperency-btn">
                                     <img src="assets\icon\btn-prev-page.svg" alt="prev">
                                 </button>
                             </div>
                             <div class="mtcf-item" id = "mtcf-item5">
-                                <button class="transperency-btn">
+                                <button id="next-page-btn" class="transperency-btn">
                                     <img src="assets\icon\btn-next-page.svg" alt="next">
                                 </button>
                             </div>
@@ -178,12 +176,12 @@
             <div class="form-control">
                 <form class="employee-form font-body1">
                     <div class="form-group form-code">
-                        <label class="field-label font-heading3" for="employee-id">Mã nhân viên <span class="star">*</span></label>
-                        <input class="field-box" type="text" id="employee-id" required>
+                        <label class="field-label font-heading3" for="employee-code">Mã nhân viên <span class="star">* <span id="employee-code-loader" class="loader"></span></span></label>
+                        <input class="field-box" type="text" id="employee-code" required>
                     </div>
                     <div class="form-group form-name">
                         <label class="field-label font-heading3" for="employee-name">Họ và tên <span class="star">*</span></label>
-                        <input class="field-box" type="text" id="employee-name" placeholder="Họ và tên" required>
+                        <input class="field-box" type="text" id="employee-name" required>
                     </div>
                     <div class="form-group form-dob">
                         <label class="field-label font-heading3" for="dob">Ngày sinh</label>
@@ -191,7 +189,7 @@
                     </div>
                     <div class="form-group form-gender">
                         <label class="field-label font-heading3" for="gender">Giới tính</label>
-                        <div class="gender-options">
+                        <div class="gender-options" id="employee-gender">
                             <div>
                                 <input class="" type="radio" id="male" name="gender" value="male">
                                 <label for="male">Nam</label>
@@ -211,7 +209,7 @@
                         <div class="selection-container">
                             <label class="field-label font-heading3" for="position">Vị trí</label>
                             <select class="field-box fbp combobox" id="position">
-                                <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
+                                <option value="None" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
                                 <option value="Hanoi">Nhân viên</option>
                             </select>
                             <div class="field-border field-border-p"></div>
@@ -227,8 +225,8 @@
                     </div>      
                     <div class="form-group form-department">
                         <div class="selection-container">
-                            <label class="field-label font-heading3" for="position">Phòng ban</label>
-                            <select class="field-box fbp combobox" id="position">
+                            <label class="field-label font-heading3" for="department">Phòng ban</label>
+                            <select class="field-box fbp combobox" id="department">
                                 <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
                                 <option value="Hanoi">Nhân viên</option>
                             </select>
@@ -278,6 +276,24 @@
             <button id="hide-form-btn" class="primary-button grey-button cancel-btn">Hủy</button>
             <button id="form-submit-btn" class="primary-button green-button add-btn">Thêm</button>
         </div>
+    </span>
+    <span class="msg-dialog hidden" id="msg-dialog">
+        <div class="dlg-container">
+            <div class="dlg-heading">
+                <h1 class="dlg-title font-heading1" id="dlg-title">Thông tin nhân viên</h1>
+                <span class="close-dlg">
+                    <button class="grey-button icon-button" id="close-dlg-btn" title="close">
+                        <img src="assets\icon\close-48.png" alt="close">
+                    </button>
+                </span>
+            </div>
+            <div class="dlg-main">
+                <p id="dlg-body">adkjakldsjakldjaskldjsadkl</p>
+            </div>
+            <div class="dlg-action">
+                <button id="hide-dlg-btn" class="primary-button grey-button cancel-dlg-btn">Hủy</button>
+                <button id="dlg-submit-btn" class="primary-button green-button confirm-dlg-btn">Xác nhận</button>
+            </div>
     </span>
     <script src="js/employee.js"></script>
 </body>

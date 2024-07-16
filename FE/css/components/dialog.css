@@ -1,0 +1,45 @@
+.msg-dialog {
+    position: absolute;
+    top: 10%;
+    left: calc( (100% - 400px) / 2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.dlg-container {
+    width: 400px;
+    padding: 24px 24px;
+    background-color: white;
+}
+
+.dlg-heading {
+    display: grid;
+    grid-template-columns: 200px auto 36px;
+}
+
+.close-dlg {
+    grid-column-start: 3;
+}
+
+.cancel-dlg-btn {
+    color: black;
+}
+
+.dlg-title {
+    margin-bottom: 8px;
+}
+
+.dlg-main {
+    /* height: 100%; */
+    width: 100%;
+    margin: 24px 0px;
+}
+
+.dlg-action {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 0px 24px;
+    
+}

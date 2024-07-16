@@ -1,10 +1,18 @@
+/**
+ * Initiating Page
+ * Author: Nghia (15/07/2024)
+ */
+let employeePage = null;
 window.onload = function(){
-    new EmployeePage();
+    employeePage = new EmployeePage();
 }
 
 /**
  * Represents the normal Page.
  * @class
+ * @description Represents a normal page in the application.
+ * @constructor
+ * @param {string} pageTitle - The title of the page.
  * Author: Nghia (14/07/2024)
  */
 class NonePage {
@@ -14,6 +22,12 @@ class NonePage {
         this.nonePageInitEvents();
     }
 
+    /**
+     * Initializes the events for the NonePage class.
+     * @method
+     * @description Initializes the events for the NonePage class.
+     * Author: Nghia (14/07/2024)
+     */
     nonePageInitEvents(){
         try {
             console.log('NonePage init');
@@ -23,12 +37,13 @@ class NonePage {
             console.log(error);
         }
     }
-
-
 }
 
 /**
  * Closes the sidebar by adding appropriate classes and updating button functionality.
+ * @function
+ * @description Closes the sidebar by adding appropriate classes and updating button functionality.
+ * Author: Nghia (15/07/2024)
  */
 function closeNav(){
     try {
@@ -59,10 +74,12 @@ function closeNav(){
 
 /**
  * Opens the sidebar by removing appropriate classes and updating button functionality.
+ * @function
+ * @description Opens the sidebar by removing appropriate classes and updating button functionality.
+ * Author: Nghia (15/07/2024)
  */
 function openNav(){
     try {
-        console.log("jfkafjakl");
         nav = document.getElementsByClassName("sidebar");
         nav[0].classList.remove("mini-sidebar");
         item = document.querySelectorAll(".sidebar-item-mini");
@@ -85,11 +102,49 @@ function openNav(){
         footer_btn.onclick = closeNav;
     } catch(error) {
         console.log(error);
-    
     }
 }
 
-function highlightRow(event, rowElement) {
+/**
+ * Retrieves a new employee code from the server and updates the employee code input field.
+ * Author: Nghia (15/07/2024)
+ */
+function getNewEmployeeCode() {
+    try {
+        let url = "https://cukcuk.manhnv.net/api/v1/Employees/NewEmployeeCode";
+        fetch(url)
+            .then(response => {
+                console.log(response.body);
+                if (!response.ok) {
+                    throw new Error('Network response error');
+                }
+                return response.text();
+            })
+            .then(data => {
+                //display data
+                console.log(data);
+                document.getElementById("employee-code").value = data;
+                document.querySelector("#employee-code-loader").classList.add("hidden");
+            })
+            .catch(error => {
+                console.log(error);
+            });
+            console.log("Form opened");
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+/**
+ * Highlights the selected row and adds buttons for editing and deleting.
+ * @param {Event} event - The click event object.
+ * @param {HTMLElement} rowElement - The row element to highlight.
+ * @param {string} eid - The employee ID.
+ * @param {string} eCode - The employee code.
+ * Author: Nghia (15/07/2024)
+ */
+function highlightRow(event, rowElement, eid, eCode) {
     // Your logic here
     console.log("Row element clicked:", rowElement.lastChild);
     selectedList = document.querySelectorAll(".selected-row");
@@ -117,16 +172,98 @@ function highlightRow(event, rowElement) {
     deleteButton.appendChild(deleteIcon);
     deleteButton.classList.add("grey-button");
     deleteButton.classList.add("small-icon-button");
+    deleteButton.addEventListener('click', () => {
+        onDeleteData(eid, eCode);
+    });
     groupButton.appendChild(deleteButton);
     lastCell.appendChild(groupButton); 
+    console.log("selected", eCode);
+}
+
+/**
+ * Deletes employee data based on the provided employee ID and employee code.
+ * @param {string} eid - The ID of the employee to be deleted.
+ * @param {string} eCode - The code of the employee to be deleted.
+ * Author: Nghia (15/07/2024)
+ */  
+function confirmDelete(eid, eCode) {
+    var msg = "Bạn có chắc chắn muốn xoá nhân viên có mã nhân viên là: " + eCode;
+    console.log(msg);
+    employeePage.showDialog("Xác nhận xoá", msg);
+    return new Promise(function(resolve, reject) {
+        document.getElementById("dlg-submit-btn").addEventListener('click', () => {
+            console.log("Confirmed");
+            resolve("Deleted");
+        });
+        document.getElementById("hide-dlg-btn").addEventListener('click', () => {
+            console.log("Canceled");
+            reject("Canceled");
+        });
+        document.getElementById("close-dlg-btn").addEventListener('click', () => {
+            console.log("Canceled");
+            reject("Canceled");
+        });
+    });
+    
+}
+
+/**
+ * Deletes employee data based on the provided employee ID and employee code.
+ * @param {string} eid - The ID of the employee to be deleted.
+ * @param {string} eCode - The code of the employee to be deleted.
+ * Author: Nghia (15/07/2024)
+ */  
+function onDeleteData(eid, eCode) {
+    confirmDelete(eid, eCode)
+        .then((result) => {
+            let url = "https://cukcuk.manhnv.net/api/v1/Employees/" + eid;
+            fetch(url,
+                {
+                    method: "DELETE"
+                }
+            )
+                .then(response => {
+                    console.log(response.body);
+                    if (!response.ok) {
+                        throw new Error('Network response error');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    //display data
+                    console.log(data);
+                    employeePage.loadData();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            console.log(result);
+            
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+        .finally(() => {
+            employeePage.hideDialog();
+        });
+
+
 }
 
 
+
 let employees = [];
-let currentDataPage = 0;
+let currentDataPage = 1;
+let pageSize = document.getElementById("numpage-select").value;
+let totalRecord = 0;
+let totalPage = 0;
+let searchName = "";
 /**
  * Represents the Employee Page.
  * @class
+ * @description Represents the employee page in the application.
+ * @extends NonePage
+ * @constructor
  * Author: Nghia (14/07/2024)
  */
 class EmployeePage extends NonePage{
@@ -146,6 +283,8 @@ class EmployeePage extends NonePage{
 
     /**
      * Add cac event listener
+     * @method
+     * @description Adds event listeners to the buttons and selects on the employee page.
      * Author: Nghia (14/07/2024)
      */
     initEvents(){
@@ -160,21 +299,25 @@ class EmployeePage extends NonePage{
             document.getElementById("close-form-btn").addEventListener('click', this.closeForm);
             document.getElementById("hide-form-btn").addEventListener('click', this.closeForm);
 
+            // document.getElementById("close-dlg-btn").addEventListener('click', this.hideDialog);
+            // document.getElementById("hide-dlg-btn").addEventListener('click', this.hideDialog);
+
             //Button cat
             document.getElementById("form-submit-btn").addEventListener('click', this.submitEmployeeForm); 
 
             //Select số bản ghi/trang
-            document.getElementById("numpage-select").selectedIndex = 3;
+            document.getElementById("numpage-select").selectedIndex = 0;
             
             //Button reload
+            this.btnOnChangeReload();
 
             //Button tim kiem
-
+            
 
 
             console.log("Before", employees);
             //Load data
-            this.loadDepartmentData();
+            this.loadData();
             
         } catch (error) {
             console.log(error);
@@ -184,6 +327,8 @@ class EmployeePage extends NonePage{
 
     /**
      * Loads department data from the API and populates the department select form.
+     * @method
+     * @description Loads department data from the API and populates the department select form.
      * Author: Nghia (14/07/2024) 
     */
     loadDepartmentData(){
@@ -202,12 +347,16 @@ class EmployeePage extends NonePage{
                 data.forEach((item) => {
                     var option = document.createElement("option");
                     option.innerHTML = item["DepartmentName"];
-                    option.value =  item["DepartmentCode"];
+                    option.value =  item["DepartmentId"];
                     depForm.appendChild(option);
                     
                 });
+                var option = document.createElement("option");
+                option.innerHTML = "Tất cả";
+                option.value =  "";
                 depForm.selectedIndex = 0;
-                this.loadData();   
+                depForm.appendChild(option);
+                // this.loadData();   
             })
             .catch(error => {
                 console.log(error);
@@ -218,13 +367,25 @@ class EmployeePage extends NonePage{
 
     /**
      * Loads data from the API and displays it.
+     * @method
+     * @description Loads data from the API and displays it.
      * Author: Nghia (14/07/2024)
      */
     loadData() {
         var depForm = document.getElementById("department-form-select");
         console.log(depForm.value);
-        let url = "https://cukcuk.manhnv.net/api/v1/Employees";
-        fetch(url)
+        const header = new Headers();
+        var url = new URL("https://cukcuk.manhnv.net/api/v1/Employees/filter");
+        // url.searchParams.append("departmentId", depForm.value);
+        url.searchParams.append("pageNumber", currentDataPage);
+        url.searchParams.append("pageSize", document.getElementById("numpage-select").value);
+        console.log(url);
+        console.log(header.toString());
+        fetch(url, {
+            method: "GET",
+            headers: header
+            
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response error');
@@ -232,8 +393,10 @@ class EmployeePage extends NonePage{
                 return response.json();
             })
             .then(data => {
-                employees = data;
-                this.displayData();
+                employees = data['Data'];
+                totalRecord = data['TotalRecord'];
+                totalPage = data['TotalPage'];
+                this.displayData(employees);
             })
             .catch(error => {
                 console.log(error);
@@ -242,34 +405,43 @@ class EmployeePage extends NonePage{
 
     /**
      * Display data to the table
+     * @method
+     * @description Displays the employee data in the table.
      * Author: Nghia (14/07/2024)
      */
-    displayData() {
-        var pageSize = document.getElementById("numpage-select").value;
+    displayData(pageData) {
+        this.clearData();
+        document.querySelector("#main-loader").classList.add("hidden");
         var table = document.querySelector(".main-tbl-container-tbl table");
-        var thead = document.querySelector(".main-tbl-container-tbl table thead");
-        var tbody = document.querySelector(".main-tbl-container-tbl table tbody");
-        var pageData = employees.slice(currentDataPage * pageSize, (currentDataPage + 1) * pageSize);
+        // table.removeChild("tbody");
+        // table.removeChild("thead");
+        // var thead = document.querySelector(".main-tbl-container-tbl table thead");
+        // var tbody = document.querySelector(".main-tbl-container-tbl table tbody");
+        // var pageData = employees.slice(currentDataPage * pageSize, (currentDataPage + 1) * pageSize);;
         const genderMap = {
-            0: 'Nữ',
-            1: 'Nam',
+            0: 'Nam',
+            1: 'Nữ',
             2: 'Khác'
         }
         const tableHeadMap = {
             STT: 'STT',
             EmployeeCode: 'Mã nhân viên',
+            DepartmentName: 'Đơn vị',
+            PositionName: 'Vị trí',
             FullName: 'Họ và tên',
             Gender: 'Giới tính',
             DateOfBirth: 'Ngày sinh',
             Email: 'Email',
             Address: 'Địa chỉ'
         }
-
+        var pageDataLen = pageData.length
         // Assuming `employees` is your fetched data
-        if (employees.length > 0) {
+        if (pageDataLen > 0) {
+            document.getElementById("record-counts").innerHTML = totalRecord;
             // Extract column names from the first object's keys
             // const columnNames = Object.keys(employees[0]);
-            const columnNames = ['STT', 'EmployeeCode', 'FullName', 'Gender', 'DateOfBirth', 'Email', 'Address'];
+            var thead = document.createElement('thead');
+            const columnNames = ['STT', 'EmployeeCode', 'DepartmentName', 'PositionName', 'FullName', 'Gender', 'DateOfBirth', 'Email', 'Address'];
             const tr = document.createElement('tr');
             // Populate the headers
             columnNames.forEach(colName => {
@@ -280,19 +452,16 @@ class EmployeePage extends NonePage{
 
             thead.appendChild(tr); // Append the row to the thead
             table.appendChild(thead); // Append the thead to the table
-            // Clear existing rows in tbody
-            while (tbody.firstChild) {
-                tbody.removeChild(tbody.firstChild);
-            }
-
+            var tbody = document.createElement('tbody');
             // Iterate over pageData to populate tbody
             var len = columnNames.length;
             pageData.forEach((employee, i) => {
                 const row = document.createElement('tr');
+                var eid = employee['EmployeeId'];
                 columnNames.forEach(colName => {
                     const cell = document.createElement('td');
                     if (colName === 'STT') {
-                        cell.textContent = i + 1; // Set cell text to the row number
+                        cell.textContent = pageSize * (currentDataPage-1) + i + 1; // Set cell text to the row number
                     } else
                     if (colName === 'Gender') {
                         cell.textContent = genderMap[employee[colName]];
@@ -301,19 +470,39 @@ class EmployeePage extends NonePage{
                     row.appendChild(cell); // Append the cell to the row
                     
                 });
-                row.addEventListener('click', (function(index) {
+                row.addEventListener('click', (function(index, id) {
                     return function(event) {
-                        highlightRow(event, row);
+                        highlightRow(event, row, eid, employee['EmployeeCode']);
                     };
                 })(i));
             
                 tbody.appendChild(row); // Append the row to the tbody
             });        
+            table.appendChild(tbody);
         }
         
     
     }
 
+
+    /**
+     * Clears the table by removing the table header and table body.
+     * Author: Nghia (15/07/2024)
+     */
+    clearData(){
+        try {
+            console.log("Clearing the table");
+            var table = document.querySelector(".main-tbl-container-tbl table");
+            var thead = document.querySelector(".main-tbl-container-tbl table thead");
+            var tbody = document.querySelector(".main-tbl-container-tbl table tbody");
+            if (tbody) 
+                table.removeChild(thead);
+            if (thead)
+                table.removeChild(tbody);
+        } catch (error) {
+            console.log(error)
+        }
+    }
     /**
      * Add click event for "Thêm mới"
      * Author: Nghia (14/07/2024)
@@ -321,11 +510,47 @@ class EmployeePage extends NonePage{
     btnAddOnClick(){
         try {
             document.getElementById("popup-form").classList.remove("hidden");
+            document.getElementById("to-blur").classList.add("blured");
+            document.getElementById("employee-code").focus();
+            getNewEmployeeCode();
             console.log("Form opened");
         } catch (error) {
             console.log(error);
         }
     }
+
+    /**
+     * Open dialog
+     * Author: Nghia (14/07/2024)
+     */
+    showDialog(header, body){
+        try {
+            document.getElementById("msg-dialog").classList.remove("hidden");
+            document.getElementById("to-blur").classList.add("blured");
+            document.getElementById("employee-code").focus();
+            document.getElementById("dlg-title").innerHTML = header;
+            document.getElementById("dlg-body").innerHTML = body;
+            getNewEmployeeCode();
+            console.log("Form opened");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    /**
+     * Open dialog
+     * Author: Nghia (14/07/2024)
+     */
+    hideDialog(){
+        try {
+            document.getElementById("msg-dialog").classList.add("hidden");
+            document.getElementById("to-blur").classList.remove("blured");
+            console.log("Dialog opened");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     /**
      * Closes the form by adding the "hidden" class to the "popup-form" element.
@@ -334,15 +559,45 @@ class EmployeePage extends NonePage{
     closeForm(){
         try {
             document.getElementById("popup-form").classList.add("hidden");
-            console.log("Form closed");
+            document.getElementById("to-blur").classList.remove("blured");
+            console.log("Dialog closed");
         } catch (error) {
             console.log(error);
         }
     }
 
+    /**
+     * Submits the employee form.
+     * @returns {void}
+     * Author: Nghia (15/07/2024)
+     */
     submitEmployeeForm(){
         try {
-            console.log("submiting");
+
+            //Collect data
+            var employeeData = 
+                {
+                    "employeeCode": document.getElementById("employee-code").value,
+                    "fullName": document.getElementById("employee-name").value,
+                    "dob": document.getElementById("dob").value,
+                    // "Gender": document.getElementById("employee-gender").value,
+                    "Position": document.getElementById("position").value,
+                    "Department": document.getElementById("department").value,
+                    "idNumber": document.getElementById("id-number").value,
+                    "idNumberDate": document.getElementById("id-issue-date").value,
+                    "idNumberPlace": document.getElementById("id-issue-place").value,
+                    "address": document.getElementById("address").value,
+                    "mobile": document.getElementById("mobile").value,
+                    "phone": document.getElementById("phone").value,
+                    "email": document.getElementById("email").value,
+                    "bankAccount": document.getElementById("bank-account").value,
+                    "bankName": document.getElementById("bank-name").value,
+                    "bankBranch": document.getElementById("bank-branch").value,     
+                };
+            
+
+
+            console.log("submiting", employeeData);
             //Validate data
 
             //Popup xac nhan
@@ -354,5 +609,58 @@ class EmployeePage extends NonePage{
     }
 
 
+    /**
+     * Binds event listeners to the relevant elements and handles the corresponding actions.
+     * Author: Nghia (15/07/2024)
+     */
+    btnOnChangeReload() {
+        try {
+            document.getElementById("numpage-select").addEventListener('change', () => {
+                console.log("Changed");
+                this.loadData();
+            });
+            // document.getElementById("department-form-select").addEventListener('change', () => {
+            //     console.log("Department Changed");
+            //     this.loadData();
+            // });
+            document.getElementById("refresh-btn").addEventListener('click', () => {
+                console.log("Reloaded");
+                this.loadData();
+            });
+            document.getElementById("prev-page-btn").addEventListener('click', () => {
+                if (currentDataPage > 1) {
+                    currentDataPage--;
+                    this.loadData();
+                } else {
+                    console.log("Currently in Page 1");
+                }
+            });
+            document.getElementById("next-page-btn").addEventListener('click', () => {
+                if (currentDataPage < totalPage) {
+                    currentDataPage++;
+                    this.loadData();
+                } else {
+                    console.log("Currently in last page");
+                }
+                console.log(currentDataPage, "/", totalPage);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    searchReload() {
+        try {
+            document.getElementById("search-input").addEventListener('click', () => {
+                console.log("Search");
+                this.loadData();
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    
+    
 
 }
