@@ -135,9 +135,9 @@
     gap: 8px;
 }
 
-.hidden {
+/* .hidden {
     display: none;
-}
+} */
 
 .select-text {
     color: var(--light-green-300);

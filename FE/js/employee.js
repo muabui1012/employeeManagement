@@ -312,7 +312,16 @@ class EmployeePage extends NonePage{
             this.btnOnChangeReload();
 
             //Button tim kiem
-            
+            document.getElementById("close-simple-dlg-btn").addEventListener('click', () => {
+                document.getElementById("msg-dialog-simple").classList.add("hidden");
+                // document.getElementById("to-blur").classList.remove("blured");
+                document.getElementById("popup-form").classList.remove("blured");
+            });
+            document.getElementById("close-simple-dlg-btn-1").addEventListener('click', () => {
+                document.getElementById("msg-dialog-simple").classList.add("hidden");
+                // document.getElementById("to-blur").classList.remove("blured");
+                document.getElementById("popup-form").classList.remove("blured");
+            });
 
 
             console.log("Before", employees);
@@ -342,21 +351,82 @@ class EmployeePage extends NonePage{
             })
             .then(data => {
                 //display data
-                // console.log(data[0]);
-                var depForm = document.getElementById("department-form-select");
+                console.log("loaded dep");
+                console.log(data);
+                var depForm = document.getElementById("department");
+                try {
+                    document.querySelectorAll(".loaded-department").forEach((item) => {
+                        depForm.removeChild(item);
+                    });
+                } catch(e) {
+                    console.log(e);
+                }
                 data.forEach((item) => {
                     var option = document.createElement("option");
                     option.innerHTML = item["DepartmentName"];
                     option.value =  item["DepartmentId"];
+                    option.classList.add("loaded-department");
                     depForm.appendChild(option);
                     
                 });
-                var option = document.createElement("option");
-                option.innerHTML = "Tất cả";
-                option.value =  "";
+                // var option = document.createElement("option");
+                // option.innerHTML = "Tất cả";
+                // option.value =  "";
                 depForm.selectedIndex = 0;
-                depForm.appendChild(option);
-                // this.loadData();   
+                // depForm.appendChild(option);
+                // this.loadData();
+                document.querySelector("#department-loader").classList.add("hidden");   
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        
+       
+    }
+
+    /**
+     * Chưa hoạt động được vì API trên CukCuk không có bảng position
+     * Loads position data from the API and populates the position select form.
+     * @method
+     * @description Loads position data from the API and populates the position select form.
+     * Author: Nghia (14/07/2024) 
+    */
+    loadPositionData(){
+        let url = "https://cukcuk.manhnv.net/api/v1/Departments";
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response error');
+                }
+                return response.json();
+            })
+            .then(data => {
+                //display data
+                // console.log("loaded dep");
+                // console.log(data);
+                // var depForm = document.getElementById("department");
+                // try {
+                //     document.querySelectorAll(".loaded-department").forEach((item) => {
+                //         depForm.removeChild(item);
+                //     });
+                // } catch(e) {
+                //     console.log(e);
+                // }
+                // data.forEach((item) => {
+                //     var option = document.createElement("option");
+                //     option.innerHTML = item["DepartmentName"];
+                //     option.value =  item["DepartmentId"];
+                //     option.classList.add("loaded-department");
+                //     depForm.appendChild(option);
+                    
+                // });
+                // var option = document.createElement("option");
+                // option.innerHTML = "Tất cả";
+                // option.value =  "";
+                depForm.selectedIndex = 0;
+                // depForm.appendChild(option);
+                // this.loadData();
+                document.querySelector("#department-loader").classList.add("hidden");   
             })
             .catch(error => {
                 console.log(error);
@@ -513,6 +583,7 @@ class EmployeePage extends NonePage{
             document.getElementById("to-blur").classList.add("blured");
             document.getElementById("employee-code").focus();
             getNewEmployeeCode();
+            employeePage.loadDepartmentData();
             console.log("Form opened");
         } catch (error) {
             console.log(error);
@@ -530,12 +601,46 @@ class EmployeePage extends NonePage{
             document.getElementById("employee-code").focus();
             document.getElementById("dlg-title").innerHTML = header;
             document.getElementById("dlg-body").innerHTML = body;
-            getNewEmployeeCode();
+            // getNewEmployeeCode();
             console.log("Form opened");
         } catch (error) {
             console.log(error);
         }
     }
+
+    /**
+     * Open dialog
+     * Author: Nghia (14/07/2024)
+     */
+    showSimpleDialog(header, body){
+        try {
+            document.getElementById("msg-dialog-simple").classList.remove("hidden");
+            document.getElementById("to-blur").classList.add("blured");
+            document.getElementById("popup-form").classList.add("blured");
+            document.getElementById("dlgs-title").innerHTML = header;
+            var dlgBody = document.getElementById("dlg-main-id");
+            var dlgBodyContent = document.querySelectorAll(".dlgs-node-p");
+            dlgBodyContent.forEach((item) => {
+                dlgBody.removeChild(item);
+            });
+            console.log(dlgBodyContent);
+            if (Array.isArray(body)) {
+                
+                body.forEach((item) => {
+                    var p = document.createElement("p");
+                    p.classList.add("dlgs-node-p");
+                    p.innerHTML = item;
+                    dlgBody.appendChild(p);
+                });    
+            } else {
+                document.getElementById("dlgs-body").innerHTML = body;
+                // getNewEmployeeCode();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     /**
      * Open dialog
@@ -573,19 +678,18 @@ class EmployeePage extends NonePage{
      */
     submitEmployeeForm(){
         try {
-
             //Collect data
             var employeeData = 
                 {
                     "employeeCode": document.getElementById("employee-code").value,
                     "fullName": document.getElementById("employee-name").value,
-                    "dob": document.getElementById("dob").value,
+                    "dateOfBirth": document.getElementById("dob").value,
                     // "Gender": document.getElementById("employee-gender").value,
                     "Position": document.getElementById("position").value,
                     "Department": document.getElementById("department").value,
-                    "idNumber": document.getElementById("id-number").value,
-                    "idNumberDate": document.getElementById("id-issue-date").value,
-                    "idNumberPlace": document.getElementById("id-issue-place").value,
+                    "identityNumber": document.getElementById("id-number").value,
+                    "identityDate": document.getElementById("id-issue-date").value,
+                    "identityPlace": document.getElementById("id-issue-place").value,
                     "address": document.getElementById("address").value,
                     "mobile": document.getElementById("mobile").value,
                     "phone": document.getElementById("phone").value,
@@ -596,11 +700,70 @@ class EmployeePage extends NonePage{
                 };
             
 
-
             console.log("submiting", employeeData);
+            console.log("checking", employeeData['fullName']);
             //Validate data
+            var isValidated = true;
+            var msg = [];
+            if (employeeData['employeeCode'] === "" || employeeData['employeeCode'] === null) {
+                console.log("Trống");
+                isValidated = false;
+                msg.push("Mã nhân viên không được để trống\n");
+                 
+            }
+            if (employeeData['fullName'] === "" || employeeData['fullname'] == null) {
+                console.log("Trống");
+                isValidated = false;
+                msg.push("Họ và tên không được để trống\n");
+            }
+            if (employeeData['identityNumber'] === "" || employeeData['identityNumber'] === null) {
+                isValidated = false;
+                msg.push("Số CMTND không được để trống\n");
+            }
+            if (employeeData['mobile'] === "" || employeeData['mobile'] === null) {
+                isValidated = false;
+                msg.push("Số ĐT Di động không được để trống\n");
+            }
+            if (employeeData['email'] === "" || employeeData['email'] === null) {
+                isValidated = false;
+                msg.push("Email không được để trống\n");
+            }
 
-            //Popup xac nhan
+            if (isValidated) {
+                //Send data to server
+                let url = "https://cukcuk.manhnv.net/api/v1/Employees";
+                fetch(url,
+                    {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(employeeData)
+                    }
+                )
+                    .then(response => {
+                        console.log(response.body);
+                        if (!response.ok) {
+                            throw new Error('Network response error');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        //display data
+                        console.log(data);
+                        employeePage.loadData();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                employeePage.showSimpleDialog("Thành công", "Bạn đã thêm thành công nhân viên: " + employeeData['employeeCode']);
+                employeePage.closeForm();
+            } else {
+            
+                console.log("Lỗi", msg);
+                employeePage.showSimpleDialog("Lỗi", msg);
+                msg = [];
+            }
             
            
         } catch (error) {

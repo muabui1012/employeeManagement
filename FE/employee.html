@@ -207,16 +207,17 @@
                     </div>
                     <div class="form-group form-position">
                         <div class="selection-container">
-                            <label class="field-label font-heading3" for="position">Vị trí</label>
+                            <label class="field-label font-heading3" for="position">Vị trí <span id="position-loader" class="loader hidden"></span></label>
                             <select class="field-box fbp combobox" id="position">
                                 <option value="None" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
-                                <option value="Hanoi">Nhân viên</option>
+                                <option value="3fa85f64-5717-4562-b3fc-2c963f66afa6"><span class="select-text">Nhân viên</span></option>
+                                
                             </select>
                             <div class="field-border field-border-p"></div>
                         </div>
                     </div>
                     <div class="form-group form-id-number">
-                        <label class="field-label font-heading3" for=" id-number">Số CMTND</label>
+                        <label class="field-label font-heading3" for=" id-number">Số CMTND <span class="star">*</span></label>
                         <input class="field-box" type="text" id="id-number">
                     </div>
                     <div class="form-group form-id-date">
@@ -225,10 +226,10 @@
                     </div>      
                     <div class="form-group form-department">
                         <div class="selection-container">
-                            <label class="field-label font-heading3" for="department">Phòng ban</label>
+                            <label class="field-label font-heading3" for="department">Phòng ban <span id="department-loader" class="loader"></span></label>
                             <select class="field-box fbp combobox" id="department">
                                 <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
-                                <option value="Hanoi">Nhân viên</option>
+                                
                             </select>
                             <div class="field-border field-border-p"></div>
                         </div>
@@ -245,7 +246,7 @@
                     
                     </div>
                     <div class="form-group form-mobile">
-                        <label class="field-label font-heading3" for="mobile">ĐT Di động</label>
+                        <label class="field-label font-heading3" for="mobile">ĐT Di động <span class="star">*</span></label>
                         <input class="field-box" type="text" id="mobile">
                     </div>
                     <div class="form-group form-phone">
@@ -253,7 +254,7 @@
                         <input class="field-box" type="text" id="phone">
                     </div>
                     <div class="form-group form-email">
-                        <label class="field-label font-heading3" for="email">Email</label>
+                        <label class="field-label font-heading3" for="email">Email <span class="star">*</span></label>
                         <input class="field-box" type="email" id="email">
                     </div>
                     
@@ -294,7 +295,31 @@
                 <button id="hide-dlg-btn" class="primary-button grey-button cancel-dlg-btn">Hủy</button>
                 <button id="dlg-submit-btn" class="primary-button green-button confirm-dlg-btn">Xác nhận</button>
             </div>
+        </div>
     </span>
+
+    <span class="msg-dialog-simple hidden" id="msg-dialog-simple">
+        <div class="dlg-container">
+            <div class="dlg-heading">
+                <h1 class="dlg-title font-heading1" id="dlgs-title">Thông tin nhân viên</h1>
+                <span class="close-dlg">
+                    <button class="grey-button icon-button" id="close-simple-dlg-btn" title="close">
+                        <img src="assets\icon\close-48.png" alt="close">
+                    </button>
+                </span>
+            </div>
+            <div class="dlg-main" id="dlg-main-id">
+                <p id="dlgs-body"></p>
+            </div>
+            <div class="dlg-action">
+                <button id="close-simple-dlg-btn-1" class="primary-button green-button confirm-dlg-btn">OK</button>
+            </div>
+        </div>
+    </span>
+
+    
+    
+    
     <script src="js/employee.js"></script>
 </body>
 </html>

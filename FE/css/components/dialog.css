@@ -5,6 +5,13 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.msg-dialog-simple {
+    position: absolute;
+    top: 10%;
+    left: calc( (100% - 400px) / 2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 
 .dlg-container {
     width: 400px;
@@ -42,4 +49,10 @@
     gap: 8px;
     padding: 0px 24px;
     
+}
+
+#dlg-main-id {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
