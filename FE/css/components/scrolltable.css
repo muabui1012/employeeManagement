@@ -1,23 +1,109 @@
 table.scrolldown {
+    table-layout: fixed;
     width: 100%;
-    height: 100%;
-}
-
-table.scrolldown tbody,
-table.scrolldown thead {
-    display: block;
+    border-collapse: collapse;
 }
 
 table.scrolldown thead {
-    width: 100%;
-    overflow-y: scroll;
     overflow-x: hidden;
+    overflow-y: auto;
+    background-color: var(--grey-100);
+}
+
+    
+
+
+
+table.scrolldown thead th{
+    height: 50px; /* Adjust this value to increase the header height */
+    line-height: 50px; /* This should generally match the height for vertical centering */
+    text-align: left; 
+    
 }
 
 
 table.scrolldown tbody {
-    width: 100%;
-    height: 360px;
-    overflow-y: scroll;
+    height: 400px;
+    display: block;
     overflow-x: hidden;
+    overflow-y: auto;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-radius: 4px;
 }
+
+table.scrolldown tbody::-webkit-scrollbar {
+   
+   display: none;
+}
+
+
+table.scrolldown th, td {
+    border: 1px solid #ccc;
+    padding: 0 8px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+table.scrolldown td {
+    word-wrap:break-word;
+}
+
+table.scrolldown tr {
+    height: 40px;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Customizes the width of the first column */
+table.scrolldown th:nth-child(1), table.scrolldown td:nth-child(1) {
+    width: 20px; 
+}
+
+/* Customizes the width of the second column */
+table.scrolldown th:nth-child(2), table.scrolldown td:nth-child(2) {
+    width: 60px; 
+}
+
+table.scrolldown th:nth-child(3), table.scrolldown td:nth-child(3) {
+    width: 100px; 
+}
+
+
+table.scrolldown th:nth-child(4), table.scrolldown td:nth-child(4) {
+    width: 100px; 
+}
+table.scrolldown th:nth-child(5), table.scrolldown td:nth-child(5) {
+    width: 100px; 
+}
+table.scrolldown th:nth-child(6), table.scrolldown td:nth-child(6) {
+    width: 48px; 
+}
+table.scrolldown th:nth-child(7), table.scrolldown td:nth-child(7) {
+    width: 56px; 
+}
+
+table.scrolldown th:nth-child(8), table.scrolldown td:nth-child(8) {
+    width: 100px; 
+}
+
+table.scrolldown th:nth-child(9), table.scrolldown td:nth-child(9) {
+    width: 170px; 
+}
+
+#crud-group-btn {
+    display: absolute;
+    float: right;
+
+}
+
+#cgb-edit-btn {
+    margin: 0px 8px;
+}
+
+
+

@@ -51,3 +51,14 @@ function openNav(){
     footer_btn = document.querySelector(".sidebar-footer button");
     footer_btn.onclick = closeNav;
 }
+
+$(document).ready(function () {
+    // prevent Submit when pressing Enter key
+    $(window).keydown(function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+});

@@ -99,7 +99,7 @@
     grid-row-start: 3;
     grid-row-end: 4;
     display: grid;
-    grid-template-columns: 100px auto 100px 56px 36px 40px;
+    grid-template-columns: 100px auto 120px 56px 36px 40px;
 }
 
 #mtcf-item1 {
@@ -109,6 +109,7 @@
 }
 
 #mtcf-item2 {
+    text-align: right;
     grid-column-start: 3;
     grid-column-end: 4;
 }

@@ -126,7 +126,20 @@
                         </div>
                         <div class="main-tbl-container-tbl">
                             <table class="scrolldown">
-                                
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Mã Nhân viên</th>
+                                        <th>Phòng ban</th>
+                                        <th>Vị trí</th>
+                                        <th>Họ và tên</th>
+                                        <th>Giới tính</th>
+                                        <th>Ngày sinh</th>
+                                        <th>Email</th>
+                                        <th>Địa chỉ</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
                             </table>
                         </div>
                         <div class="main-tbl-container-footer" class="font-body1">
@@ -191,15 +204,15 @@
                         <label class="field-label font-heading3" for="gender">Giới tính</label>
                         <div class="gender-options" id="employee-gender">
                             <div>
-                                <input class="" type="radio" id="male" name="gender" value="male">
+                                <input class="" type="radio" id="male" name="gender" value="0">
                                 <label for="male">Nam</label>
                             </div>
                             <div>
-                                <input class="" type="radio" id="female" name="gender" value="female">
+                                <input class="" type="radio" id="female" name="gender" value="1">
                                 <label for="female">Nữ</label>
                             </div>
                             <div>
-                                <input class="" type="radio" id="other" name="gender" value="other">
+                                <input class="" type="radio" id="other" name="gender" value="2">
                                 <label for="other">Khác</label>
                     
                             </div>
@@ -229,7 +242,6 @@
                             <label class="field-label font-heading3" for="department">Phòng ban <span id="department-loader" class="loader"></span></label>
                             <select class="field-box fbp combobox" id="department">
                                 <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
-                                
                             </select>
                             <div class="field-border field-border-p"></div>
                         </div>
@@ -281,7 +293,7 @@
     <span class="msg-dialog hidden" id="msg-dialog">
         <div class="dlg-container">
             <div class="dlg-heading">
-                <h1 class="dlg-title font-heading1" id="dlg-title">Thông tin nhân viên</h1>
+                <h1 class="dlg-title font-heading1" id="msg-dlg-title">Xác nhận</h1>
                 <span class="close-dlg">
                     <button class="grey-button icon-button" id="close-dlg-btn" title="close">
                         <img src="assets\icon\close-48.png" alt="close">
@@ -289,7 +301,7 @@
                 </span>
             </div>
             <div class="dlg-main">
-                <p id="dlg-body">adkjakldsjakldjaskldjsadkl</p>
+                <p id="msg-dlg-body">Bạn có chắc chắn muốn xoá</p>
             </div>
             <div class="dlg-action">
                 <button id="hide-dlg-btn" class="primary-button grey-button cancel-dlg-btn">Hủy</button>

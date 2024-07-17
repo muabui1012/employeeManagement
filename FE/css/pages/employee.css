@@ -7,22 +7,18 @@
     background-color: var(--blue-200);
 }
 
-.selected-row td{
+/* .selected-row td{
     padding: 0 0;
     background-color: var(--blue-200);
-}
+} */
 
-.selected-row td:last-child {
-    display: grid;
-    align-content: center;
-    grid-template-columns: auto 70px;
-
-}
-
-.selected-row td:last-child span{
+/* .selected-row td:last-child {
     display: flex;
-    gap: 4px;
-}
+    align-content: center;
+    gap: 4;
+    /* grid-template-columns: auto 70px; */
+
+
 
 .loader {
     float: right;
