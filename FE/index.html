@@ -12,15 +12,18 @@
         @import url("css/components/button.css");
         @import url("css/components/searchbar.css");
         @import url("css/components/popupform.css");
+        @import url("css/components/scrolltable.css");
+        @import url("css/components/dialog.css");
+        @import url("css/pages/employee.css");
     </style>
     <title>Danh mục nhân viên | Nhân viên | Cukcuk</title>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="to-blur">
         <header>
             <div class="header-container">
                 <div class="header-left-side">
-                    <a href="index.html" class="menu-btn">
+                    <a id="menu-btn" href="index.html" class="menu-btn">
                         <img class="menu-logo" src="assets\img\toggle.png" alt="CukCuk Logo">
                     </a>
                     <div>
@@ -31,7 +34,15 @@
                 </div>
                 <div class="header-right-side font-heading3">
                     <div class="header-right-side-container">
-                        
+                        <div class="department-btn">
+                            <form class="department-form">
+                                <select id="department-form-select">
+                                    <option value="Hanoi">Chi nhánh Hà Nội</option>
+                                    <option value="HCM">Chi nhánh Hồ Chí Minh</option>
+                                    <option value="Danang">Chi nhánh Đà Nẵng</option>
+                                </select>
+                            </form>
+                        </div>
                         <div class="profile">
                             <div class="profile-item"><img id="profile-avatar" src="assets\icon\avatar-default.png" alt="Avatar"></div>
                             <div class="profile-item "><p id="fullname">Nguyễn Văn Mạnh</p></div>
@@ -42,10 +53,10 @@
             </div>
             
         </header>
-        <nav class="sidebar">
+        <div class="sidebar">
             <div class="sidebar-container font-body1">
                 <div class="sidebar-item">
-                    <button id="home-btn" class="blue-button sidebar-btn">
+                    <button class="blue-button sidebar-btn">
                         <img class="btn-img" src="assets\icon\dashboard.png" alt="home">
                         <p class="btn-text sidebar-btn-text">Trang chủ</p>
                     </button>
@@ -69,15 +80,100 @@
                     </button>
                 </div>
                 <div class="sidebar-item sidebar-footer">
-                    <button id="sidebar-minimize-btn" class="blue-button sidebar-btn" onclick="closeNav()">
+                    <button id="close-nav-btn" class="blue-button sidebar-btn">
                         <img class="btn-img" src="assets\icon\btn-prev-page.svg" alt="hide">
                         <p class="btn-text sidebar-btn-text">Thu gọn</p>
                     </button>
                 </div>
             </div>
-        </nav> 
-        <div class="main">
-            
+        </div> 
+        <div class="main" id="mainid">
+            <div class="main-container font-body2">
+                <div class="main-header">
+                    <div class="main-header-container">
+                        <div class="main-header-item main-header-item-text font-heading2"><p>Quản lý nhân viên</p><span id="main-loader" class="loader"></span></div>
+                        <div class="main-header-item main-header-item-add-btn">
+                            <button id = "add-new-btn" class="green-button secondary-button" id="add-new-btn" title="add new">
+                                <img class="secondary-button-img" src="assets\icon\add.png" alt="add">
+                                <p class="secondary-button-text">Thêm mới</p>
+                            </button>
+                        </div>
+                    </div>    
+                </div>
+                <div class="main-tbl">
+                    <div class="main-tbl-container">
+                        <div class="main-tbl-container-header">
+                            <div class="mtch-item" id = "mtch-item1">
+                                <form>
+                                    <div class="search-container">
+                                        <div class="search-box">
+                                            <input id="search-input" type="text" class="search-input" placeholder="Tìm kiếm theo mã, họ tên">
+                                            <img id="search-input-icon" src="assets\icon\search.png" class="search-icon" alt="Search">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="mtch-item" id = "mtch-item2">
+                                <button class="grey-button icon-button" id="excel-btn" title="excel">
+                                    <img src="assets\icon\export-excel-50.png" alt="excel-btn">
+                                </button>
+                            </div>
+                            <div class="mtch-item" id = "mtch-item3">
+                                <button class="grey-button icon-button" id="refresh-btn" title="reload">
+                                    <img src="assets\icon\refresh.png" alt="refresh-btn">
+                                </button>
+                            </div>
+                        </div>
+                        <div class="main-tbl-container-tbl">
+                            <table class="scrolldown">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Mã Nhân viên</th>
+                                        <th>Phòng ban</th>
+                                        <th>Vị trí</th>
+                                        <th>Họ và tên</th>
+                                        <th>Giới tính</th>
+                                        <th>Ngày sinh</th>
+                                        <th>Email</th>
+                                        <th>Địa chỉ</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="main-tbl-container-footer" class="font-body1">
+                            <div class="mtcf-item" id = "mtcf-item1">
+                                <p>Tổng: <span id="record-counts"></span></p>
+                            </div>
+                            <div class="mtcf-item" id = "mtcf-item2">
+                                <div>Số bản ghi/trang</div>
+                                
+                            </div>
+                            <div class="mtcf-item" id = "mtcf-item3">
+                                <form class="numpage-form">
+                                    <select id="numpage-select">
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <div class="mtcf-item" id = "mtcf-item4">
+                                <button id="prev-page-btn" class="transperency-btn">
+                                    <img src="assets\icon\btn-prev-page.svg" alt="prev">
+                                </button>
+                            </div>
+                            <div class="mtcf-item" id = "mtcf-item5">
+                                <button id="next-page-btn" class="transperency-btn">
+                                    <img src="assets\icon\btn-next-page.svg" alt="next">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <span class="popup-form hidden" id="popup-form">
@@ -85,7 +181,7 @@
             <div class="form-heading">
                 <h1 class="form-title font-heading1">Thông tin nhân viên</h1>
                 <span class="close-form">
-                    <button class="grey-button icon-button" id="close-btn" title="close" onclick="hidepopup()">
+                    <button class="grey-button icon-button" id="close-form-btn" title="close">
                         <img src="assets\icon\close-48.png" alt="close">
                     </button>
                 </span>
@@ -93,12 +189,12 @@
             <div class="form-control">
                 <form class="employee-form font-body1">
                     <div class="form-group form-code">
-                        <label class="field-label font-heading3" for="employee-id">Mã nhân viên <span class="star">*</span></label>
-                        <input class="field-box" type="text" id="employee-id" required>
+                        <label class="field-label font-heading3" for="employee-code">Mã nhân viên <span class="star">* <span id="employee-code-loader" class="loader"></span></span></label>
+                        <input class="field-box" type="text" id="employee-code" required>
                     </div>
                     <div class="form-group form-name">
                         <label class="field-label font-heading3" for="employee-name">Họ và tên <span class="star">*</span></label>
-                        <input class="field-box" type="text" id="employee-name" placeholder="Họ và tên" required>
+                        <input class="field-box" type="text" id="employee-name" required>
                     </div>
                     <div class="form-group form-dob">
                         <label class="field-label font-heading3" for="dob">Ngày sinh</label>
@@ -106,17 +202,17 @@
                     </div>
                     <div class="form-group form-gender">
                         <label class="field-label font-heading3" for="gender">Giới tính</label>
-                        <div class="gender-options">
+                        <div class="gender-options" id="employee-gender">
                             <div>
-                                <input class="" type="radio" id="male" name="gender" value="male">
+                                <input class="" type="radio" id="male" name="gender" value="0">
                                 <label for="male">Nam</label>
                             </div>
                             <div>
-                                <input class="" type="radio" id="female" name="gender" value="female">
+                                <input class="" type="radio" id="female" name="gender" value="1">
                                 <label for="female">Nữ</label>
                             </div>
                             <div>
-                                <input class="" type="radio" id="other" name="gender" value="other">
+                                <input class="" type="radio" id="other" name="gender" value="2">
                                 <label for="other">Khác</label>
                     
                             </div>
@@ -124,16 +220,17 @@
                     </div>
                     <div class="form-group form-position">
                         <div class="selection-container">
-                            <label class="field-label font-heading3" for="position">Vị trí</label>
+                            <label class="field-label font-heading3" for="position">Vị trí <span id="position-loader" class="loader hidden"></span></label>
                             <select class="field-box fbp combobox" id="position">
-                                <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
-                                <option value="Hanoi">Nhân viên</option>
+                                <option value="None" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
+                                <option value="3fa85f64-5717-4562-b3fc-2c963f66afa6"><span class="select-text">Nhân viên</span></option>
+                                
                             </select>
                             <div class="field-border field-border-p"></div>
                         </div>
                     </div>
                     <div class="form-group form-id-number">
-                        <label class="field-label font-heading3" for=" id-number">Số CMTND</label>
+                        <label class="field-label font-heading3" for=" id-number">Số CMTND <span class="star">*</span></label>
                         <input class="field-box" type="text" id="id-number">
                     </div>
                     <div class="form-group form-id-date">
@@ -142,10 +239,9 @@
                     </div>      
                     <div class="form-group form-department">
                         <div class="selection-container">
-                            <label class="field-label font-heading3" for="position">Phòng ban</label>
-                            <select class="field-box fbp combobox" id="position">
+                            <label class="field-label font-heading3" for="department">Phòng ban <span id="department-loader" class="loader"></span></label>
+                            <select class="field-box fbp combobox" id="department">
                                 <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
-                                <option value="Hanoi">Nhân viên</option>
                             </select>
                             <div class="field-border field-border-p"></div>
                         </div>
@@ -162,7 +258,7 @@
                     
                     </div>
                     <div class="form-group form-mobile">
-                        <label class="field-label font-heading3" for="mobile">ĐT Di động</label>
+                        <label class="field-label font-heading3" for="mobile">ĐT Di động <span class="star">*</span></label>
                         <input class="field-box" type="text" id="mobile">
                     </div>
                     <div class="form-group form-phone">
@@ -170,7 +266,7 @@
                         <input class="field-box" type="text" id="phone">
                     </div>
                     <div class="form-group form-email">
-                        <label class="field-label font-heading3" for="email">Email</label>
+                        <label class="field-label font-heading3" for="email">Email <span class="star">*</span></label>
                         <input class="field-box" type="email" id="email">
                     </div>
                     
@@ -190,11 +286,52 @@
             </div>
         </div>
         <div class="form-action">
-            <button class="primary-button grey-button cancel-btn" onclick="hidepopup()">Hủy</button>
-            <button class="primary-button green-button add-btn">Thêm</button>
+            <button id="hide-form-btn" class="primary-button grey-button cancel-btn">Hủy</button>
+            <button id="form-submit-btn" class="primary-button green-button add-btn">Thêm</button>
         </div>
     </span>
-    <script src="js/addpopup.js"></script>
-    <script src="js/main.js"></script>
+    <span class="msg-dialog hidden" id="msg-dialog">
+        <div class="dlg-container">
+            <div class="dlg-heading">
+                <h1 class="dlg-title font-heading1" id="msg-dlg-title">Xác nhận</h1>
+                <span class="close-dlg">
+                    <button class="grey-button icon-button" id="close-dlg-btn" title="close">
+                        <img src="assets\icon\close-48.png" alt="close">
+                    </button>
+                </span>
+            </div>
+            <div class="dlg-main">
+                <p id="msg-dlg-body">Bạn có chắc chắn muốn xoá</p>
+            </div>
+            <div class="dlg-action">
+                <button id="hide-dlg-btn" class="primary-button grey-button cancel-dlg-btn">Hủy</button>
+                <button id="dlg-submit-btn" class="primary-button green-button confirm-dlg-btn">Xác nhận</button>
+            </div>
+        </div>
+    </span>
+
+    <span class="msg-dialog-simple hidden" id="msg-dialog-simple">
+        <div class="dlg-container">
+            <div class="dlg-heading">
+                <h1 class="dlg-title font-heading1" id="dlgs-title">Thông tin nhân viên</h1>
+                <span class="close-dlg">
+                    <button class="grey-button icon-button" id="close-simple-dlg-btn" title="close">
+                        <img src="assets\icon\close-48.png" alt="close">
+                    </button>
+                </span>
+            </div>
+            <div class="dlg-main" id="dlg-main-id">
+                <p id="dlgs-body"></p>
+            </div>
+            <div class="dlg-action">
+                <button id="close-simple-dlg-btn-1" class="primary-button green-button confirm-dlg-btn">OK</button>
+            </div>
+        </div>
+    </span>
+
+    
+    
+    
+    <script src="js/employee.js"></script>
 </body>
 </html>

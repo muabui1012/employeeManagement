@@ -185,6 +185,13 @@ function highlightRow(event, rowElement, eid, eCode, currentEmployee) {
     lastCell.id = "last-selected-cell";
 }
 
+/**
+ * Edits an employee's information.
+ * 
+ * @param {string} eid - The employee ID.
+ * @param {string} eCode - The employee code.
+ * @param {Object} currentEmployee - The current employee object containing the employee's information.
+ */
 function editEmployee(eid, eCode, currentEmployee) {
     try {
         console.log("Edit clicked");
@@ -242,6 +249,12 @@ function editEmployee(eid, eCode, currentEmployee) {
     
 }
 
+/**
+ * Submits the edited employee data to the server.
+ * 
+ * @param {string} employeeId - The ID of the employee being edited.
+ * @returns {void}
+ */
 function submitEdit(employeeId) {
 
     var employeeData = 
@@ -360,6 +373,9 @@ function submitEdit(employeeId) {
     
 }
 
+/**
+ * Removes the "blured" class from the edit form, if it exists in the body.
+ */
 function removeFormBlur() {
     try {
         console.log("adkjadklsajd");
@@ -372,6 +388,9 @@ function removeFormBlur() {
     }
 }
 
+/**
+ * Removes the blur effect from the specified element with the ID "to-blur".
+ */
 function removeMainBlur() {
     try {
         console.log("adkjadklsajd");
@@ -382,12 +401,18 @@ function removeMainBlur() {
     }
 }
 
+/**
+ * Opens the edit form and loads department data.
+ */
 function openEditForm(){
     employeePage.loadDepartmentData();
     document.getElementById("to-blur").classList.add("blured");
     document.querySelector("#edit-form").classList.remove("hidden");
 }
 
+/**
+ * Closes the edit form and performs necessary actions.
+ */
 function closeEditForm() {
     employeePage.closeForm();
     document.getElementById("edit-form").classList.add("hidden");
