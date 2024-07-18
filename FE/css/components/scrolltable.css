@@ -23,7 +23,7 @@ table.scrolldown thead th{
 
 
 table.scrolldown tbody {
-    height: 400px;
+    height: 380px;
     display: block;
     overflow-x: hidden;
     overflow-y: auto;

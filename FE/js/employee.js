@@ -372,6 +372,16 @@ function removeFormBlur() {
     }
 }
 
+function removeMainBlur() {
+    try {
+        console.log("adkjadklsajd");
+        document.querySelector("#to-blur").classList.remove("blured");
+    }
+    catch(e) {
+        console.log(e);
+    }
+}
+
 function openEditForm(){
     employeePage.loadDepartmentData();
     document.getElementById("to-blur").classList.add("blured");
@@ -1072,12 +1082,16 @@ class EmployeePage extends NonePage{
                         //display data
                         console.log(data);
                         employeePage.loadData();
+                        employeePage.showSimpleDialog("Thành công", "Bạn đã thêm thành công nhân viên: " + employeeData['employeeCode']);
+                        employeePage.closeForm();
                     })
                     .catch(error => {
                         console.log(error);
+                        employeePage.showSimpleDialog("Lỗi", error);
                     });
-                employeePage.showSimpleDialog("Thành công", "Bạn đã thêm thành công nhân viên: " + employeeData['employeeCode']);
-                employeePage.closeForm();
+               
+                // 
+                
             } else {
             
                 console.log("Lỗi", msg);
@@ -1088,6 +1102,7 @@ class EmployeePage extends NonePage{
            
         } catch (error) {
             console.log(error);
+            employeePage.showSimpleDialog("Lỗi", "Thêm không thành công do lỗi mạng");
         }
     }
 
