@@ -39,462 +39,7 @@ class NonePage {
     }
 }
 
-/**
- * Closes the sidebar by adding appropriate classes and updating button functionality.
- * @function
- * @description Closes the sidebar by adding appropriate classes and updating button functionality.
- * Author: Nghia (15/07/2024)
- */
-function closeNav(){
-    try {
-        nav = document.getElementsByClassName("sidebar");
-        nav[0].classList.add("mini-sidebar");
-        item = document.querySelectorAll(".sidebar-item");
-        for (i = 0; i < item.length; i++) {
-            item[i].classList.remove("sidebar-item"); 
-            item[i].classList.add("sidebar-item-mini");
-        }
-        sidebar_btn = document.querySelectorAll(".sidebar-btn");
-        for (i = 0; i < sidebar_btn.length; i++) {
-            // sidebar_btn[i].classList.remove("sidebar-btn");
-            sidebar_btn[i].classList.add("sidebar-btn-mini");
-        }
-        btn_text = document.querySelectorAll(".sidebar-btn-text");
-        for (i = 0; i < btn_text.length; i++) {
-            btn_text[i].classList.add("hidden");
-        }
-        footer_img = document.querySelector(".sidebar-footer button img");
-        footer_img.src  = "assets\\icon\\btn-next-page.svg";
-        footer_btn = document.querySelector(".sidebar-footer button");
-        footer_btn.onclick = openNav;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-/**
- * Opens the sidebar by removing appropriate classes and updating button functionality.
- * @function
- * @description Opens the sidebar by removing appropriate classes and updating button functionality.
- * Author: Nghia (15/07/2024)
- */
-function openNav(){
-    try {
-        nav = document.getElementsByClassName("sidebar");
-        nav[0].classList.remove("mini-sidebar");
-        item = document.querySelectorAll(".sidebar-item-mini");
-        for (i = 0; i < item.length; i++) {
-            item[i].classList.add("sidebar-item"); 
-            item[i].classList.remove("sidebar-item-mini");
-        }
-        sidebar_btn = document.querySelectorAll(".sidebar-btn");
-        for (i = 0; i < sidebar_btn.length; i++) {
-            // sidebar_btn[i].classList.remove("sidebar-btn");
-            sidebar_btn[i].classList.remove("sidebar-btn-mini");
-        }
-        btn_text = document.querySelectorAll(".sidebar-btn-text");
-        for (i = 0; i < btn_text.length; i++) {
-            btn_text[i].classList.remove("hidden");
-        }
-        footer_img = document.querySelector(".sidebar-footer button img");
-        footer_img.src  = "assets\\icon\\btn-prev-page.svg";
-        footer_btn = document.querySelector(".sidebar-footer button");
-        footer_btn.onclick = closeNav;
-    } catch(error) {
-        console.log(error);
-    }
-}
-
-/**
- * Retrieves a new employee code from the server and updates the employee code input field.
- * Author: Nghia (15/07/2024)
- */
-function getNewEmployeeCode() {
-    try {
-        let url = "https://cukcuk.manhnv.net/api/v1/Employees/NewEmployeeCode";
-        fetch(url)
-            .then(response => {
-                console.log(response.body);
-                if (!response.ok) {
-                    throw new Error('Network response error');
-                }
-                return response.text();
-            })
-            .then(data => {
-                //display data
-                console.log(data);
-                document.getElementById("employee-code").value = data;
-                document.querySelector("#employee-code-loader").classList.add("hidden");
-            })
-            .catch(error => {
-                console.log(error);
-            });
-            console.log("Form opened");
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-
-/**
- * Highlights the selected row and adds buttons for editing and deleting.
- * @param {Event} event - The click event object.
- * @param {HTMLElement} rowElement - The row element to highlight.
- * @param {string} eid - The employee ID.
- * @param {string} eCode - The employee code.
- * Author: Nghia (15/07/2024)
- */
-function highlightRow(event, rowElement, eid, eCode, currentEmployee) {
-    // Your logic here
-    selectedList = document.querySelectorAll(".selected-row");
-    selectedList.forEach((item) => {
-        item.classList.remove("selected-row");
-        var itemLastCell = item.lastChild;
-        itemLastCell.removeChild(itemLastCell.lastChild);
-    });
-    rowElement.classList.add("selected-row");
-    var lastCell = rowElement.lastChild;
-    var groupButton = document.createElement("span");
-    groupButton.id = "crud-group-btn";
-    var editButton = document.createElement("button");
-    editButton.id = "cgb-edit-btn";
-    var editIcon = document.createElement("img");
-    editIcon.classList.add("smc-img");
-    editIcon.src = "assets\\icon\\pencil.png";
-    editButton.appendChild(editIcon);
-    editButton.classList.add("grey-button");
-    editButton.classList.add("small-icon-button");
-    employeePage.loadDepartmentData();
-    editButton.addEventListener('click', () => {
-        
-        editEmployee(eid, eCode, currentEmployee);
-    });
-    groupButton.appendChild(editButton);
-    var deleteButton = document.createElement("button");
-    var deleteIcon = document.createElement("img");
-    deleteIcon.classList.add("smc-img");
-    deleteIcon.src = "assets\\icon\\delete-48.png";
-    deleteButton.appendChild(deleteIcon);
-    deleteButton.classList.add("grey-button");
-    deleteButton.classList.add("small-icon-button");
-    deleteButton.addEventListener('click', () => {
-        onDeleteData(eid, eCode);
-    });
-    groupButton.appendChild(deleteButton);
-    lastCell.appendChild(groupButton); 
-    lastCell.id = "last-selected-cell";
-}
-
-/**
- * Edits an employee's information.
- * 
- * @param {string} eid - The employee ID.
- * @param {string} eCode - The employee code.
- * @param {Object} currentEmployee - The current employee object containing the employee's information.
- */
-function editEmployee(eid, eCode, currentEmployee) {
-    try {
-        console.log("Edit clicked");
-        var form = document.querySelector("#popup-form");
-        var editForm = form.cloneNode(true);
-        editForm.id = "edit-form";
-        console.log("current", currentEmployee);
-
-        // close2.addEventListener('click', closeEditForm);
-
-        document.querySelector("body").insertBefore(editForm, form);
-
-
-        editForm.querySelector("#close-form-btn").addEventListener('click', closeEditForm);
-        editForm.querySelector("#hide-form-btn").addEventListener('click', closeEditForm);
-        editForm.querySelector("#employee-code-loader").classList.add("hidden");
-        editForm.querySelector("#employee-code").value = currentEmployee['EmployeeCode'];
-        editForm.querySelector("#employee-name").value = currentEmployee['FullName'];
-        editForm.querySelector("#dob").value = currentEmployee['DateOfBirth'].slice(0, 10);
-        editForm.querySelector("#department").value = currentEmployee['DepartmentId'];
-        editForm.querySelector("#position").value = currentEmployee['PositionId'];
-        editForm.querySelector("#id-number").value = currentEmployee['IdentityNumber'];
-        editForm.querySelector("#id-issue-date").value = currentEmployee['IdentityDate'].slice(0, 10);
-        editForm.querySelector("#id-issue-place").value = currentEmployee['IdentityPlace'];
-        editForm.querySelector("#address").value = currentEmployee['Address'];
-        editForm.querySelector("#mobile").value = currentEmployee['PhoneNumber'];
-        editForm.querySelector("#phone").value = currentEmployee['PhoneNumber'];
-        editForm.querySelector("#email").value = currentEmployee['Email'];
-        editForm.querySelector("#bank-account").value = currentEmployee['BankAccount'];
-        editForm.querySelector("#bank-name").value = currentEmployee['BankName'];
-        editForm.querySelector("#bank-branch").value = currentEmployee['BankBranch'];
-        if (currentEmployee['Gender'] === 0) {
-            editForm.querySelector("#male").checked = true;
-        } else if (currentEmployee['Gender'] === 1) {
-            editForm.querySelector("#female").checked = true;
-        } else {
-            editForm.querySelector("#other").checked = true
-        }
-        
-        var depForm = editForm.querySelector("#department");
-        var depList = editForm.querySelector("#department option");
-        console.log(depList);
-        openEditForm();
-        var employeeId = currentEmployee['EmployeeId'];
-        editForm.querySelector("#form-submit-btn").addEventListener('click', () => {
-            submitEdit(employeeId);
-        })        
-
-
-       
-
-    } catch(e) {
-        console.log(e);
-    }
-    
-}
-
-/**
- * Submits the edited employee data to the server.
- * 
- * @param {string} employeeId - The ID of the employee being edited.
- * @returns {void}
- */
-function submitEdit(employeeId) {
-
-    var employeeData = 
-                {
-                    // "employeeCode": document.querySelector("#edit-form #employee-code").value,
-                    "fullName": document.querySelector("#edit-form #employee-name").value,
-                    "dateOfBirth": document.querySelector("#edit-form #dob").value,
-                    // "Gender": document.getElementById("employee-gender").value,
-                    // "Position": document.querySelector("#edit-form #position").value,
-                    "departmentId": document.querySelector("#edit-form #department").value,
-                    "identityNumber": document.querySelector("#edit-form #id-number").value,
-                    "identityDate": document.querySelector("#edit-form #id-issue-date").value,
-                    "identityPlace": document.querySelector("#edit-form #id-issue-place").value,
-                    "address": document.querySelector("#edit-form #address").value,
-                    "mobile": document.querySelector("#edit-form #mobile").value,
-                    "phone": document.querySelector("#edit-form #phone").value,
-                    "email": document.querySelector("#edit-form #email").value,
-                    "bankAccount": document.querySelector("#edit-form #bank-account").value,
-                    "bankName": document.querySelector("#edit-form #bank-name").value,
-                    "bankBranch": document.querySelector("#edit-form #bank-branch").value,     
-                    
-                };
-    if (document.getElementById("male").checked) {
-      employeeData["Gender"] = 0;
-    } else if (document.getElementById("female").checked) {
-      employeeData["Gender"] = 1;
-    } else {
-      employeeData["Gender"] = 2;
-    }    
-    console.log("submiting", employeeData);
-    console.log("checking", employeeData["fullName"]);
-    //Validate data
-    var isValidated = true;
-    var msg = [];
-    if (
-      employeeData["employeeCode"] === "" ||
-      employeeData["employeeCode"] === null
-    ) {
-      console.log("Trống");
-      isValidated = false;
-      msg.push("Mã nhân viên không được để trống\n");
-    }
-    console.log(employeeData["fullName"]);
-    if (employeeData["fullName"] === "" || employeeData["fullname"] === null) {
-      console.log("Trống");
-      isValidated = false;
-      msg.push("Họ và tên không được để trống\n");
-    }
-    if (
-      employeeData["identityNumber"] === "" ||
-      employeeData["identityNumber"] === null
-    ) {
-      isValidated = false;
-      msg.push("Số CMTND không được để trống\n");
-    }
-    if (employeeData["mobile"] === "" || employeeData["mobile"] === null) {
-      isValidated = false;
-      msg.push("Số ĐT Di động không được để trống\n");
-    } else {
-        const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
-        const isValidPhone = phoneRegex.test(employeeData['mobile']);
-        if (!isValidPhone) {
-            isValidated = false;
-            msg.push("Số ĐT Di động không hợp lệ\n");
-        }
-    }
-    if (employeeData["email"] === "" || employeeData["email"] === null) {
-      isValidated = false;
-      msg.push("Email không được để trống\n");
-    }
-    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-            const isValidEmail = regex.test(employeeData['email']);
-            if (!isValidEmail) {
-                isValidated = false;
-                msg.push("Email không hợp lệ\n");
-            }
-
-    if (isValidated) {
-        let url = "https://cukcuk.manhnv.net/api/v1/Employees/" + employeeId;
-
-        fetch(url,
-            {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(employeeData)
-            }
-        )
-            .then(response => {
-                console.log(response.body);
-                if (!response.ok) {
-                    throw new Error('Network response error');
-                }
-                return response.text();
-            })
-            .then(data => {
-                //display data
-                console.log(data);
-                employeePage.loadData();
-                document.getElementById("edit-form").classList.add("blured");
-                employeePage.showSimpleDialog("Thành công", "Bạn đã sửa thành công nhân viên: " + employeeData['employeeCode']);
-                
-            })
-            .catch(error => {
-                document.getElementById("edit-form").classList.add("blured");
-                employeePage.showSimpleDialog("Lỗi mạng", "Sửa không thành công do lỗi mạng");
-                console.log(error);
-            });
-       
-    } else {
-      console.log("Lỗi", msg);
-      employeePage.showSimpleDialog("Lỗi", msg);
-      msg = [];
-    }                
-    
-}
-
-/**
- * Removes the "blured" class from the edit form, if it exists in the body.
- */
-function removeFormBlur() {
-    try {
-        console.log("adkjadklsajd");
-        var body = document.querySelector("body");
-        var editForm = document.querySelector("#edit-form");
-        if (body.contains(editForm)) editForm.classList.remove("blured");
-    }
-    catch(e) {
-        console.log(e);
-    }
-}
-
-/**
- * Removes the blur effect from the specified element with the ID "to-blur".
- */
-function removeMainBlur() {
-    try {
-        console.log("adkjadklsajd");
-        document.querySelector("#to-blur").classList.remove("blured");
-    }
-    catch(e) {
-        console.log(e);
-    }
-}
-
-/**
- * Opens the edit form and loads department data.
- */
-function openEditForm(){
-    employeePage.loadDepartmentData();
-    document.getElementById("to-blur").classList.add("blured");
-    document.querySelector("#edit-form").classList.remove("hidden");
-}
-
-/**
- * Closes the edit form and performs necessary actions.
- */
-function closeEditForm() {
-    employeePage.closeForm();
-    document.getElementById("edit-form").classList.add("hidden");
-    document.getElementById("to-blur").classList.remove("blured");
-    editForm = document.getElementById("edit-form");
-    document.querySelector("body").removeChild(editForm);
-
-}
-
-/**
- * Deletes employee data based on the provided employee ID and employee code.
- * @param {string} eid - The ID of the employee to be deleted.
- * @param {string} eCode - The code of the employee to be deleted.
- * Author: Nghia (15/07/2024)
- */  
-function confirmDelete(eid, eCode) {
-    var msg = "Bạn có chắc chắn muốn xoá nhân viên có mã nhân viên là: " + eCode;
-    console.log(msg);
-    employeePage.showDialog("Xác nhận xoá", msg);
-    return new Promise(function(resolve, reject) {
-        document.getElementById("dlg-submit-btn").addEventListener('click', () => {
-            console.log("Confirmed");
-            resolve("Deleted");
-        });
-        document.getElementById("hide-dlg-btn").addEventListener('click', () => {
-            console.log("Canceled");
-            reject("Canceled");
-        });
-        document.getElementById("close-dlg-btn").addEventListener('click', () => {
-            console.log("Canceled");
-            reject("Canceled");
-        });
-    });
-    
-    
-}
-
-/**
- * Deletes employee data based on the provided employee ID and employee code.
- * @param {string} eid - The ID of the employee to be deleted.
- * @param {string} eCode - The code of the employee to be deleted.
- * Author: Nghia (15/07/2024)
- */  
-function onDeleteData(eid, eCode) {
-    confirmDelete(eid, eCode)
-        .then((result) => {
-            let url = "https://cukcuk.manhnv.net/api/v1/Employees/" + eid;
-            fetch(url,
-                {
-                    method: "DELETE"
-                }
-            )
-                .then(response => {
-                    console.log(response.body);
-                    if (!response.ok) {
-                        throw new Error('Network response error');
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    //display data
-                    console.log(data);
-                    employeePage.loadData();
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-            console.log(result);
-            
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-        .finally(() => {
-            employeePage.hideDialog();
-        });
-
-
-}
-
-
-
+// Global variables
 let employees = [];
 let currentDataPage = 1;
 let pageSize = document.getElementById("numpage-select").value;
@@ -522,8 +67,6 @@ class EmployeePage extends NonePage{
         this.initEvents();
     }
     
-    
-
     /**
      * Add cac event listener
      * @method
@@ -549,7 +92,7 @@ class EmployeePage extends NonePage{
             document.getElementById("form-submit-btn").addEventListener('click', this.submitEmployeeForm); 
 
             //Select số bản ghi/trang
-            document.getElementById("numpage-select").selectedIndex = 3;
+            document.getElementById("numpage-select").selectedIndex = 0;
             
             //Button reload
             this.btnOnChangeReload();
@@ -1194,5 +737,459 @@ class EmployeePage extends NonePage{
 
     
     
+
+}
+
+/**
+ * Closes the sidebar by adding appropriate classes and updating button functionality.
+ * @function
+ * @description Closes the sidebar by adding appropriate classes and updating button functionality.
+ * Author: Nghia (15/07/2024)
+ */
+function closeNav(){
+    try {
+        nav = document.getElementsByClassName("sidebar");
+        nav[0].classList.add("mini-sidebar");
+        item = document.querySelectorAll(".sidebar-item");
+        for (i = 0; i < item.length; i++) {
+            item[i].classList.remove("sidebar-item"); 
+            item[i].classList.add("sidebar-item-mini");
+        }
+        sidebar_btn = document.querySelectorAll(".sidebar-btn");
+        for (i = 0; i < sidebar_btn.length; i++) {
+            // sidebar_btn[i].classList.remove("sidebar-btn");
+            sidebar_btn[i].classList.add("sidebar-btn-mini");
+        }
+        btn_text = document.querySelectorAll(".sidebar-btn-text");
+        for (i = 0; i < btn_text.length; i++) {
+            btn_text[i].classList.add("hidden");
+        }
+        footer_img = document.querySelector(".sidebar-footer button img");
+        footer_img.src  = "assets\\icon\\btn-next-page.svg";
+        footer_btn = document.querySelector(".sidebar-footer button");
+        footer_btn.onclick = openNav;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+/**
+ * Opens the sidebar by removing appropriate classes and updating button functionality.
+ * @function
+ * @description Opens the sidebar by removing appropriate classes and updating button functionality.
+ * Author: Nghia (15/07/2024)
+ */
+function openNav(){
+    try {
+        nav = document.getElementsByClassName("sidebar");
+        nav[0].classList.remove("mini-sidebar");
+        item = document.querySelectorAll(".sidebar-item-mini");
+        for (i = 0; i < item.length; i++) {
+            item[i].classList.add("sidebar-item"); 
+            item[i].classList.remove("sidebar-item-mini");
+        }
+        sidebar_btn = document.querySelectorAll(".sidebar-btn");
+        for (i = 0; i < sidebar_btn.length; i++) {
+            // sidebar_btn[i].classList.remove("sidebar-btn");
+            sidebar_btn[i].classList.remove("sidebar-btn-mini");
+        }
+        btn_text = document.querySelectorAll(".sidebar-btn-text");
+        for (i = 0; i < btn_text.length; i++) {
+            btn_text[i].classList.remove("hidden");
+        }
+        footer_img = document.querySelector(".sidebar-footer button img");
+        footer_img.src  = "assets\\icon\\btn-prev-page.svg";
+        footer_btn = document.querySelector(".sidebar-footer button");
+        footer_btn.onclick = closeNav;
+    } catch(error) {
+        console.log(error);
+    }
+}
+
+/**
+ * Retrieves a new employee code from the server and updates the employee code input field.
+ * Author: Nghia (15/07/2024)
+ */
+function getNewEmployeeCode() {
+    try {
+        let url = "https://cukcuk.manhnv.net/api/v1/Employees/NewEmployeeCode";
+        fetch(url)
+            .then(response => {
+                console.log(response.body);
+                if (!response.ok) {
+                    throw new Error('Network response error');
+                }
+                return response.text();
+            })
+            .then(data => {
+                //display data
+                console.log(data);
+                document.getElementById("employee-code").value = data;
+                document.querySelector("#employee-code-loader").classList.add("hidden");
+            })
+            .catch(error => {
+                console.log(error);
+            });
+            console.log("Form opened");
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+/**
+ * Highlights the selected row and adds buttons for editing and deleting.
+ * @param {Event} event - The click event object.
+ * @param {HTMLElement} rowElement - The row element to highlight.
+ * @param {string} eid - The employee ID.
+ * @param {string} eCode - The employee code.
+ * Author: Nghia (15/07/2024)
+ */
+function highlightRow(event, rowElement, eid, eCode, currentEmployee) {
+    // Your logic here
+    selectedList = document.querySelectorAll(".selected-row");
+    selectedList.forEach((item) => {
+        item.classList.remove("selected-row");
+        var itemLastCell = item.lastChild;
+        itemLastCell.removeChild(itemLastCell.lastChild);
+    });
+    rowElement.classList.add("selected-row");
+    var lastCell = rowElement.lastChild;
+    var groupButton = document.createElement("span");
+    groupButton.id = "crud-group-btn";
+    var editButton = document.createElement("button");
+    editButton.id = "cgb-edit-btn";
+    var editIcon = document.createElement("img");
+    editIcon.classList.add("smc-img");
+    editIcon.src = "assets\\icon\\pencil.png";
+    editButton.appendChild(editIcon);
+    editButton.classList.add("grey-button");
+    editButton.classList.add("small-icon-button");
+    employeePage.loadDepartmentData();
+    editButton.addEventListener('click', () => {
+        
+        editEmployee(eid, eCode, currentEmployee);
+    });
+    groupButton.appendChild(editButton);
+    var deleteButton = document.createElement("button");
+    var deleteIcon = document.createElement("img");
+    deleteIcon.classList.add("smc-img");
+    deleteIcon.src = "assets\\icon\\delete-48.png";
+    deleteButton.appendChild(deleteIcon);
+    deleteButton.classList.add("grey-button");
+    deleteButton.classList.add("small-icon-button");
+    deleteButton.addEventListener('click', () => {
+        onDeleteData(eid, eCode);
+    });
+    groupButton.appendChild(deleteButton);
+    lastCell.appendChild(groupButton); 
+    lastCell.id = "last-selected-cell";
+}
+
+/**
+ * Edits an employee's information.
+ * 
+ * @param {string} eid - The employee ID.
+ * @param {string} eCode - The employee code.
+ * @param {Object} currentEmployee - The current employee object containing the employee's information.
+ */
+function editEmployee(eid, eCode, currentEmployee) {
+    try {
+        console.log("Edit clicked");
+        var form = document.querySelector("#popup-form");
+        var editForm = form.cloneNode(true);
+        editForm.id = "edit-form";
+        console.log("current", currentEmployee);
+
+        // close2.addEventListener('click', closeEditForm);
+
+        document.querySelector("body").insertBefore(editForm, form);
+
+
+        editForm.querySelector("#close-form-btn").addEventListener('click', closeEditForm);
+        editForm.querySelector("#hide-form-btn").addEventListener('click', closeEditForm);
+        editForm.querySelector("#employee-code-loader").classList.add("hidden");
+        editForm.querySelector("#employee-code").value = currentEmployee['EmployeeCode'];
+        editForm.querySelector("#employee-name").value = currentEmployee['FullName'];
+        editForm.querySelector("#dob").value = currentEmployee['DateOfBirth'].slice(0, 10);
+        editForm.querySelector("#department").value = currentEmployee['DepartmentId'];
+        editForm.querySelector("#position").value = currentEmployee['PositionId'];
+        editForm.querySelector("#id-number").value = currentEmployee['IdentityNumber'];
+        editForm.querySelector("#id-issue-date").value = currentEmployee['IdentityDate'].slice(0, 10);
+        editForm.querySelector("#id-issue-place").value = currentEmployee['IdentityPlace'];
+        editForm.querySelector("#address").value = currentEmployee['Address'];
+        editForm.querySelector("#mobile").value = currentEmployee['PhoneNumber'];
+        editForm.querySelector("#phone").value = currentEmployee['PhoneNumber'];
+        editForm.querySelector("#email").value = currentEmployee['Email'];
+        editForm.querySelector("#bank-account").value = currentEmployee['BankAccount'];
+        editForm.querySelector("#bank-name").value = currentEmployee['BankName'];
+        editForm.querySelector("#bank-branch").value = currentEmployee['BankBranch'];
+        if (currentEmployee['Gender'] === 0) {
+            editForm.querySelector("#male").checked = true;
+        } else if (currentEmployee['Gender'] === 1) {
+            editForm.querySelector("#female").checked = true;
+        } else {
+            editForm.querySelector("#other").checked = true
+        }
+        
+        var depForm = editForm.querySelector("#department");
+        var depList = editForm.querySelector("#department option");
+        console.log(depList);
+        openEditForm();
+        var employeeId = currentEmployee['EmployeeId'];
+        editForm.querySelector("#form-submit-btn").addEventListener('click', () => {
+            submitEdit(employeeId);
+        })        
+
+
+       
+
+    } catch(e) {
+        console.log(e);
+    }
+    
+}
+
+/**
+ * Submits the edited employee data to the server.
+ * 
+ * @param {string} employeeId - The ID of the employee being edited.
+ * @returns {void}
+ */
+function submitEdit(employeeId) {
+
+    var employeeData = 
+                {
+                    // "employeeCode": document.querySelector("#edit-form #employee-code").value,
+                    "fullName": document.querySelector("#edit-form #employee-name").value,
+                    "dateOfBirth": document.querySelector("#edit-form #dob").value,
+                    // "Gender": document.getElementById("employee-gender").value,
+                    // "Position": document.querySelector("#edit-form #position").value,
+                    "departmentId": document.querySelector("#edit-form #department").value,
+                    "identityNumber": document.querySelector("#edit-form #id-number").value,
+                    "identityDate": document.querySelector("#edit-form #id-issue-date").value,
+                    "identityPlace": document.querySelector("#edit-form #id-issue-place").value,
+                    "address": document.querySelector("#edit-form #address").value,
+                    "mobile": document.querySelector("#edit-form #mobile").value,
+                    "phone": document.querySelector("#edit-form #phone").value,
+                    "email": document.querySelector("#edit-form #email").value,
+                    "bankAccount": document.querySelector("#edit-form #bank-account").value,
+                    "bankName": document.querySelector("#edit-form #bank-name").value,
+                    "bankBranch": document.querySelector("#edit-form #bank-branch").value,     
+                    
+                };
+    if (document.getElementById("male").checked) {
+      employeeData["Gender"] = 0;
+    } else if (document.getElementById("female").checked) {
+      employeeData["Gender"] = 1;
+    } else {
+      employeeData["Gender"] = 2;
+    }    
+    console.log("submiting", employeeData);
+    console.log("checking", employeeData["fullName"]);
+    //Validate data
+    var isValidated = true;
+    var msg = [];
+    if (
+      employeeData["employeeCode"] === "" ||
+      employeeData["employeeCode"] === null
+    ) {
+      console.log("Trống");
+      isValidated = false;
+      msg.push("Mã nhân viên không được để trống\n");
+    }
+    console.log(employeeData["fullName"]);
+    if (employeeData["fullName"] === "" || employeeData["fullname"] === null) {
+      console.log("Trống");
+      isValidated = false;
+      msg.push("Họ và tên không được để trống\n");
+    }
+    if (
+      employeeData["identityNumber"] === "" ||
+      employeeData["identityNumber"] === null
+    ) {
+      isValidated = false;
+      msg.push("Số CMTND không được để trống\n");
+    }
+    if (employeeData["mobile"] === "" || employeeData["mobile"] === null) {
+      isValidated = false;
+      msg.push("Số ĐT Di động không được để trống\n");
+    } else {
+        const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
+        const isValidPhone = phoneRegex.test(employeeData['mobile']);
+        if (!isValidPhone) {
+            isValidated = false;
+            msg.push("Số ĐT Di động không hợp lệ\n");
+        }
+    }
+    if (employeeData["email"] === "" || employeeData["email"] === null) {
+      isValidated = false;
+      msg.push("Email không được để trống\n");
+    }
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            const isValidEmail = regex.test(employeeData['email']);
+            if (!isValidEmail) {
+                isValidated = false;
+                msg.push("Email không hợp lệ\n");
+            }
+
+    if (isValidated) {
+        let url = "https://cukcuk.manhnv.net/api/v1/Employees/" + employeeId;
+
+        fetch(url,
+            {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(employeeData)
+            }
+        )
+            .then(response => {
+                console.log(response.body);
+                if (!response.ok) {
+                    throw new Error('Network response error');
+                }
+                return response.text();
+            })
+            .then(data => {
+                //display data
+                console.log(data);
+                employeePage.loadData();
+                document.getElementById("edit-form").classList.add("blured");
+                employeePage.showSimpleDialog("Thành công", "Bạn đã sửa thành công nhân viên: " + employeeData['employeeCode']);
+                
+            })
+            .catch(error => {
+                document.getElementById("edit-form").classList.add("blured");
+                employeePage.showSimpleDialog("Lỗi mạng", "Sửa không thành công do lỗi mạng");
+                console.log(error);
+            });
+       
+    } else {
+      console.log("Lỗi", msg);
+      employeePage.showSimpleDialog("Lỗi", msg);
+      msg = [];
+    }                
+    
+}
+
+/**
+ * Removes the "blured" class from the edit form, if it exists in the body.
+ */
+function removeFormBlur() {
+    try {
+        console.log("adkjadklsajd");
+        var body = document.querySelector("body");
+        var editForm = document.querySelector("#edit-form");
+        if (body.contains(editForm)) editForm.classList.remove("blured");
+    }
+    catch(e) {
+        console.log(e);
+    }
+}
+
+/**
+ * Removes the blur effect from the specified element with the ID "to-blur".
+ */
+function removeMainBlur() {
+    try {
+        console.log("adkjadklsajd");
+        document.querySelector("#to-blur").classList.remove("blured");
+    }
+    catch(e) {
+        console.log(e);
+    }
+}
+
+/**
+ * Opens the edit form and loads department data.
+ */
+function openEditForm(){
+    employeePage.loadDepartmentData();
+    document.getElementById("to-blur").classList.add("blured");
+    document.querySelector("#edit-form").classList.remove("hidden");
+}
+
+/**
+ * Closes the edit form and performs necessary actions.
+ */
+function closeEditForm() {
+    employeePage.closeForm();
+    document.getElementById("edit-form").classList.add("hidden");
+    document.getElementById("to-blur").classList.remove("blured");
+    editForm = document.getElementById("edit-form");
+    document.querySelector("body").removeChild(editForm);
+
+}
+
+/**
+ * Deletes employee data based on the provided employee ID and employee code.
+ * @param {string} eid - The ID of the employee to be deleted.
+ * @param {string} eCode - The code of the employee to be deleted.
+ * Author: Nghia (15/07/2024)
+ */  
+function confirmDelete(eid, eCode) {
+    var msg = "Bạn có chắc chắn muốn xoá nhân viên có mã nhân viên là: " + eCode;
+    console.log(msg);
+    employeePage.showDialog("Xác nhận xoá", msg);
+    return new Promise(function(resolve, reject) {
+        document.getElementById("dlg-submit-btn").addEventListener('click', () => {
+            console.log("Confirmed");
+            resolve("Deleted");
+        });
+        document.getElementById("hide-dlg-btn").addEventListener('click', () => {
+            console.log("Canceled");
+            reject("Canceled");
+        });
+        document.getElementById("close-dlg-btn").addEventListener('click', () => {
+            console.log("Canceled");
+            reject("Canceled");
+        });
+    });
+    
+    
+}
+
+/**
+ * Deletes employee data based on the provided employee ID and employee code.
+ * @param {string} eid - The ID of the employee to be deleted.
+ * @param {string} eCode - The code of the employee to be deleted.
+ * Author: Nghia (15/07/2024)
+ */  
+function onDeleteData(eid, eCode) {
+    confirmDelete(eid, eCode)
+        .then((result) => {
+            let url = "https://cukcuk.manhnv.net/api/v1/Employees/" + eid;
+            fetch(url,
+                {
+                    method: "DELETE"
+                }
+            )
+                .then(response => {
+                    console.log(response.body);
+                    if (!response.ok) {
+                        throw new Error('Network response error');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    //display data
+                    console.log(data);
+                    employeePage.loadData();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            console.log(result);
+            
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+        .finally(() => {
+            employeePage.hideDialog();
+        });
+
 
 }
