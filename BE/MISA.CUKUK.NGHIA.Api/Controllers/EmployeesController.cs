@@ -38,8 +38,6 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                 var sql = "SELECT * FROM Employee";
 
                 var employees = connection.Query<Employee>(sql);
-            
-                System.Console.WriteLine(string.Join("/n", employees));
 
                 return StatusCode(200, employees);
 
@@ -71,8 +69,6 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                     "Database=UET_21020472_DaoXuanNghia";
                 ;
 
-                System.Console.WriteLine("Hello");
-
                 var connection = new MySqlConnection(connectionString);
 
                 var sql = "SELECT * FROM Employee WHERE EmployeeId = @EmployeeId";
@@ -80,8 +76,6 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                 var paramater = new { EmployeeId = employeeId };
 
                 var employee = connection.Query<Employee>(sql, paramater);
-
-                System.Console.WriteLine(string.Join("/n", employee));
 
                 if (employee.Any())
                 {
@@ -101,17 +95,248 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
 
         }
 
-        [HttpPost]
-        public IActionResult InsertEmployee()
+
+        /// <summary>
+        /// validate field of employee
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <param name="errorList"></param>
+        /// <returns></returns>
+        public static bool validateFieldEmployee(Employee employee, List<string> errorList)
         {
-            return Ok("Insert employee");
+            if (employee.FullName == null || employee.FullName == "")
+            {
+                errorList.Add("Full name is required");
+                return false;
+            }
+
+            if (employee.EmployeeCode == null || employee.EmployeeCode == "")
+            {
+                errorList.Add("Employee code is required");
+                return false;
+            }
+
+
+            if (employee.DepartmentId == Guid.Empty)
+            {
+                errorList.Add("Department is required");
+                return false;
+            }
+
+            if (employee.PositionId == Guid.Empty)
+            {
+                errorList.Add("Position is required");
+                return false;
+            }
+
+            return true;
+        }
+
+
+        public static bool employeeCodeCheck(string employeeCode)
+        {
+            string connectionString =
+                  "Host=8.222.228.150;" +
+                  "Port=3306;" +
+                  "User Id=manhnv;" +
+                  "Password=12345678;" +
+                  "Database=UET_21020472_DaoXuanNghia";
+            ;
+
+            var connection = new MySqlConnection(connectionString);
+
+            var sql = "SELECT * FROM Employee WHERE EmployeeCode = @EmployeeCode";
+
+            var paramater = new { EmployeeCode = employeeCode };
+            try
+            {
+                var employee = connection.Query<Employee>(sql, paramater);
+
+                if (employee.Any())
+                {
+                    return false;
+                }
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }   
+            return true;
+
+        }
+
+        /// <summary>
+        /// validate data of employee
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <param name="errorList"></param>
+        /// <returns></returns>
+        public static bool validateDataEmployee(Employee employee, List<string> errorList)
+        {
+
+            if (employee.DateOfBirth > DateTime.Now)
+            {
+                errorList.Add("Date of birth is not valid");
+                return false;
+            }
+
+            if (employee.NationalityIdDate > DateTime.Now)
+            {
+                errorList.Add("NationalIdDate is not valid");
+
+            }
+
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(employee.Email, emailPattern))
+            {
+                errorList.Add("Email is not valid");
+                return false;
+            }
+
+            System.Console.WriteLine(employeeCodeCheck(employee.EmployeeCode));
+            if (!employeeCodeCheck(employee.EmployeeCode))
+            {
+                errorList.Add("Employee code is existed");
+                return false;
+            }
+
+            return true;
+        }
+
+
+        private static (string FirstName, string Lastname) splitFullName(string fullName)
+        {
+            if (string.IsNullOrEmpty(fullName))
+            {
+                return ("", "");
+            }
+            string[] names = fullName.Split(" ");
+            string firstName = names[0];
+            string lastName = string.Join(" ", names, 1, names.Length - 1); ;
+            return (firstName, lastName);
+        }
+
+        [HttpPost]
+        public IActionResult InsertEmployee(Employee employee)
+        {
+            List<string> errorList = new List<string>();
+            if ((!validateFieldEmployee(employee, errorList)) || (!validateDataEmployee(employee,errorList)))
+            {
+                System.Console.WriteLine(string.Join(" ", errorList));
+                return StatusCode(409, string.Join(" ", errorList));
+            }
+
+            try
+            {
+                string sql = "INSERT INTO Employee(EmployeeId, EmployeeCode, DepartmentId, PositionId, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, FullName, FirstName, LastName, DateOfBirth, NationalityId, NationalityIdDate, NationalityIdPlace, Gender, Address, MobilePhoneNumber, TelephoneNumber, Email) ";
+                string sqlValue = "VALUES(UUID(), @EmployeeCode, @DepartmentId, @PositionId, @CreatedBy, @CreatedDate, @ModifiedBy, @ModifiedDate, @FullName, @FirstName, @LastName, @DateOfBirth, @NationalityId, @NationalityIdDate, @NationalityIdPlace, @Gender, @Address, @MobilePhoneNumber, @TelephoneNumber, @Email)";
+                string sqlFinal = sql + sqlValue;
+
+                var parameter = new
+                {
+                    EmployeeCode = employee.EmployeeCode,
+                    DepartmentId = employee.DepartmentId,
+                    PositionId = employee.PositionId,
+                    CreatedBy = "Nghia",
+                    CreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    ModifiedBy = "Nghia",
+                    ModifiedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    FullName = employee.FullName,
+                    FirstName = splitFullName(employee.FullName).FirstName,
+                    LastName = splitFullName(employee.FullName).Lastname,
+                    DateOfBirth = employee.DateOfBirth,
+                    NationalityId = employee.NationalityId,
+                    NationalityIdDate = employee.NationalityIdDate,
+                    NationalityIdPlace = employee.NationalityIdPlace,
+                    Gender = employee.Gender,
+                    Address = employee.Address,
+                    MobilePhoneNumber = employee.MobilePhoneNumber,
+                    TelephoneNumber = employee.TelephonePhoneNumber,
+                    Email = employee.Email
+                };
+
+
+                string connectionString =
+                   "Host=8.222.228.150;" +
+                   "Port=3306;" +
+                   "User Id=manhnv;" +
+                   "Password=12345678;" +
+                   "Database=UET_21020472_DaoXuanNghia";
+                
+
+
+                var connection = new MySqlConnection(connectionString);
+                try
+                {
+                    connection.Execute(sqlFinal, parameter);
+                    
+                }
+                catch (Exception ex)
+                {
+                    System.Console.WriteLine(ex);
+                    return StatusCode(500, "There was an error when inserting");
+                }
+
+            }
+            catch (System.Exception e)
+            {
+                return StatusCode(500, e);
+            }
+
+            return Ok("Inserted employee");
         }
 
         [HttpPut("{employeeId}")]
-        public IActionResult UpdateEmployee(Guid employeeId)
+        public IActionResult UpdateEmployee(Employee employee)
         {
-            return Ok("Update employee");
+            List<string> errorList = new List<string>();
+            if (!validateDataEmployee(employee, errorList))
+            {
+                return StatusCode(400, errorList.ToString());
+            }
+
+            try
+            {
+                string connectionString =
+                  "Host=8.222.228.150;" +
+                  "Port=3306;" +
+                  "User Id=manhnv;" +
+                  "Password=12345678;" +
+                  "Database=UET_21020472_DaoXuanNghia";
+                var connection = new MySqlConnection(connectionString);
+
+                string sql = @"
+                    UPDATE Employee 
+                    SET 
+                        EmployeeCode = @employeeCode, 
+                        DepartmentId = @departmentId, 
+                        PositionId = @positionId,
+                        ModifiedBy = @modifiedBy, 
+                        ModifiedDate = @modifiedDate, 
+                        FullName = @fullName, 
+                        First Name = @, 
+                        LastName, 
+                        DateOfBirth, 
+                        NationalityId, 
+                        NationalNationalityIdDate, 
+                        NationalNationalityIdPlace, 
+                        Gender, 
+                        Address, 
+                        MobilePhoneNumber, 
+                        TelephoneNumber,
+                        Email
+                    WHERE EmployeeId = @EmployeeId";
+                    
+
+            }
+            catch (System.Exception e)
+            {
+                return StatusCode(500, e);
+            }
+
+            return Ok("Updated employee");
         }
+
 
         [HttpDelete("{employeeId}")]
         public IActionResult DeleteEmployee(string employeeId)

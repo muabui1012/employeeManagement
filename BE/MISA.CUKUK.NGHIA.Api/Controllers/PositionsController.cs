@@ -9,10 +9,18 @@ using System.Linq.Expressions;
 
 namespace MISA.CUKUK.NGHIA.Api.Controllers
 {
+    /// <summary>
+    /// Position controller
+    /// Author: Nghia (04/08/2024)
+    /// </summary>
     [Route("api/v1/positions")]
     [ApiController]
     public class PositionsController : ControllerBase
     {
+        /// <summary>
+        /// Get all positions
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get()
         {
@@ -41,9 +49,33 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Validate position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public static bool validatePosition(Position position)
+        {
+            if (position.PositionName == null || position.PositionName == "")
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Insert position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult InsertPosition([FromBody] Position position)
         {
+            if (!validatePosition(position))
+            {
+                return StatusCode(400, "Position name is required");
+            }
             try
             {
                 string connectionString =
@@ -86,10 +118,18 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             return StatusCode(200, "Inserted");
         }
 
-
+        /// <summary>
+        /// Update position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         [HttpPut]
         public IActionResult UpdatePosition([FromBody]Position position)
         {
+            if (!validatePosition(position))
+            {
+                return StatusCode(400, "Position name is required");
+            }
             try
             {
                 string connectionString =
@@ -129,6 +169,11 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             return Ok("Updated");
         }
 
+        /// <summary>
+        /// Delete position
+        /// </summary>
+        /// <param name="positionId"></param>
+        /// <returns></returns>
         [HttpDelete("{positionId}")]
         public IActionResult DeletePosition(string positionId)
         {

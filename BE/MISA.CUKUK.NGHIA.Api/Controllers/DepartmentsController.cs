@@ -19,6 +19,11 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
+        /// <summary>
+        /// Get all departments
+        /// Author: Nghia (04/08/2024)
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetDepartments()
         {
@@ -54,6 +59,12 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             
         }
 
+        /// <summary>
+        /// Get department by id
+        /// Author: Nghia (04/08/2024)
+        /// </summary>
+        /// <param name="departmentId"></param>
+        /// <returns></returns>
         [HttpGet("{departmentId}")]
         public IActionResult GetDepartmentById(string departmentId)
         {
@@ -90,7 +101,12 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
         }
 
-
+        /// <summary>
+        /// validate department
+        /// </summary>
+        /// <param name="department"></param>
+        /// <param name="errorList"></param>
+        /// <returns></returns>
         private bool validateDepartment(Department department, List<string> errorList)
         {
             if (department.DepartmentName == string.Empty)
@@ -102,6 +118,12 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             
             return true;
         }
+
+        /// <summary>
+        /// Add new department
+        /// </summary>
+        /// <param name="department"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult InsertDepartment([FromBody]Department department)
         {
@@ -117,7 +139,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
 
                 var connection = new MySqlConnection(connectionString);
 
-                List<string> errorList = new List<string>();
+                List<string> errorList = [];
 
                 if (!validateDepartment(department, errorList))
                 {
@@ -151,10 +173,19 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
 
         }
 
+        /// <summary>
+        /// Update department
+        /// </summary>
+        /// <param name="department"></param>
+        /// <returns></returns>
         [HttpPut]
         public IActionResult UpdateDepartment([FromBody] Department department)
         {
-
+            List<string> errorList = [];
+            if (!validateDepartment(department, errorList))
+            {
+                return StatusCode(400, errorList);
+            }
             try
             {
                 string connectionString =
@@ -191,7 +222,12 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
 
         }
 
-
+        /// <summary>
+        /// Delete department
+        /// Author: Nghia (04/08/2024)
+        /// </summary>
+        /// <param name="departmentId"></param>
+        /// <returns></returns>
         [HttpDelete("{departmentId}")]
         public IActionResult DeleteEmployee(string departmentId)
         {
