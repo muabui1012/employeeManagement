@@ -4,6 +4,7 @@ using Dapper;
 using MySqlConnector;
 using System;
 using MISA.CUKUK.NGHIA.Api.Entities;
+using System.Reflection.Metadata;
 
 namespace MISA.CUKUK.NGHIA.Api.Controllers
 {
@@ -132,8 +133,34 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             return true;
         }
 
+        public static Employee getEmployee(Guid employeeId)
+        {
+            string connectionString =
+                    "Host=8.222.228.150;" +
+                    "Port=3306;" +
+                    "User Id=manhnv;" +
+                    "Password=12345678;" +
+                    "Database=UET_21020472_DaoXuanNghia";
+            ;
 
-        public static bool employeeCodeCheck(string employeeCode)
+            var connection = new MySqlConnection(connectionString);
+
+            var sql = "SELECT * FROM Employee WHERE EmployeeId = @EmployeeId";
+
+            var paramater = new { EmployeeId = employeeId };
+
+            var employee = connection.Query<Employee>(sql, paramater);
+
+            if (employee.Any())
+            {
+                return employee.First();
+
+            }
+            return null;
+        }
+
+
+        public static bool employeeCodeCheck(string employeeCode, List<string> errorList)
         {
             string connectionString =
                   "Host=8.222.228.150;" +
@@ -154,6 +181,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
 
                 if (employee.Any())
                 {
+                    errorList.Add("Employee code is existed");
                     return false;
                 }
             }
@@ -192,14 +220,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                 errorList.Add("Email is not valid");
                 return false;
             }
-
-            System.Console.WriteLine(employeeCodeCheck(employee.EmployeeCode));
-            if (!employeeCodeCheck(employee.EmployeeCode))
-            {
-                errorList.Add("Employee code is existed");
-                return false;
-            }
-
+           
             return true;
         }
 
@@ -220,16 +241,28 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         public IActionResult InsertEmployee(Employee employee)
         {
             List<string> errorList = new List<string>();
-            if ((!validateFieldEmployee(employee, errorList)) || (!validateDataEmployee(employee,errorList)))
+            if ((!validateFieldEmployee(employee, errorList)) || (!validateDataEmployee(employee,errorList)) || (!employeeCodeCheck(employee.EmployeeCode, errorList)))
             {
-                System.Console.WriteLine(string.Join(" ", errorList));
-                return StatusCode(409, string.Join(" ", errorList));
+                System.Console.WriteLine(string.Join("\n", errorList));
+                return StatusCode(409, string.Join("\n", errorList));
             }
 
             try
             {
-                string sql = "INSERT INTO Employee(EmployeeId, EmployeeCode, DepartmentId, PositionId, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, FullName, FirstName, LastName, DateOfBirth, NationalityId, NationalityIdDate, NationalityIdPlace, Gender, Address, MobilePhoneNumber, TelephoneNumber, Email) ";
-                string sqlValue = "VALUES(UUID(), @EmployeeCode, @DepartmentId, @PositionId, @CreatedBy, @CreatedDate, @ModifiedBy, @ModifiedDate, @FullName, @FirstName, @LastName, @DateOfBirth, @NationalityId, @NationalityIdDate, @NationalityIdPlace, @Gender, @Address, @MobilePhoneNumber, @TelephoneNumber, @Email)";
+                string sql = "INSERT INTO Employee(EmployeeId, EmployeeCode, DepartmentId, PositionId, " +
+                                                    "CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, " +
+                                                    "FullName, FirstName, LastName, DateOfBirth, " +
+                                                    "NationalityId, NationalityIdDate, NationalityIdPlace, " +
+                                                    "Gender, Address, " +
+                                                    "MobilePhoneNumber, TelephoneNumber, Email, " +
+                                                    "BankAccount, BankName, BankBranch) ";
+                string sqlValue = "VALUES(UUID(), @EmployeeCode, @DepartmentId, @PositionId, " +
+                                          "@CreatedBy, @CreatedDate, @ModifiedBy, @ModifiedDate, " +
+                                          "@FullName, @FirstName, @LastName, @DateOfBirth, " +
+                                          "@NationalityId, @NationalityIdDate, @NationalityIdPlace, " +
+                                          "@Gender, @Address, " +
+                                          "@MobilePhoneNumber, @TelephoneNumber, @Email, " +
+                                          "@BankAccount, @BankName, @BankBranch)";
                 string sqlFinal = sql + sqlValue;
 
                 var parameter = new
@@ -251,8 +284,12 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                     Gender = employee.Gender,
                     Address = employee.Address,
                     MobilePhoneNumber = employee.MobilePhoneNumber,
-                    TelephoneNumber = employee.TelephonePhoneNumber,
-                    Email = employee.Email
+                    TelephoneNumber = employee.TelephoneNumber,
+                    Email = employee.Email,
+                    BankAccount = employee.BankAccount,
+                    BankName = employee.BankName,
+                    BankBranch = employee.BankBranch
+                    
                 };
 
 
@@ -274,7 +311,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                 catch (Exception ex)
                 {
                     System.Console.WriteLine(ex);
-                    return StatusCode(500, "There was an error when inserting");
+                    return StatusCode(500, ex);
                 }
 
             }
@@ -283,16 +320,30 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                 return StatusCode(500, e);
             }
 
-            return Ok("Inserted employee");
+            return StatusCode(201, "Inserted");
         }
 
-        [HttpPut("{employeeId}")]
-        public IActionResult UpdateEmployee(Employee employee)
+        [HttpPut]
+        public IActionResult UpdateEmployee([FromBody] Employee employee)
         {
+            
             List<string> errorList = new List<string>();
-            if (!validateDataEmployee(employee, errorList))
+            Employee oldEmployee = getEmployee(employee.EmployeeId);
+            if (oldEmployee == null)
             {
-                return StatusCode(400, errorList.ToString());
+                return StatusCode(404, "Employee not found");
+            }
+            bool changed = false;
+
+            if (!object.Equals(employee.EmployeeCode, oldEmployee.EmployeeCode))
+            {
+                changed = true;
+                errorList.Add("You can not change the EmployeeCode");
+            }
+
+            if (!validateDataEmployee(employee, errorList) || changed)
+            {
+                return StatusCode(400, String.Join("\n", errorList));
             }
 
             try
@@ -305,36 +356,69 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                   "Database=UET_21020472_DaoXuanNghia";
                 var connection = new MySqlConnection(connectionString);
 
-                string sql = @"
-                    UPDATE Employee 
-                    SET 
-                        EmployeeCode = @employeeCode, 
-                        DepartmentId = @departmentId, 
-                        PositionId = @positionId,
-                        ModifiedBy = @modifiedBy, 
-                        ModifiedDate = @modifiedDate, 
-                        FullName = @fullName, 
-                        First Name = @, 
-                        LastName, 
-                        DateOfBirth, 
-                        NationalityId, 
-                        NationalNationalityIdDate, 
-                        NationalNationalityIdPlace, 
-                        Gender, 
-                        Address, 
-                        MobilePhoneNumber, 
-                        TelephoneNumber,
-                        Email
-                    WHERE EmployeeId = @EmployeeId";
-                    
+                var sql =   "UPDATE Employee SET " +
+                            "DepartmentId = @DepartmentId, " +
+                            "PositionId = @PositionId, " +
+                            "ModifiedBy = @ModifiedBy, " +
+                            "ModifiedDate = @ModifiedDate, " +
+                            "FullName = @FullName, " +
+                            "FirstName = @FirstName, " +
+                            "LastName = @LastName, " +
+                            "DateOfBirth = @DateOfBirth, " +
+                            "NationalityId = @NationalityId, " +
+                            "NationalityIdDate = @NationalityIdDate, " +
+                            "NationalityIdPlace = @NationalityIdPlace, " +
+                            "Gender = @Gender, " +
+                            "Address = @Address, " +
+                            "MobilePhoneNumber = @MobilePhoneNumber, " +
+                            "TelephoneNumber = @TelephoneNumber, " +
+                            "Email = @Email, " +
+                            "BankAccount = @BankAccount, " +
+                            "BankName = @BankName, " +
+                            "BankBranch = @BankBranch " +
+                            "WHERE EmployeeId = @EmployeeId";
 
+                var parameter = new
+                {
+                    employee.DepartmentId,
+                    employee.PositionId,
+                    ModifiedBy = "Nghia",
+                    ModifiedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    employee.FullName,
+                    splitFullName(employee.FullName).FirstName,
+                    splitFullName(employee.FullName).Lastname,
+                    employee.DateOfBirth,
+                    employee.NationalityId,
+                    employee.NationalityIdDate,
+                    employee.NationalityIdPlace,
+                    employee.Gender,
+                    employee.Address,
+                    employee.MobilePhoneNumber,
+                    employee.TelephoneNumber,
+                    employee.Email,
+                    employee.BankAccount,
+                    employee.BankName,
+                    employee.BankBranch,
+                    employee.EmployeeId
+
+
+                };
+              
+                try
+                {
+                    connection.Execute(sql, parameter);
+
+                } catch (System.Exception e)
+                {
+                    return StatusCode(500, "ALDKALKD" + e);
+                }
+
+                return StatusCode(200, "Updated");
             }
             catch (System.Exception e)
             {
                 return StatusCode(500, e);
             }
-
-            return Ok("Updated employee");
         }
 
 
@@ -355,7 +439,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
 
                 string sql = "DELETE FROM Employee WHERE EmployeeId = @employeeId";
 
-                var parameter = new {employeeId = employeeId};
+                var parameter = new {employeeId = employeeId.ToString()};
 
                 try {       
                     connection.Execute(sql, parameter);

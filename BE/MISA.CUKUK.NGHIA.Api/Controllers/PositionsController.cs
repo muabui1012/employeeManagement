@@ -115,7 +115,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             {
                 return StatusCode(500, e);
             }
-            return StatusCode(200, "Inserted");
+            return StatusCode(201, "Inserted");
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                 return StatusCode(500, e);
             }
 
-            return Ok("Updated");
+            return StatusCode(200, "Updated");
         }
 
         /// <summary>

@@ -163,7 +163,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                     {
                         return StatusCode(500, "There was an error when insert");
                     }
-                    return Ok("Inserted");
+                    return StatusCode(201, "Inserted");
                 }
             }
             catch (System.Exception e)
@@ -208,7 +208,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                 try
                 {
                     connection.Execute(sql, parameter);
-                    return Ok("Updated");
+                    return StatusCode(200, "Updated");
                 } 
                 catch (System.Exception)
                 {

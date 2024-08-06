@@ -72,7 +72,7 @@
         /// <summary>
         /// Số điện thoại cố định
         /// </summary>
-        public string TelephonePhoneNumber { get; set; } = string.Empty;
+        public string TelephoneNumber { get; set; } = string.Empty;
 
         /// <summary>
         /// Email
@@ -93,6 +93,26 @@
         /// Chi nhánh ngân hàng
         /// </summary>
         public string BankBranch { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Người tạo
+        /// </summary>
+        public string CreatedBy { get; set; } = string.Empty;
+        
+        /// <summary>
+        /// Ngày tạo
+        /// </summary>
+        public DateTime CreatedDate { get; set; }
+
+        /// <summary>
+        /// Người sửa
+        /// </summary>
+        public string ModifiedBy { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Ngày sửa
+        /// </summary>
+        public DateTime ModifiedDate { get; set; }
 
     }
 }
