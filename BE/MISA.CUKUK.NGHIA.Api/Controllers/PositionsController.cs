@@ -49,6 +49,45 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get all positions
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{positionId}")]
+        public IActionResult GetPositionById(string positionId)
+        {
+            try
+            {
+                string connectionString =
+                   "Host=8.222.228.150;" +
+                   "Port=3306;" +
+                   "User Id=manhnv;" +
+                   "Password=12345678;" +
+                   "Database=UET_21020472_DaoXuanNghia";
+                ;
+
+                var connection = new MySqlConnection(connectionString);
+
+                var sql = "SELECT * FROM `Position` WHERE PositionId = @PositionId";
+
+                var parameter = new { PositionId = positionId };
+
+                var positions = connection.Query<Position>(sql, parameter);
+
+                if (positions.Any())
+                {
+                    return StatusCode(200, positions.First());
+                }
+
+                return StatusCode(204, "Position not found");
+
+            }
+            catch (System.Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
 
         /// <summary>
         /// Validate position
