@@ -1,3 +1,7 @@
+using MISA.CUKUK.NGHIA.Core.Interfaces;
+using MISA.CUKUK.NGHIA.Core.Services;
+using MISA.CUKUK.NGHIA.Infrastructure.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,6 +14,8 @@ builder.Services.AddControllers().AddJsonOptions( o =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Config DI
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 
 
 var app = builder.Build();

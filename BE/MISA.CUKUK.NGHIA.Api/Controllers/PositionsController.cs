@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using Dapper;
 
-using MISA.CUKUK.NGHIA.Api.Entities;
+using MISA.CUKUK.NGHIA.Core.Entities;
+using MISA.CUKUK.NGHIA.Core.Interfaces;
+using MISA.CUKUK.NGHIA.Core.Services;
 using System.Linq.Expressions;
 
 
 namespace MISA.CUKUK.NGHIA.Api.Controllers
 {
+  
     /// <summary>
     /// Position controller
     /// Author: Nghia (04/08/2024)
@@ -17,6 +20,11 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
     [ApiController]
     public class PositionsController : ControllerBase
     {
+        IPositionRepository positionRepository;
+        public PositionsController(IPositionRepository repository)
+        {
+            this.positionRepository = repository;
+        }
         /// <summary>
         /// Get all positions
         /// </summary>
@@ -26,19 +34,13 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         {
             try
             {
-                string connectionString =
-                   "Host=8.222.228.150;" +
-                   "Port=3306;" +
-                   "User Id=manhnv;" +
-                   "Password=12345678;" +
-                   "Database=UET_21020472_DaoXuanNghia";
-                ;
+                var positions = positionRepository.Get();
 
-                var connection = new MySqlConnection(connectionString);
+                Position position = new Position();
 
-                var sql = "SELECT * FROM `Position`";
+                position.PositionName = "Test";
 
-                var positions = connection.Query<Position>(sql);
+                positions.Add(position);
 
                 return StatusCode(200, positions);
 

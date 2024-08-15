@@ -1,9 +1,11 @@
-﻿namespace MISA.CUKUK.NGHIA.Api.Entities
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MISA.CUKUK.NGHIA.Core.Entities
 {
-    /// <summary>
-    /// Employee entity
-    /// Author: Nghia (03/08/2024)
-    /// </summary>
     public class Employee
     {
         /// <summary>
@@ -98,7 +100,7 @@
         /// Người tạo
         /// </summary>
         public string CreatedBy { get; set; } = string.Empty;
-        
+
         /// <summary>
         /// Ngày tạo
         /// </summary>
@@ -114,5 +116,6 @@
         /// </summary>
         public DateTime ModifiedDate { get; set; }
 
+    
     }
 }

@@ -1,10 +1,16 @@
-﻿namespace MISA.CUKUK.NGHIA.Api.Entities
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MISA.CUKUK.NGHIA.Core.Entities
 {
     public class Position
     {
         /// <summary>
         /// Mã vị trí
-        /// </summary>
+         /// </summary>
         public Guid PositionId { get; set; } = Guid.Empty;
 
         /// <summary>
@@ -31,6 +37,5 @@
         /// Ngày sửa
         /// </summary>
         public DateTime ModifiedDate { get; set; }
-
     }
 }

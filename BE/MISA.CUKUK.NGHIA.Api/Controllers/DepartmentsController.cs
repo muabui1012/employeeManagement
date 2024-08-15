@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using Dapper;
 
-
-
-using MISA.CUKUK.NGHIA.Api.Entities;
+using MISA.CUKUK.NGHIA.Core.Entities;
 
 
 

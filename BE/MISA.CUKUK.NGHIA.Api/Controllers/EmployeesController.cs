@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Dapper;
 using MySqlConnector;
 using System;
-using MISA.CUKUK.NGHIA.Api.Entities;
+using MISA.CUKUK.NGHIA.Core.Entities;
 using System.Reflection.Metadata;
 
 namespace MISA.CUKUK.NGHIA.Api.Controllers
@@ -32,7 +32,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                     "User Id=manhnv;" +
                     "Password=12345678;" +
                     "Database=UET_21020472_DaoXuanNghia";
-                    ;
+                    
                 
                 var connection = new MySqlConnection(connectionString);
 

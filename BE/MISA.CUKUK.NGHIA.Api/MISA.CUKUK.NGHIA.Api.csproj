@@ -7,9 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove=".NghiaBackup\**" />
+    <Content Remove=".NghiaBackup\**" />
+    <EmbeddedResource Remove=".NghiaBackup\**" />
+    <None Remove=".NghiaBackup\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="MySqlConnector" Version="2.3.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MISA.CUKUK.NGHIA.Core\MISA.CUKUK.NGHIA.Core.csproj" />
+    <ProjectReference Include="..\MISA.CUKUK.NGHIA.Infrastructure\MISA.CUKUK.NGHIA.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
