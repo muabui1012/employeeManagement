@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MISA.CUKUK.NGHIA.Core\MISA.CUKUK.NGHIA.Core.csproj" />
-    <ProjectReference Include="..\MISA.CUKUK.NGHIA.Infrastructure\MISA.CUKUK.NGHIA.Infrastructure.csproj" />
+    <ProjectReference Include="..\MISA.CUKUK.NGHIA.Core\MISA.CUKCUK.NGHIA.Core.csproj" />
+    <ProjectReference Include="..\MISA.CUKUK.NGHIA.Infrastructure\MISA.CUKCUK.NGHIA.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

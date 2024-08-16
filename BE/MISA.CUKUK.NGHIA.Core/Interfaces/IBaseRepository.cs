@@ -10,13 +10,13 @@ namespace MISA.CUKUK.NGHIA.Core.Interfaces
     public interface IBaseRepository<T> where T : class
     {
         List<T> Get();
-        T GetById(Guid id);
+        T GetById(string id);
 
         int Insert(T entity);
 
         int Update(T entity);
 
-        int Delete(T entity);
+        int Delete(string id);
 
 
     }

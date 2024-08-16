@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 //Config DI
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 
 var app = builder.Build();

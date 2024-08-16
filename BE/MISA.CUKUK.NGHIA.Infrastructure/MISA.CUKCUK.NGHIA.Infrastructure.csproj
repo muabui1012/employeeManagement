@@ -7,11 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MISA.CUKUK.NGHIA.Core\MISA.CUKUK.NGHIA.Core.csproj" />
+    <ProjectReference Include="..\MISA.CUKUK.NGHIA.Core\MISA.CUKCUK.NGHIA.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Email\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="MySqlConnector" Version="2.3.7" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using MISA.CUKUK.NGHIA.Core.CustomValidation;
 
 namespace MISA.CUKUK.NGHIA.Core.Entities
 {
@@ -16,6 +19,9 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// <summary>
         /// Tên vị trí
         /// </summary>
+        /// 
+        [Required(ErrorMessage = "Tên vị trí không được để trống")]
+        [MaxLength(255, ErrorMessage = "Tên vị trí không được vượt quá 255 ký tự")]
         public string PositionName { get; set; } = string.Empty;
 
         /// <summary>
@@ -26,6 +32,7 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// <summary>
         /// Ngày tạo
         /// </summary>
+        [DateGreaterThanToday]
         public DateTime CreatedDate { get; set; }
 
         /// <summary>

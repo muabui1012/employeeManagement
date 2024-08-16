@@ -4,6 +4,9 @@ using MySqlConnector;
 using Dapper;
 
 using MISA.CUKUK.NGHIA.Core.Entities;
+using MISA.CUKUK.NGHIA.Core.Interfaces;
+using Microsoft.OpenApi.Any;
+using MISA.CUKCUK.NGHIA.Core.DTOs;
 
 
 
@@ -17,6 +20,12 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
+        IDepartmentRepository departmentRepository;
+        public DepartmentsController(IDepartmentRepository repository)
+        {
+            departmentRepository = repository;
+        }
+
         /// <summary>
         /// Get all departments
         /// Author: Nghia (04/08/2024)
@@ -27,27 +36,13 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         {
             try
             {
-                string connectionString =
-                   "Host=8.222.228.150;" +
-                   "Port=3306;" +
-                   "User Id=manhnv;" +
-                   "Password=12345678;" +
-                   "Database=UET_21020472_DaoXuanNghia";
-                ;
-                
-                var connection = new MySqlConnection(connectionString);
-
-                var sql = "SELECT * FROM Department";
-
-                try
+                var departments = departmentRepository.Get();
+                if (departments.Count == 0)
                 {
-                    var departments = connection.Query<Department>(sql);
+                    return StatusCode(204);
+                } else
+                {
                     return StatusCode(200, departments);
-                }
-                catch (System.Exception)
-                {
-                    return StatusCode(500, "There was an error when get");
-
                 }
             }
             catch (System.Exception e)
@@ -68,28 +63,14 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         {
             try
             {
-                string connectionString =
-                   "Host=8.222.228.150;" +
-                   "Port=3306;" +
-                   "User Id=manhnv;" +
-                   "Password=12345678;" +
-                   "Database=UET_21020472_DaoXuanNghia";
-                ;
-
-                var connection = new MySqlConnection(connectionString);
-
-                var sql = "SELECT * FROM Department WHERE DepartmentId = @departmentId";
-
-                var parameter = new { departmentId = departmentId };
-
-                var department = connection.Query<Department>(sql, parameter);
-
-                if (department.Any())
+                var department = departmentRepository.GetById(departmentId);
+                
+                if (department != null)
                 {
-                    return StatusCode(200, department.First());
+                    return StatusCode(200, department);
                 } else
                 {
-                    return StatusCode(204);
+                    return StatusCode(204, "Department not found");
                 }
                 
             }
@@ -99,23 +80,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
         }
 
-        /// <summary>
-        /// validate department
-        /// </summary>
-        /// <param name="department"></param>
-        /// <param name="errorList"></param>
-        /// <returns></returns>
-        private bool validateDepartment(Department department, List<string> errorList)
-        {
-            if (department.DepartmentName == string.Empty)
-            {
-                errorList.Add("Department name is required");
-                return false;
-            }
 
-            
-            return true;
-        }
 
         /// <summary>
         /// Add new department
@@ -127,42 +92,23 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         {
             try
             {
-                string connectionString =
-                   "Host=8.222.228.150;" +
-                   "Port=3306;" +
-                   "User Id=manhnv;" +
-                   "Password=12345678;" +
-                   "Database=UET_21020472_DaoXuanNghia";
-                ;
-
-                var connection = new MySqlConnection(connectionString);
-
-                List<string> errorList = [];
-
-                if (!validateDepartment(department, errorList))
+                try
                 {
-                    return StatusCode(400, errorList);
-                }
-                else
+                    var result = departmentRepository.Insert(department);
+                } catch (System.Exception ex)
                 {
-                    string sql = "INSERT INTO Department(DepartmentId, DepartmentName, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate) VALUES(UUID(), @DepartmentName, @CreatedBy, @CreatedDate, @ModifiedBy, @ModifiedDate)";
-                    var parameter = new { 
-                        DepartmentName = department.DepartmentName,
-                        CreatedBy = "Nghia",
-                        CreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 
-                        ModifiedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 
-                        ModifiedBy = "Nghia"
-                    };
-                    try
+                    string userMsg = "Vị trí không hợp lệ";
+                    if (ex.Message.Contains("Duplicate entry"))
                     {
-                        connection.Execute(sql, parameter);
+                        userMsg = "Vị trí đã tồn tại";
                     }
-                    catch (System.Exception)
-                    {
-                        return StatusCode(500, "There was an error when insert");
-                    }
-                    return StatusCode(201, "Inserted");
+                    ErrorMessage error = new ErrorMessage(userMsg, ex.Message);
+
+                    return StatusCode(400, error);
                 }
+
+                return StatusCode(201, "Department added");
+
             }
             catch (System.Exception e)
             {
@@ -179,42 +125,15 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         [HttpPut]
         public IActionResult UpdateDepartment([FromBody] Department department)
         {
-            List<string> errorList = [];
-            if (!validateDepartment(department, errorList))
-            {
-                return StatusCode(400, errorList);
-            }
+            
             try
             {
-                string connectionString =
-                   "Host=8.222.228.150;" +
-                   "Port=3306;" +
-                   "User Id=manhnv;" +
-                   "Password=12345678;" +
-                   "Database=UET_21020472_DaoXuanNghia";
-                ;
-
-                var connection = new MySqlConnection(connectionString);
-                string sql = "UPDATE Department SET DepartmentName = @DepartmentName, ModifiedBy = @ModifiedBy, ModifiedDate = @ModifiedDate WHERE DepartmentId = @DepartmentId";
-                var parameter = new
-                {
-                    DepartmentId = department.DepartmentId,
-                    DepartmentName = department.DepartmentName,
-                    ModifiedBy = "Nghia",
-                    ModifiedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                };
-                try
-                {
-                    connection.Execute(sql, parameter);
-                    return StatusCode(200, "Updated");
-                } 
-                catch (System.Exception)
-                {
-                    return StatusCode(404, "Department not found");
-                }
+                var result = departmentRepository.Update(department);
+                return StatusCode(200, "Department updated");
             }
             catch (System.Exception e)
             {
+                ErrorMessage error = new ErrorMessage("Đã có lỗi xảy ra", e.Message);
                 return StatusCode(500, e);
             }
 
@@ -231,30 +150,8 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         {
             try
             {
-                string connectionString =
-                   "Host=8.222.228.150;" +
-                   "Port=3306;" +
-                   "User Id=manhnv;" +
-                   "Password=12345678;" +
-                   "Database=UET_21020472_DaoXuanNghia";
-                ;
-
-                var connection = new MySqlConnection(connectionString);
-
-                string sql = "DELETE FROM Department WHERE DepartmentId = @departmentId";
-
-                var parameter = new { departmentId = departmentId };
-
-                try
-                {
-                    connection.Execute(sql, parameter);
-                    
-                }
-                catch (System.Exception)
-                {
-                    return StatusCode(500, "There was an error when delete");
-                }
-                return StatusCode(204, "Deleted");
+                departmentRepository.Delete(departmentId);
+                return StatusCode(204, "Department deleted");
             }
             catch (System.Exception e)
             {

@@ -10,7 +10,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
 {
     /// <summary>
     /// Employee controller
-    /// Author: Nghia (03/08/2024)
+    /// Author: Nghia (16/08/2024)
     /// </summary>
     [Route("api/v1/employees")]
     [ApiController]
@@ -18,7 +18,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
     {
         /// <summary>
         /// Danh sách nhân viên
-        /// Author: Nghia (03/08/2024)
+        /// Author: Nghia (16/08/2024)
         /// </summary>
         /// <returns>List gồm thông tin các nhân viên</returns>
         [HttpGet]
@@ -240,79 +240,19 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         [HttpPost]
         public IActionResult InsertEmployee(Employee employee)
         {
-            List<string> errorList = new List<string>();
-            if ((!validateFieldEmployee(employee, errorList)) || (!validateDataEmployee(employee,errorList)) || (!employeeCodeCheck(employee.EmployeeCode, errorList)))
-            {
-                System.Console.WriteLine(string.Join("\n", errorList));
-                return StatusCode(409, string.Join("\n", errorList));
-            }
-
+           
             try
             {
-                string sql = "INSERT INTO Employee(EmployeeId, EmployeeCode, DepartmentId, PositionId, " +
-                                                    "CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, " +
-                                                    "FullName, FirstName, LastName, DateOfBirth, " +
-                                                    "NationalityId, NationalityIdDate, NationalityIdPlace, " +
-                                                    "Gender, Address, " +
-                                                    "MobilePhoneNumber, TelephoneNumber, Email, " +
-                                                    "BankAccount, BankName, BankBranch) ";
-                string sqlValue = "VALUES(UUID(), @EmployeeCode, @DepartmentId, @PositionId, " +
-                                          "@CreatedBy, @CreatedDate, @ModifiedBy, @ModifiedDate, " +
-                                          "@FullName, @FirstName, @LastName, @DateOfBirth, " +
-                                          "@NationalityId, @NationalityIdDate, @NationalityIdPlace, " +
-                                          "@Gender, @Address, " +
-                                          "@MobilePhoneNumber, @TelephoneNumber, @Email, " +
-                                          "@BankAccount, @BankName, @BankBranch)";
-                string sqlFinal = sql + sqlValue;
-
-                var parameter = new
-                {
-                    EmployeeCode = employee.EmployeeCode,
-                    DepartmentId = employee.DepartmentId,
-                    PositionId = employee.PositionId,
-                    CreatedBy = "Nghia",
-                    CreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                    ModifiedBy = "Nghia",
-                    ModifiedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                    FullName = employee.FullName,
-                    FirstName = splitFullName(employee.FullName).FirstName,
-                    LastName = splitFullName(employee.FullName).Lastname,
-                    DateOfBirth = employee.DateOfBirth,
-                    NationalityId = employee.NationalityId,
-                    NationalityIdDate = employee.NationalityIdDate,
-                    NationalityIdPlace = employee.NationalityIdPlace,
-                    Gender = employee.Gender,
-                    Address = employee.Address,
-                    MobilePhoneNumber = employee.MobilePhoneNumber,
-                    TelephoneNumber = employee.TelephoneNumber,
-                    Email = employee.Email,
-                    BankAccount = employee.BankAccount,
-                    BankName = employee.BankName,
-                    BankBranch = employee.BankBranch
-                    
-                };
-
-
-                string connectionString =
-                   "Host=8.222.228.150;" +
-                   "Port=3306;" +
-                   "User Id=manhnv;" +
-                   "Password=12345678;" +
-                   "Database=UET_21020472_DaoXuanNghia";
                 
 
+                
+               
 
-                var connection = new MySqlConnection(connectionString);
-                try
-                {
-                    connection.Execute(sqlFinal, parameter);
-                    
-                }
-                catch (Exception ex)
-                {
-                    System.Console.WriteLine(ex);
-                    return StatusCode(500, ex);
-                }
+
+                
+
+               
+              
 
             }
             catch (System.Exception e)

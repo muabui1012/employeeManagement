@@ -1,6 +1,0 @@
-@MISA.CUKUK.NGHIA.Api_HostAddress = http://localhost:5223
-
-GET {{MISA.CUKUK.NGHIA.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

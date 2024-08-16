@@ -7,6 +7,7 @@ using MISA.CUKUK.NGHIA.Core.Entities;
 using MISA.CUKUK.NGHIA.Core.Interfaces;
 using MISA.CUKUK.NGHIA.Core.Services;
 using System.Linq.Expressions;
+using MISA.CUKCUK.NGHIA.Core.DTOs;
 
 
 namespace MISA.CUKUK.NGHIA.Api.Controllers
@@ -36,12 +37,10 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             {
                 var positions = positionRepository.Get();
 
-                Position position = new Position();
-
-                position.PositionName = "Test";
-
-                positions.Add(position);
-
+                if (positions.Count == 0)
+                {
+                    return StatusCode(204);
+                }
                 return StatusCode(200, positions);
 
             }
@@ -60,25 +59,11 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         {
             try
             {
-                string connectionString =
-                   "Host=8.222.228.150;" +
-                   "Port=3306;" +
-                   "User Id=manhnv;" +
-                   "Password=12345678;" +
-                   "Database=UET_21020472_DaoXuanNghia";
-                ;
+                Position position = positionRepository.GetById(positionId);
 
-                var connection = new MySqlConnection(connectionString);
-
-                var sql = "SELECT * FROM `Position` WHERE PositionId = @PositionId";
-
-                var parameter = new { PositionId = positionId };
-
-                var positions = connection.Query<Position>(sql, parameter);
-
-                if (positions.Any())
+                if (position != null)
                 {
-                    return StatusCode(200, positions.First());
+                    return StatusCode(200, position);
                 }
 
                 return StatusCode(204, "Position not found");
@@ -91,20 +76,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         }
 
 
-        /// <summary>
-        /// Validate position
-        /// </summary>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        public static bool validatePosition(Position position)
-        {
-            if (position.PositionName == null || position.PositionName == "")
-            {
-                return false;
-            }
-            return true;
-        }
-
+       
         /// <summary>
         /// Insert position
         /// </summary>
@@ -113,50 +85,30 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         [HttpPost]
         public IActionResult InsertPosition([FromBody] Position position)
         {
-            if (!validatePosition(position))
-            {
-                return StatusCode(400, "Position name is required");
-            }
             try
             {
-                string connectionString =
-                  "Host=8.222.228.150;" +
-                  "Port=3306;" +
-                  "User Id=manhnv;" +
-                  "Password=12345678;" +
-                  "Database=UET_21020472_DaoXuanNghia";
-                ;
-
-                var connection = new MySqlConnection(connectionString);
-
-                string sql = "INSERT INTO `Position`(PositionId, PositionName, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate) VALUES(UUID(), @positionName, @createdBy, @createdDate, @modifiedBy, @modifiedDate)";
-                
-                var parameter = new { 
-                    positionName = position.PositionName, 
-                    createdBy = "Nghia", 
-                    createdDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), 
-                    modifiedBy = "Nghia", 
-                    modifiedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-                };
-
-                System.Console.WriteLine(parameter.ToString());
-
                 try
                 {
-                    connection.Execute(sql, parameter);
-                    
-                } 
-                catch (System.Exception e)
+                    var result = positionRepository.Insert(position);
+                } catch (System.Exception ex)
                 {
-                    return StatusCode(500, e);
+                    string userMsg = "Vị trí không hợp lệ";
+                    if (ex.Message.Contains("Duplicate entry")) {
+                        userMsg = "Vị trí đã tồn tại";
+                    }
+                    ErrorMessage error = new ErrorMessage(userMsg, ex.Message);
+                    
+                    return StatusCode(400, error);
                 }
+                return StatusCode(201, "Đã thêm vị trí");
 
             }
             catch (System.Exception e)
             {
-                return StatusCode(500, e);
+                ErrorMessage error = new ErrorMessage("Đã có lỗi xảy ra", e.Message);
+                return StatusCode(500, error);
             }
-            return StatusCode(201, "Inserted");
+            
         }
 
         /// <summary>
@@ -167,47 +119,26 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         [HttpPut]
         public IActionResult UpdatePosition([FromBody]Position position)
         {
-            if (!validatePosition(position))
-            {
-                return StatusCode(400, "Position name is required");
-            }
             try
             {
-                string connectionString =
-                   "Host=8.222.228.150;" +
-                   "Port=3306;" +
-                   "User Id=manhnv;" +
-                   "Password=12345678;" +
-                   "Database=UET_21020472_DaoXuanNghia";
-                ;
-
-                var connection = new MySqlConnection(connectionString);
-
-                string sql = "UPDATE `Position` SET PositionName = @positionname, ModifiedBy = @ModifiedBy, ModifiedDate = @ModifiedDate WHERE PositionId = @positionId";
-
-                var parameter = new { 
-                    positionId = position.PositionId, 
-                    positionname = position.PositionName,
-                    ModifiedBy = "Nghia",
-                    ModifiedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-                };
-
                 try
                 {
-                    connection.Execute(sql, parameter);
+                    var result = positionRepository.Update(position);
                 }
-                catch (System.Exception e)
+                catch (System.Exception ex)
                 {
-                    return StatusCode(500, e);
+                    ErrorMessage error = new("Đã có lỗi xảy ra", ex.Message);
+                    return StatusCode(500, error);
                 }
+                return StatusCode(200, "Đã cập nhật thành công");
 
             }
             catch (System.Exception e)
             {
-                return StatusCode(500, e);
+                ErrorMessage error = new("Đã có lỗi xảy ra", e.Message);
+                return StatusCode(500, error);
             }
 
-            return StatusCode(200, "Updated");
         }
 
         /// <summary>
@@ -220,30 +151,9 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         {
             try
             {
-                string connectionString =
-                   "Host=8.222.228.150;" +
-                   "Port=3306;" +
-                   "User Id=manhnv;" +
-                   "Password=12345678;" +
-                   "Database=UET_21020472_DaoXuanNghia";
-                ;
+               positionRepository.Delete(positionId);
 
-                var connection = new MySqlConnection(connectionString);
-
-                string sql = "DELETE FROM Position WHERE PositionId = @positionid";
-
-                var parameter = new { positionId = positionId };
-
-                try
-                {
-                    connection.Execute(sql, parameter);
-
-                    return StatusCode(204, "Deleted");
-                }
-                catch (System.Exception)
-                {
-                    return StatusCode(500, "There was an error when deleting");
-                }
+               return StatusCode(204, "Đã xóa vị trí");
             }
             catch (System.Exception e)
             {
