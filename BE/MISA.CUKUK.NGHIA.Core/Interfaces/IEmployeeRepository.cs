@@ -9,5 +9,7 @@ namespace MISA.CUKUK.NGHIA.Core.Interfaces
 {
     public interface IEmployeeRepository: IBaseRepository<Employee>
     {
+        Employee GetByCode(string code);
+
     }
 }

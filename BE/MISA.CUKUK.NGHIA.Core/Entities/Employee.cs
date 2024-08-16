@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MISA.CUKUK.NGHIA.Core.CustomValidation;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +18,7 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// <summary>
         /// Employee Code
         /// </summary>
+        [Required(ErrorMessage="Mã nhân viên không được để trống")]
         public string EmployeeCode { get; set; } = string.Empty;
 
         /// <summary>
@@ -31,21 +34,25 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// <summary>
         /// Employee Full Name
         /// </summary>
+        [Required(ErrorMessage="Họ và tên không được để trống")]
         public string FullName { get; set; } = string.Empty;
 
         /// <summary>
         /// Date of Birth
         /// </summary>
+        [DateGreaterThanToday]
         public DateTime DateOfBirth { get; set; }
 
         /// <summary>
         /// Số CCCD
         /// </summary>
+        [Required(ErrorMessage="Số CCCD không được để trống")]
         public string NationalityId { get; set; } = string.Empty;
 
         /// <summary>
         /// Ngày cấp
         /// </summary>
+        [DateGreaterThanToday]
         public DateTime NationalityIdDate { get; set; }
 
         /// <summary>
@@ -69,6 +76,7 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// <summary>
         /// Số điện thoại di động
         /// </summary>
+        [Required(ErrorMessage="Số điện thoại không được để trống")]
         public string MobilePhoneNumber { get; set; } = string.Empty;
 
         /// <summary>
@@ -79,6 +87,8 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// <summary>
         /// Email
         /// </summary>
+        [Required(ErrorMessage="Email không được để trống")]
+        [EmailAddress(ErrorMessage="Email không đúng định dạng")]
         public string Email { get; set; } = string.Empty;
 
         /// <summary>
@@ -99,11 +109,13 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// <summary>
         /// Người tạo
         /// </summary>
+        
         public string CreatedBy { get; set; } = string.Empty;
 
         /// <summary>
         /// Ngày tạo
         /// </summary>
+        [DateGreaterThanToday]
         public DateTime CreatedDate { get; set; }
 
         /// <summary>
@@ -114,6 +126,7 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// <summary>
         /// Ngày sửa
         /// </summary>
+        [DateGreaterThanToday]
         public DateTime ModifiedDate { get; set; }
 
     

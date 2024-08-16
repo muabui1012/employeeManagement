@@ -5,6 +5,9 @@ using MySqlConnector;
 using System;
 using MISA.CUKUK.NGHIA.Core.Entities;
 using System.Reflection.Metadata;
+using MISA.CUKUK.NGHIA.Core.Interfaces;
+using Microsoft.Extensions.Logging.Abstractions;
+using MISA.CUKUK.NGHIA.Core.DTOs;
 
 namespace MISA.CUKUK.NGHIA.Api.Controllers
 {
@@ -16,6 +19,15 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
+        IEmployeeService employeeService;
+        IEmployeeRepository employeeRepository;
+
+        public EmployeesController(IEmployeeService service, IEmployeeRepository repository)
+        {
+            this.employeeService = service;
+            this.employeeRepository = repository;
+        }
+
         /// <summary>
         /// Danh sách nhân viên
         /// Author: Nghia (16/08/2024)
@@ -26,19 +38,12 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         {   
             try
             {
-                string connectionString =
-                    "Host=8.222.228.150;" +
-                    "Port=3306;" +
-                    "User Id=manhnv;" +
-                    "Password=12345678;" +
-                    "Database=UET_21020472_DaoXuanNghia";
-                    
-                
-                var connection = new MySqlConnection(connectionString);
+                var employees = employeeRepository.Get();
 
-                var sql = "SELECT * FROM Employee";
-
-                var employees = connection.Query<Employee>(sql);
+                if (employees.Count == 0)
+                {
+                    return StatusCode(204, "No content");
+                }
 
                 return StatusCode(200, employees);
 
@@ -62,25 +67,11 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         {
             try
             {
-                string connectionString =
-                    "Host=8.222.228.150;" +
-                    "Port=3306;" +
-                    "User Id=manhnv;" +
-                    "Password=12345678;" +
-                    "Database=UET_21020472_DaoXuanNghia";
-                ;
+                var employee = employeeRepository.GetById(employeeId);
 
-                var connection = new MySqlConnection(connectionString);
-
-                var sql = "SELECT * FROM Employee WHERE EmployeeId = @EmployeeId";
-
-                var paramater = new { EmployeeId = employeeId };
-
-                var employee = connection.Query<Employee>(sql, paramater);
-
-                if (employee.Any())
+                if (employee != null)
                 {
-                    return Ok(employee.First());
+                    return StatusCode(200, employee);
                     
                 }
                 else
@@ -97,267 +88,56 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         }
 
 
-        /// <summary>
-        /// validate field of employee
-        /// </summary>
-        /// <param name="employee"></param>
-        /// <param name="errorList"></param>
-        /// <returns></returns>
-        public static bool validateFieldEmployee(Employee employee, List<string> errorList)
-        {
-            if (employee.FullName == null || employee.FullName == "")
-            {
-                errorList.Add("Full name is required");
-                return false;
-            }
-
-            if (employee.EmployeeCode == null || employee.EmployeeCode == "")
-            {
-                errorList.Add("Employee code is required");
-                return false;
-            }
-
-
-            if (employee.DepartmentId == Guid.Empty)
-            {
-                errorList.Add("Department is required");
-                return false;
-            }
-
-            if (employee.PositionId == Guid.Empty)
-            {
-                errorList.Add("Position is required");
-                return false;
-            }
-
-            return true;
-        }
-
-        public static Employee getEmployee(Guid employeeId)
-        {
-            string connectionString =
-                    "Host=8.222.228.150;" +
-                    "Port=3306;" +
-                    "User Id=manhnv;" +
-                    "Password=12345678;" +
-                    "Database=UET_21020472_DaoXuanNghia";
-            ;
-
-            var connection = new MySqlConnection(connectionString);
-
-            var sql = "SELECT * FROM Employee WHERE EmployeeId = @EmployeeId";
-
-            var paramater = new { EmployeeId = employeeId };
-
-            var employee = connection.Query<Employee>(sql, paramater);
-
-            if (employee.Any())
-            {
-                return employee.First();
-
-            }
-            return null;
-        }
-
-
-        public static bool employeeCodeCheck(string employeeCode, List<string> errorList)
-        {
-            string connectionString =
-                  "Host=8.222.228.150;" +
-                  "Port=3306;" +
-                  "User Id=manhnv;" +
-                  "Password=12345678;" +
-                  "Database=UET_21020472_DaoXuanNghia";
-            ;
-
-            var connection = new MySqlConnection(connectionString);
-
-            var sql = "SELECT * FROM Employee WHERE EmployeeCode = @EmployeeCode";
-
-            var paramater = new { EmployeeCode = employeeCode };
-            try
-            {
-                var employee = connection.Query<Employee>(sql, paramater);
-
-                if (employee.Any())
-                {
-                    errorList.Add("Employee code is existed");
-                    return false;
-                }
-            }
-            catch (System.Exception)
-            {
-                return false;
-            }   
-            return true;
-
-        }
-
-        /// <summary>
-        /// validate data of employee
-        /// </summary>
-        /// <param name="employee"></param>
-        /// <param name="errorList"></param>
-        /// <returns></returns>
-        public static bool validateDataEmployee(Employee employee, List<string> errorList)
-        {
-
-            if (employee.DateOfBirth > DateTime.Now)
-            {
-                errorList.Add("Date of birth is not valid");
-                return false;
-            }
-
-            if (employee.NationalityIdDate > DateTime.Now)
-            {
-                errorList.Add("NationalIdDate is not valid");
-
-            }
-
-            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(employee.Email, emailPattern))
-            {
-                errorList.Add("Email is not valid");
-                return false;
-            }
-           
-            return true;
-        }
-
-
-        private static (string FirstName, string Lastname) splitFullName(string fullName)
-        {
-            if (string.IsNullOrEmpty(fullName))
-            {
-                return ("", "");
-            }
-            string[] names = fullName.Split(" ");
-            string firstName = names[0];
-            string lastName = string.Join(" ", names, 1, names.Length - 1); ;
-            return (firstName, lastName);
-        }
-
         [HttpPost]
         public IActionResult InsertEmployee(Employee employee)
         {
            
             try
             {
+                ServiceResult validation = (ServiceResult)employeeService.InsertService(employee);
                 
+                if (!validation.Success)
+                {
+                    return StatusCode(409, validation.Message);
+                }
 
-                
-               
+                var result = employeeRepository.Insert(employee);
 
-
-                
-
-               
-              
-
+                return StatusCode(201, new
+                {
+                    Message = "Inserted",
+                    EmployeeCode = employee.EmployeeCode
+                });
             }
             catch (System.Exception e)
             {
-                return StatusCode(500, e);
+                return StatusCode(500, e.Message);
             }
 
-            return StatusCode(201, "Inserted");
         }
 
         [HttpPut]
         public IActionResult UpdateEmployee([FromBody] Employee employee)
         {
-            
-            List<string> errorList = new List<string>();
-            Employee oldEmployee = getEmployee(employee.EmployeeId);
-            if (oldEmployee == null)
-            {
-                return StatusCode(404, "Employee not found");
-            }
-            bool changed = false;
-
-            if (!object.Equals(employee.EmployeeCode, oldEmployee.EmployeeCode))
-            {
-                changed = true;
-                errorList.Add("You can not change the EmployeeCode");
-            }
-
-            if (!validateDataEmployee(employee, errorList) || changed)
-            {
-                return StatusCode(400, String.Join("\n", errorList));
-            }
-
             try
             {
-                string connectionString =
-                  "Host=8.222.228.150;" +
-                  "Port=3306;" +
-                  "User Id=manhnv;" +
-                  "Password=12345678;" +
-                  "Database=UET_21020472_DaoXuanNghia";
-                var connection = new MySqlConnection(connectionString);
-
-                var sql =   "UPDATE Employee SET " +
-                            "DepartmentId = @DepartmentId, " +
-                            "PositionId = @PositionId, " +
-                            "ModifiedBy = @ModifiedBy, " +
-                            "ModifiedDate = @ModifiedDate, " +
-                            "FullName = @FullName, " +
-                            "FirstName = @FirstName, " +
-                            "LastName = @LastName, " +
-                            "DateOfBirth = @DateOfBirth, " +
-                            "NationalityId = @NationalityId, " +
-                            "NationalityIdDate = @NationalityIdDate, " +
-                            "NationalityIdPlace = @NationalityIdPlace, " +
-                            "Gender = @Gender, " +
-                            "Address = @Address, " +
-                            "MobilePhoneNumber = @MobilePhoneNumber, " +
-                            "TelephoneNumber = @TelephoneNumber, " +
-                            "Email = @Email, " +
-                            "BankAccount = @BankAccount, " +
-                            "BankName = @BankName, " +
-                            "BankBranch = @BankBranch " +
-                            "WHERE EmployeeId = @EmployeeId";
-
-                var parameter = new
+                var result = employeeRepository.Update(employee);
+                
+                if (result == 0)
                 {
-                    employee.DepartmentId,
-                    employee.PositionId,
-                    ModifiedBy = "Nghia",
-                    ModifiedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                    employee.FullName,
-                    splitFullName(employee.FullName).FirstName,
-                    splitFullName(employee.FullName).Lastname,
-                    employee.DateOfBirth,
-                    employee.NationalityId,
-                    employee.NationalityIdDate,
-                    employee.NationalityIdPlace,
-                    employee.Gender,
-                    employee.Address,
-                    employee.MobilePhoneNumber,
-                    employee.TelephoneNumber,
-                    employee.Email,
-                    employee.BankAccount,
-                    employee.BankName,
-                    employee.BankBranch,
-                    employee.EmployeeId
-
-
-                };
-              
-                try
-                {
-                    connection.Execute(sql, parameter);
-
-                } catch (System.Exception e)
-                {
-                    return StatusCode(500, "ALDKALKD" + e);
+                    return StatusCode(400, "Invalid data");
                 }
 
-                return StatusCode(200, "Updated");
+                return StatusCode(200, new
+                {
+                    Message = "Updated",
+                    Employee = employee 
+                });
+
             }
             catch (System.Exception e)
             {
-                return StatusCode(500, e);
+                return StatusCode(500, e.Message);
             }
         }
 
@@ -367,27 +147,18 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         {
             try
             {
-                string connectionString =
-                    "Host=8.222.228.150;" +
-                    "Port=3306;" +
-                    "User Id=manhnv;" +
-                    "Password=12345678;" +
-                    "Database=UET_21020472_DaoXuanNghia";
-                ;
+                var result = employeeRepository.Delete(employeeId);
 
-                var connection = new MySqlConnection(connectionString);
-
-                string sql = "DELETE FROM Employee WHERE EmployeeId = @employeeId";
-
-                var parameter = new {employeeId = employeeId.ToString()};
-
-                try {       
-                    connection.Execute(sql, parameter);
-                    return StatusCode(204, "Deleted");
-                }
-                catch (System.Exception)
+                if (result != 0)
                 {
-                    return StatusCode(500, "There was an error when deleting");
+                    return StatusCode(204, new
+                    {
+                        Message = "Deleted",
+                        EmployeeId = employeeId
+                    });
+                } else
+                {
+                    return StatusCode(404, "Not found any employee with that EmployeeID");
                 }
 
             }
