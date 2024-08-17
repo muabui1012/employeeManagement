@@ -1,3 +1,4 @@
+using MISA.CUKCUK.NGHIA.Core.Exceptions;
 using MISA.CUKUK.NGHIA.Core.Interfaces;
 using MISA.CUKUK.NGHIA.Core.Services;
 using MISA.CUKUK.NGHIA.Infrastructure.Repository;
@@ -22,12 +23,17 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 var app = builder.Build();
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//Middelware HandleException
+app.UseMiddleware<HandleExceptionMiddleware>();
 
 app.UseAuthorization();
 

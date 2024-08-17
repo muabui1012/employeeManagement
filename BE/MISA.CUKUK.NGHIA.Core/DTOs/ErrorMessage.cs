@@ -8,6 +8,7 @@ namespace MISA.CUKCUK.NGHIA.Core.DTOs
 {
     public class ErrorMessage
     {
+        public int StatusCode { get; set; }
         public string? UserMsg { get; set; }
 
         public object? DevMsg { get; set; }
@@ -18,5 +19,11 @@ namespace MISA.CUKCUK.NGHIA.Core.DTOs
             this.UserMsg = userMsg;
         }
 
+        public ErrorMessage(int statusCode, string? userMsg, object? devMsg)
+        {
+            StatusCode = statusCode;
+            UserMsg = userMsg;
+            DevMsg = devMsg;
+        }
     }
 }

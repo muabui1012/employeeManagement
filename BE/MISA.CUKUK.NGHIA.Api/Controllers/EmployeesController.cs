@@ -52,7 +52,8 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             } 
             catch (System.Exception e)
             {
-                   return StatusCode(500, e);
+                ErrorMessage error = new ErrorMessage("Đã có lỗi xảy ra", e.Message);
+                return StatusCode(500, error);
                    
             }
                         
@@ -77,12 +78,14 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                 }
                 else
                 {
+                    ErrorMessage error = new ErrorMessage("Không tìm thấy bản ghi", "No content");
                     return StatusCode(204, "No content");
                 }
 
             }
             catch (System.Exception e)
             {
+                ErrorMessage error = new ErrorMessage("Đã có lỗi xảy ra", e.Message);
                 return StatusCode(404, e);
             }
 
@@ -112,7 +115,8 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
             catch (System.Exception e)
             {
-                return StatusCode(500, e.Message);
+                ErrorMessage error = new ErrorMessage("Đã có lỗi xảy ra", e.Message);
+                return StatusCode(500, error);
             }
 
         }
@@ -138,7 +142,8 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
             catch (System.Exception e)
             {
-                return StatusCode(500, e.Message);
+                ErrorMessage error = new ErrorMessage("Đã có lỗi xảy ra", e.Message);
+                return StatusCode(500, error);
             }
         }
 
@@ -165,7 +170,8 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
             catch (System.Exception e)
             {
-                return StatusCode(500, e);
+                ErrorMessage error = new ErrorMessage("Đã có lỗi xảy ra", e.Message);
+                return StatusCode(500, error);
             }
         }
 
@@ -180,7 +186,8 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
             catch (System.Exception e)
             {
-                return StatusCode(500, e);
+                ErrorMessage error = new ErrorMessage("Đã có lỗi xảy ra", e.Message);
+                return StatusCode(500, error);
             }
         }
 
@@ -197,7 +204,8 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
             catch (System.Exception e)
             {
-                return StatusCode(500, e.Message);
+                ErrorMessage error = new ErrorMessage("Đã có lỗi xảy ra", e.Message);
+                return StatusCode(500, error);
             }
         }
     }
