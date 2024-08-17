@@ -11,6 +11,8 @@ namespace MISA.CUKUK.NGHIA.Infrastructure.Repository
 {
     public class EmployeeRepository : MISADbContext<Employee>, IEmployeeRepository
     {
+
+
         public Employee GetByCode(string code)
         {
             var sql = "SELECT * FROM Employee WHERE EmployeeCode = @EmployeeCode";
@@ -145,5 +147,32 @@ namespace MISA.CUKUK.NGHIA.Infrastructure.Repository
             string lastName = string.Join(" ", names, 1, names.Length - 1); ;
             return (firstName, lastName);
         }
+
+        public Employee GetWithFilter(int pageSize, int pageNumber, string employeeFilter, string departmentId, string positionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetNewEmployeeCode()
+        {
+            var sql = "SELECT MAX(EmployeeCode) FROM Employee";
+
+            var lastCode = base.connnection.QueryFirstOrDefault<string>(sql);
+
+            return generateNewEmployeeCode(lastCode);
+
+        }
+
+        private string generateNewEmployeeCode(string lastCode)
+        {
+            if (lastCode == null)
+            {
+                return "NV-0001";
+            }
+            string[] code = lastCode.Split("-");
+            int newCode = int.Parse(code[1]) + 1;
+            return "NV-" + newCode.ToString("D4");
+        }
+
     }
 }

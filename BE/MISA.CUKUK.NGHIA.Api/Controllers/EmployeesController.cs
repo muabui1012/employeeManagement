@@ -8,6 +8,7 @@ using System.Reflection.Metadata;
 using MISA.CUKUK.NGHIA.Core.Interfaces;
 using Microsoft.Extensions.Logging.Abstractions;
 using MISA.CUKUK.NGHIA.Core.DTOs;
+using MISA.CUKCUK.NGHIA.Core.DTOs;
 
 namespace MISA.CUKUK.NGHIA.Api.Controllers
 {
@@ -165,6 +166,38 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             catch (System.Exception e)
             {
                 return StatusCode(500, e);
+            }
+        }
+
+        [HttpGet("newEmployeeCode")]
+        public IActionResult GetNewEmployeeCode()
+        {
+            try
+            {
+                var newEmployeeCode = employeeRepository.GetNewEmployeeCode();
+
+                return StatusCode(200, newEmployeeCode);
+            }
+            catch (System.Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
+        [HttpGet("filter")]
+        public IActionResult GetWithFilter([FromBody] EmployeeFilter employeeFilter)
+        {
+            try
+            {
+                var employees = employeeRepository.Get();
+
+                var filteredEmployees = employeeService.filter(employees, employeeFilter);
+                
+                return StatusCode(200, filteredEmployees);
+            }
+            catch (System.Exception e)
+            {
+                return StatusCode(500, e.Message);
             }
         }
     }

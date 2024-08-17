@@ -11,5 +11,9 @@ namespace MISA.CUKUK.NGHIA.Core.Interfaces
     {
         Employee GetByCode(string code);
 
+        Employee GetWithFilter(int pageSize, int pageNumber, string employeeFilter, string departmentId, string positionId);
+
+        string GetNewEmployeeCode();
+
     }
 }

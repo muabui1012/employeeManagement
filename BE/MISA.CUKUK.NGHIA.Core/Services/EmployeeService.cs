@@ -1,4 +1,5 @@
-﻿using MISA.CUKUK.NGHIA.Core.DTOs;
+﻿using MISA.CUKCUK.NGHIA.Core.DTOs;
+using MISA.CUKUK.NGHIA.Core.DTOs;
 using MISA.CUKUK.NGHIA.Core.Entities;
 using MISA.CUKUK.NGHIA.Core.Interfaces;
 using System;
@@ -16,6 +17,50 @@ namespace MISA.CUKUK.NGHIA.Core.Services
         {
             employeeRepository = repository;
         }
+
+        public object filter(List<Employee> employees, EmployeeFilter employeeFilter)
+        {
+            if (employeeFilter.EmployeeCode != null)
+            {
+                employees = employees.Where(e => e.EmployeeCode.Contains(employeeFilter.EmployeeCode)).ToList();
+            }
+
+            if (employeeFilter.FullName != null)
+            {
+                employees = employees.Where(e => e.FullName.Contains(employeeFilter.FullName)).ToList();
+            }
+
+            if (employeeFilter.DepartmentId != null)
+            {
+                employees = employees.Where(e => e.DepartmentId == employeeFilter.DepartmentId).ToList();
+            }
+
+            if (employeeFilter.PositionId != null)
+            {
+                employees = employees.Where(e => e.PositionId == employeeFilter.PositionId).ToList();
+            }
+
+            if (employeeFilter.EmployeeId != null)
+            {
+                employees = employees.Where(e => e.EmployeeId == employeeFilter.EmployeeId).ToList();
+            }
+            
+
+            if (employeeFilter.PageSize != null)
+            {
+                PagedData<Employee> pagedData = new PagedData<Employee>(employees, (int)employeeFilter.PageSize);
+
+                if (employeeFilter.PageNumber != null)
+                {
+                    return pagedData.Data[(int)employeeFilter.PageNumber - 1];
+                }
+
+                return pagedData;
+            }
+            
+            return employees;
+        }
+
         public object InsertService(Employee entity)
         {
             
