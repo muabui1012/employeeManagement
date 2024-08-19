@@ -11,26 +11,79 @@ namespace MISA.CUKUK.NGHIA.Infrastructure.Repository
 {
     public class EmployeeRepository : MISADbContext<Employee>, IEmployeeRepository
     {
+        IDepartmentRepository departmentRepository;
+        IPositionRepository positionRepository;
+
+        public EmployeeRepository(IDepartmentRepository departmentRepository, IPositionRepository positionRepository)
+        {
+            this.departmentRepository = departmentRepository;
+            this.positionRepository = positionRepository;
+        }
+
+        public new List<Employee> Get()
+        {
+            //string sql = "SELECT * FROM Employee ";
+
+
+            string sql = @"
+            SELECT e.*, d.DepartmentName, p.PositionName 
+            FROM Employee e
+            LEFT JOIN Department d ON e.DepartmentId = d.DepartmentId
+            LEFT JOIN Position p ON e.PositionId = p.PositionId";
+
+            List<Employee> employees = base.connnection.Query<Employee>(sql).ToList();
+
+
+            return employees;
+        }
+
+        public new Employee GetById(string id)
+        {
+            string sql = @"
+            SELECT e.*, d.DepartmentName, p.PositionName 
+            FROM Employee e
+            LEFT JOIN Department d ON e.DepartmentId = d.DepartmentId
+            LEFT JOIN Position p ON e.PositionId = p.PositionId
+            WHERE EmployeeId = @EmployeeId";
+            
+            var parameter = new
+            {
+                EmployeeId = id
+            };
+
+            var employee = base.connnection.QueryFirstOrDefault<Employee>(sql, parameter);
+
+            return employee;
+
+        }
 
 
         public Employee GetByCode(string code)
         {
-            var sql = "SELECT * FROM Employee WHERE EmployeeCode = @EmployeeCode";
+            var sql = @"
+            SELECT e.*, d.DepartmentName, p.PositionName
+            FROM Employee e
+            LEFT JOIN Department d ON e.DepartmentId = d.DepartmentId
+            LEFT JOIN Position p ON e.PositionId = p.PositionId
+            WHERE EmployeeCode = @EmployeeCode";
 
             var param = new
             {
                EmployeeCode = code
             };
 
-            var employees = base.connnection.QueryFirstOrDefault<Employee>(sql, param);
+            var employee = base.connnection.QueryFirstOrDefault<Employee>(sql, param);
             
-            return employees;
+            
+
+            return employee;
         }
         
 
 
         public int Insert(Employee employee)
         {
+
             string sql = "INSERT INTO Employee(EmployeeId, EmployeeCode, DepartmentId, PositionId, " +
                                                     "CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, " +
                                                     "FullName, FirstName, LastName, DateOfBirth, " +
@@ -172,6 +225,30 @@ namespace MISA.CUKUK.NGHIA.Infrastructure.Repository
             string[] code = lastCode.Split("-");
             int newCode = int.Parse(code[1]) + 1;
             return "NV-" + newCode.ToString("D4");
+        }
+
+        private Employee fillName(Employee employee)
+        {
+            Employee newEmployee = employee;
+
+            Position position = positionRepository.GetById(employee.PositionId.ToString());
+            if (position == null)
+            {
+                position = new Position();
+            }
+
+            Department department = departmentRepository.GetById(employee.DepartmentId.ToString());
+
+            if (department == null)
+            {
+                department = new Department();
+            }
+
+            newEmployee.DepartmentName = department.DepartmentName;
+            newEmployee.PositionName = position.PositionName;
+
+
+            return newEmployee;
         }
 
     }

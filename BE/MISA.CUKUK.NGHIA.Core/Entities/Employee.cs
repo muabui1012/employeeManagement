@@ -26,10 +26,22 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// </summary>
         public Guid DepartmentId { get; set; } = Guid.Empty;
 
+
+        /// <summary>
+        /// Tên phòng ban
+        /// </summary>
+        public string DepartmentName { get; set; } = string.Empty;
+
+        
         /// <summary>
         /// Position Id
         /// </summary>
         public Guid PositionId { get; set; } = Guid.Empty;
+
+        /// <summary>
+        /// Vị trí
+        /// </summary>
+        public string PositionName { get; set; } = string.Empty;
 
         /// <summary>
         /// Employee Full Name
@@ -41,7 +53,7 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// Date of Birth
         /// </summary>
         [DateGreaterThanToday]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         /// <summary>
         /// Số CCCD

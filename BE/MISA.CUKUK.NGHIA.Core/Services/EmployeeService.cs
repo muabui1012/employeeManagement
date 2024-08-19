@@ -52,7 +52,15 @@ namespace MISA.CUKUK.NGHIA.Core.Services
 
                 if (employeeFilter.PageNumber != null)
                 {
-                    return pagedData.Data[(int)employeeFilter.PageNumber - 1];
+                    SinglePageData singlePageData = new()
+                    {
+                        TotalPage = pagedData.TotalPageNumber,
+                        TotalRecord = employees.Count,
+                        PageSize = (int)employeeFilter.PageSize,
+                        PageNumber = (int)employeeFilter.PageNumber,
+                        Data = pagedData.Data[(int)employeeFilter.PageNumber - 1]
+                    };
+                    return singlePageData;
                 }
 
                 return pagedData;

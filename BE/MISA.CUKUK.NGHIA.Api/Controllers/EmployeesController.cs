@@ -9,6 +9,7 @@ using MISA.CUKUK.NGHIA.Core.Interfaces;
 using Microsoft.Extensions.Logging.Abstractions;
 using MISA.CUKUK.NGHIA.Core.DTOs;
 using MISA.CUKCUK.NGHIA.Core.DTOs;
+using MISA.CUKUK.NGHIA.Infrastructure.Repository;
 
 namespace MISA.CUKUK.NGHIA.Api.Controllers
 {
@@ -22,11 +23,13 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
     {
         IEmployeeService employeeService;
         IEmployeeRepository employeeRepository;
+        IDepartmentRepository departmentRepository;
 
         public EmployeesController(IEmployeeService service, IEmployeeRepository repository)
         {
             this.employeeService = service;
             this.employeeRepository = repository;
+            this.departmentRepository = new DepartmentRepository();
         }
 
         /// <summary>
@@ -94,8 +97,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
 
         [HttpPost]
         public IActionResult InsertEmployee(Employee employee)
-        {
-           
+        {   
             try
             {
                 ServiceResult validation = (ServiceResult)employeeService.InsertService(employee);
@@ -104,7 +106,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                 {
                     return StatusCode(409, validation.Message);
                 }
-
+                
                 var result = employeeRepository.Insert(employee);
 
                 return StatusCode(201, new
@@ -124,6 +126,7 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         [HttpPut]
         public IActionResult UpdateEmployee([FromBody] Employee employee)
         {
+            
             try
             {
                 var result = employeeRepository.Update(employee);
@@ -192,10 +195,33 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
         }
 
         [HttpGet("filter")]
-        public IActionResult GetWithFilter([FromBody] EmployeeFilter employeeFilter)
+        public IActionResult GetWithFilter(
+            [FromQuery(Name = "EmployeeId")] Guid? employeeId,
+            [FromQuery(Name = "EmployeeCode")] string? employeeCode,
+            [FromQuery(Name = "PositionId")] Guid? positionId,
+            [FromQuery(Name = "DepartmentId")] Guid? departmentId,
+            [FromQuery(Name = "FullName")] string? fullName,
+            [FromQuery(Name = "PageNumber")] int? pageNumber,
+            [FromQuery(Name = "PageSize")] int? pageSize
+            
+           
+        )
         {
             try
             {
+
+                EmployeeFilter employeeFilter = new EmployeeFilter()
+                {
+                    EmployeeId = employeeId,
+                    EmployeeCode = employeeCode,
+                    PositionId = positionId,
+                    DepartmentId = departmentId,
+                    FullName = fullName,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+
+               
                 var employees = employeeRepository.Get();
 
                 var filteredEmployees = employeeService.filter(employees, employeeFilter);

@@ -146,7 +146,7 @@ class EmployeePage extends NonePage{
      * Author: Nghia (14/07/2024) 
     */
     loadDepartmentData(){
-        let url = "https://cukcuk.manhnv.net/api/v1/Departments";
+        let url = "http://localhost:5223/api/v1/departments";
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -223,7 +223,7 @@ class EmployeePage extends NonePage{
      * Author: Nghia (14/07/2024) 
     */
     loadPositionData(){
-        let url = "https://cukcuk.manhnv.net/api/v1/Departments";
+        let url = "http://localhost:5223/api/v1/positions";
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -232,32 +232,51 @@ class EmployeePage extends NonePage{
                 return response.json();
             })
             .then(data => {
-                //display data
-                // console.log("loaded dep");
-                // console.log(data);
-                // var depForm = document.getElementById("department");
-                // try {
-                //     document.querySelectorAll(".loaded-department").forEach((item) => {
-                //         depForm.removeChild(item);
-                //     });
-                // } catch(e) {
-                //     console.log(e);
-                // }
-                // data.forEach((item) => {
-                //     var option = document.createElement("option");
-                //     option.innerHTML = item["DepartmentName"];
-                //     option.value =  item["DepartmentId"];
-                //     option.classList.add("loaded-department");
-                //     depForm.appendChild(option);
+                console.log(data);
+                var posForm = document.getElementById("position");
+                if (document.querySelectorAll(".loaded-position") != null) {
+                    try {
+                        document.querySelectorAll("#position > .loaded-position").forEach((item) => {
+                            if (posForm.contains(item)) posForm.removeChild(item);
+                        });
+                    } catch(e) {
+                        console.log(e);
+                    }
+                }
+                data.forEach((item) => {
+                    var option = document.createElement("option");
+                    option.innerHTML = item["PositionName"];
+                    option.value =  item["PositionId"];
+                    option.classList.add("loaded-position");
+                    posForm.appendChild(option);
                     
-                // });
-                // var option = document.createElement("option");
-                // option.innerHTML = "Tất cả";
-                // option.value =  "";
-                depForm.selectedIndex = 0;
-                // depForm.appendChild(option);
-                // this.loadData();
-                document.querySelector("#department-loader").classList.add("hidden");   
+                });
+                posForm.selectedIndex = 0;
+                document.querySelector("#position-loader").classList.add("hidden");
+                try {
+                    var editForm = document.querySelector("#edit-form");
+                    if (editForm !== null) {
+                        var ePosForm = editForm.querySelector("#edit-form #position");
+                        try {
+                            editForm.querySelectorAll(".loaded-position").forEach((item) => {
+                                if (ePosForm.contains(item)) ePosForm.removeChild(item);
+                            });
+                        } catch(e1) {
+                            console.log(e1);
+                        }
+                        data.forEach((item) => {
+                            var option = document.createElement("option");
+                            option.innerHTML = item["PositionName"];
+                            option.value =  item["PositionId"];
+                            option.classList.add("loaded-position");
+                            ePosForm.appendChild(option);
+                            
+                        });
+                        editForm.querySelector("#position-loader").classList.add("hidden");
+                    }
+                } catch (e) {
+                    console.log(e);
+                }    
             })
             .catch(error => {
                 console.log(error);
@@ -275,16 +294,22 @@ class EmployeePage extends NonePage{
     loadData() {
         var depForm = document.getElementById("department-form-select");
         console.log(depForm.value);
-        const header = new Headers();
-        var url = new URL("https://cukcuk.manhnv.net/api/v1/Employees/filter");
-        // url.searchParams.append("departmentId", depForm.value);
-        url.searchParams.append("pageNumber", currentDataPage);
-        url.searchParams.append("pageSize", document.getElementById("numpage-select").value);
+        const header = new Headers({
+        });
+        var url = new URL("http://localhost:5223/api/v1/employees/filter");
+        url.searchParams.append("PageNumber", currentDataPage);
+        url.searchParams.append("PageSize", document.getElementById("numpage-select").value);
         console.log(url);
         console.log(header.toString());
+        const requestBody = {
+            PageNumber: parseInt(currentDataPage),
+            PageSize: parseInt(document.getElementById("numpage-select").value)
+        }
+
         fetch(url, {
             method: "GET",
-            headers: header
+            head: header
+            
             
         })
             .then(response => {
@@ -298,6 +323,7 @@ class EmployeePage extends NonePage{
                 totalRecord = data['TotalRecord'];
                 totalPage = data['TotalPage'];
                 this.displayData(employees);
+                
             })
             .catch(error => {
                 console.log(error);
@@ -370,11 +396,15 @@ class EmployeePage extends NonePage{
                 columnNames.forEach(colName => {
                     const cell = document.createElement('p');
                     if (colName === 'STT') {
-                        cell.textContent = pageSize * (currentDataPage-1) + i + 1; // Set cell text to the row number
+                        cell.textContent = pageSize * (currentDataPage - 1) + i + 1; // Set cell text to the row number
                     } else
                     if (colName === 'Gender') {
                         cell.textContent = genderMap[employee[colName]];
                     } else 
+                    if (colName === 'DateOfBirth') {
+                        var dateDOB = new Date(employee[colName])
+                        cell.textContent = getFormattedDate(dateDOB);
+                    }else 
                     cell.textContent = employee[colName]; // Set cell text to employee data
                     // cell.style.width = tableColSize[iCol]; // Change the width of the td element
                     // console.log("size, ",  tableColSize[iCol]);
@@ -427,6 +457,7 @@ class EmployeePage extends NonePage{
             document.getElementById("employee-code").focus();
             getNewEmployeeCode();
             employeePage.loadDepartmentData();
+            employeePage.loadPositionData();
             console.log("Form opened");
         } catch (error) {
             console.log(error);
@@ -541,22 +572,21 @@ class EmployeePage extends NonePage{
             //Collect data
             var employeeData = 
                 {
-                    "employeeCode": document.getElementById("employee-code").value,
-                    "fullName": document.getElementById("employee-name").value,
-                    "dateOfBirth": document.getElementById("dob").value,
-                    // "Gender": document.getElementById("employee-gender").value,
-                    "positionId": document.getElementById("position").value,
-                    "departmentId": document.getElementById("department").value,
-                    "identityNumber": document.getElementById("id-number").value,
-                    "identityDate": document.getElementById("id-issue-date").value,
-                    "identityPlace": document.getElementById("id-issue-place").value,
-                    "address": document.getElementById("address").value,
-                    "mobile": document.getElementById("mobile").value,
-                    "phone": document.getElementById("phone").value,
-                    "email": document.getElementById("email").value,
-                    "bankAccount": document.getElementById("bank-account").value,
-                    "bankName": document.getElementById("bank-name").value,
-                    "bankBranch": document.getElementById("bank-branch").value,     
+                    "EmployeeCode": document.getElementById("employee-code").value,
+                    "FullName": document.getElementById("employee-name").value,
+                    "DateOfBirth": document.getElementById("dob").value,
+                    "PositionId": document.getElementById("position").value,
+                    "DepartmentId": document.getElementById("department").value,
+                    "NationalityId": document.getElementById("id-number").value,
+                    "NationalityIdDate": document.getElementById("id-issue-date").value,
+                    "NationalityIdPlace": document.getElementById("id-issue-place").value,
+                    "Address": document.getElementById("address").value,
+                    "MobilePhoneNumber": document.getElementById("mobile").value,
+                    "TelephonePhoneNumber": document.getElementById("phone").value,
+                    "Email": document.getElementById("email").value,
+                    "BankAccount": document.getElementById("bank-account").value,
+                    "BankName": document.getElementById("bank-name").value,
+                    "BankBranch": document.getElementById("bank-branch").value,     
                 };
             if (document.getElementById("male").checked) {
                 employeeData["Gender"] = 0;
@@ -572,44 +602,44 @@ class EmployeePage extends NonePage{
             //Validate data
             var isValidated = true;
             var msg = [];
-            if (employeeData['employeeCode'] === "" || employeeData['employeeCode'] === null) {
+            if (employeeData['EmployeeCode'] === "" || employeeData['EmployeeCode'] === null) {
                 console.log("Trống");
                 isValidated = false;
                 msg.push("Mã nhân viên không được để trống\n");
                  
             }
-            if (employeeData['fullName'] === "" || employeeData['fullname'] === null) {
+            if (employeeData['FullName'] === "" || employeeData['Fullname'] === null) {
                 console.log("Trống");
                 isValidated = false;
                 msg.push("Họ và tên không được để trống\n");
             }
-            if (employeeData['identityNumber'] === "" || employeeData['identityNumber'] === null) {
+            if (employeeData['NationalityId'] === "" || employeeData['NationalityId'] === null) {
                 isValidated = false;
                 msg.push("Số CMTND không được để trống\n");
             }
-            if (employeeData['mobile'] === "" || employeeData['mobile'] === null) {
+            if (employeeData['MobilePhoneNumber'] === "" || employeeData['MobilePhoneNumber'] === null) {
                 isValidated = false;
                 msg.push("Số ĐT Di động không được để trống\n");
             } else {
                 const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
-                const isValidPhone = phoneRegex.test(employeeData['mobile']);
+                const isValidPhone = phoneRegex.test(employeeData['MobilePhoneNumber']);
                 if (!isValidPhone) {
                     isValidated = false;
                     msg.push("Số ĐT Di động không hợp lệ\n");
                 }
             }
-            if (employeeData['email'] === "" || employeeData['email'] === null) {
+            if (employeeData['Email'] === "" || employeeData['Email'] === null) {
                 isValidated = false;
                 msg.push("Email không được để trống\n");
             }
             const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-            const isValidEmail = regex.test(employeeData['email']);
+            const isValidEmail = regex.test(employeeData['Email']);
             if (!isValidEmail) {
                 isValidated = false;
                 msg.push("Email không hợp lệ\n");
             }
 
-            const inputDate = new Date(employeeData['dateOfBirth']); // Example: employeeData['dateOfBirth']
+            const inputDate = new Date(employeeData['DateOfBirth']); // Example: employeeData['dateOfBirth']
             inputDate.setHours(0, 0, 0, 0); // Set time to start of the day
 
             const today = new Date();
@@ -620,7 +650,7 @@ class EmployeePage extends NonePage{
                 msg.push("Ngày sinh không được vượt quá hiện tại\n");
             } 
             
-            const inputDate1 = new Date(employeeData['identityDate']); // Example: employeeData['dateOfBirth']
+            const inputDate1 = new Date(employeeData['NationalityIdDate']); // Example: employeeData['dateOfBirth']
             inputDate1.setHours(0, 0, 0, 0); // Set time to start of the day
 
             if (inputDate1 > today) {
@@ -629,7 +659,7 @@ class EmployeePage extends NonePage{
 
             if (isValidated) {
                 //Send data to server
-                let url = "https://cukcuk.manhnv.net/api/v1/Employees";
+                let url = "http://localhost:5223/api/v1/employees";
                 fetch(url,
                     {
                         method: "POST",
@@ -640,9 +670,11 @@ class EmployeePage extends NonePage{
                     }
                 )
                     .then(response => {
-                        console.log(response.body);
+                        console.log("-------",response.status);
+                        console.log(response.body.errors);
                         if (!response.ok) {
-                            throw new Error('Network response error');
+                            console.log(response.body.errors);
+                            
                         }
                         return response.text();
                     })
@@ -812,7 +844,7 @@ function openNav(){
  */
 function getNewEmployeeCode() {
     try {
-        let url = "https://cukcuk.manhnv.net/api/v1/Employees/NewEmployeeCode";
+        let url = "http://localhost:5223/api/v1/employees/newEmployeeCode";
         fetch(url)
             .then(response => {
                 console.log(response.body);
@@ -866,6 +898,7 @@ function highlightRow(event, rowElement, eid, eCode, currentEmployee) {
     editButton.classList.add("grey-button");
     editButton.classList.add("small-icon-button");
     employeePage.loadDepartmentData();
+    employeePage.loadPositionData();
     editButton.addEventListener('click', () => {
         
         editEmployee(eid, eCode, currentEmployee);
@@ -904,18 +937,16 @@ function editEmployee(eid, eCode, currentEmployee) {
         // close2.addEventListener('click', closeEditForm);
 
         document.querySelector("body").insertBefore(editForm, form);
-
-
         editForm.querySelector("#close-form-btn").addEventListener('click', closeEditForm);
         editForm.querySelector("#hide-form-btn").addEventListener('click', closeEditForm);
         editForm.querySelector("#employee-code-loader").classList.add("hidden");
         editForm.querySelector("#employee-code").value = currentEmployee['EmployeeCode'];
         editForm.querySelector("#employee-name").value = currentEmployee['FullName'];
-        editForm.querySelector("#dob").value = currentEmployee['DateOfBirth'].slice(0, 10);
+        editForm.querySelector("#dob").value = currentEmployee['DateOfBirth'];
         editForm.querySelector("#department").value = currentEmployee['DepartmentId'];
         editForm.querySelector("#position").value = currentEmployee['PositionId'];
         editForm.querySelector("#id-number").value = currentEmployee['IdentityNumber'];
-        editForm.querySelector("#id-issue-date").value = currentEmployee['IdentityDate'].slice(0, 10);
+        editForm.querySelector("#id-issue-date").value = currentEmployee['IdentityDate'];
         editForm.querySelector("#id-issue-place").value = currentEmployee['IdentityPlace'];
         editForm.querySelector("#address").value = currentEmployee['Address'];
         editForm.querySelector("#mobile").value = currentEmployee['PhoneNumber'];
@@ -960,23 +991,23 @@ function submitEdit(employeeId) {
 
     var employeeData = 
                 {
-                    // "employeeCode": document.querySelector("#edit-form #employee-code").value,
-                    "fullName": document.querySelector("#edit-form #employee-name").value,
-                    "dateOfBirth": document.querySelector("#edit-form #dob").value,
+                    "EmployeeId": employeeId,
+                    "EmployeeCode": document.querySelector("#edit-form #employee-code").value,
+                    "FullName": document.querySelector("#edit-form #employee-name").value,
+                    "DateOfBirth": document.querySelector("#edit-form #dob").value,
                     // "Gender": document.getElementById("employee-gender").value,
-                    // "Position": document.querySelector("#edit-form #position").value,
-                    "departmentId": document.querySelector("#edit-form #department").value,
-                    "identityNumber": document.querySelector("#edit-form #id-number").value,
-                    "identityDate": document.querySelector("#edit-form #id-issue-date").value,
-                    "identityPlace": document.querySelector("#edit-form #id-issue-place").value,
-                    "address": document.querySelector("#edit-form #address").value,
-                    "mobile": document.querySelector("#edit-form #mobile").value,
-                    "phone": document.querySelector("#edit-form #phone").value,
-                    "email": document.querySelector("#edit-form #email").value,
-                    "bankAccount": document.querySelector("#edit-form #bank-account").value,
-                    "bankName": document.querySelector("#edit-form #bank-name").value,
-                    "bankBranch": document.querySelector("#edit-form #bank-branch").value,     
-                    
+                    "PositionId": document.querySelector("#edit-form #position").value,
+                    "DepartmentId": document.querySelector("#edit-form #department").value,
+                    "NationalityId": document.querySelector("#edit-form #id-number").value,
+                    "NationalityIdDate": document.querySelector("#edit-form #id-issue-date").value,
+                    "NationalityIdPlace": document.querySelector("#edit-form #id-issue-place").value,
+                    "Address": document.querySelector("#edit-form #address").value,
+                    "MobilePhoneNumber": document.querySelector("#edit-form #mobile").value,
+                    "TelephonePhoneNumber": document.querySelector("#edit-form #phone").value,
+                    "Email": document.querySelector("#edit-form #email").value,
+                    "BankAccount": document.querySelector("#edit-form #bank-account").value,
+                    "BankBranch": document.querySelector("#edit-form #bank-branch").value,     
+                    "BankName": document.getElementById("bank-name").value
                 };
     if (document.getElementById("male").checked) {
       employeeData["Gender"] = 0;
@@ -991,50 +1022,50 @@ function submitEdit(employeeId) {
     var isValidated = true;
     var msg = [];
     if (
-      employeeData["employeeCode"] === "" ||
-      employeeData["employeeCode"] === null
+      employeeData["EmployeeCode"] === "" ||
+      employeeData["EmployeeCode"] === null
     ) {
       console.log("Trống");
       isValidated = false;
       msg.push("Mã nhân viên không được để trống\n");
     }
-    console.log(employeeData["fullName"]);
-    if (employeeData["fullName"] === "" || employeeData["fullname"] === null) {
+    console.log(employeeData["FullName"]);
+    if (employeeData["FullName"] === "" || employeeData["Fullname"] === null) {
       console.log("Trống");
       isValidated = false;
       msg.push("Họ và tên không được để trống\n");
     }
     if (
-      employeeData["identityNumber"] === "" ||
-      employeeData["identityNumber"] === null
+      employeeData["NationalityId"] === "" ||
+      employeeData["NationalityId"] === null
     ) {
       isValidated = false;
       msg.push("Số CMTND không được để trống\n");
     }
-    if (employeeData["mobile"] === "" || employeeData["mobile"] === null) {
+    if (employeeData["MobilePhoneNumber"] === "" || employeeData["MobilePhoneNumber"] === null) {
       isValidated = false;
       msg.push("Số ĐT Di động không được để trống\n");
     } else {
         const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
-        const isValidPhone = phoneRegex.test(employeeData['mobile']);
+        const isValidPhone = phoneRegex.test(employeeData['MobilePhoneNumber']);
         if (!isValidPhone) {
             isValidated = false;
             msg.push("Số ĐT Di động không hợp lệ\n");
         }
     }
-    if (employeeData["email"] === "" || employeeData["email"] === null) {
+    if (employeeData["Email"] === "" || employeeData["Email"] === null) {
       isValidated = false;
       msg.push("Email không được để trống\n");
     }
     const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-            const isValidEmail = regex.test(employeeData['email']);
+            const isValidEmail = regex.test(employeeData['Email']);
             if (!isValidEmail) {
                 isValidated = false;
                 msg.push("Email không hợp lệ\n");
             }
 
     if (isValidated) {
-        let url = "https://cukcuk.manhnv.net/api/v1/Employees/" + employeeId;
+        let url = "http://localhost:5223/api/v1/employees/";
 
         fetch(url,
             {
@@ -1048,6 +1079,7 @@ function submitEdit(employeeId) {
             .then(response => {
                 console.log(response.body);
                 if (!response.ok) {
+                    console.log(response.body.errors);
                     throw new Error('Network response error');
                 }
                 return response.text();
@@ -1160,7 +1192,7 @@ function confirmDelete(eid, eCode) {
 function onDeleteData(eid, eCode) {
     confirmDelete(eid, eCode)
         .then((result) => {
-            let url = "https://cukcuk.manhnv.net/api/v1/Employees/" + eid;
+            let url = "http://localhost:5223/api/v1/employees/" + eid;
             fetch(url,
                 {
                     method: "DELETE"
@@ -1191,5 +1223,24 @@ function onDeleteData(eid, eCode) {
             employeePage.hideDialog();
         });
 
+    
+}
 
+
+/**
+ * Formats a given date into a string in the format "MM/DD/YYYY".
+ * 
+ * @param {Date} date - The date to be formatted.
+ * @returns {string} The formatted date string.
+ */
+function getFormattedDate(date) {
+    var year = date.getFullYear();
+  
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : '0' + month;
+  
+    var day = date.getDate().toString();
+    day = day.length > 1 ? day : '0' + day;
+    
+    return day + '/' + month + '/' + year;
 }

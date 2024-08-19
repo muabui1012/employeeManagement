@@ -8,6 +8,10 @@ namespace MISA.CUKCUK.NGHIA.Core.DTOs
 {
     public class PagedData<T>
     {
+        public PagedData()
+        {
+            
+        }
         public PagedData(List<T> inputData, int pageSize)
         {
             this.TotalPageNumber = (int)Math.Ceiling(inputData.Count / (double)pageSize);
@@ -36,6 +40,8 @@ namespace MISA.CUKCUK.NGHIA.Core.DTOs
         public int TotalPageNumber { get; set; }
 
         public int PageSize { get; set; }
+
+        public int PageNumber { get; set; }
 
         public List<List<T>>? Data { get; set; }
     }

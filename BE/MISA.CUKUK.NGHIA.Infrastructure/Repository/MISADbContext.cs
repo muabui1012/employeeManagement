@@ -7,13 +7,18 @@ using System.Threading.Tasks;
 
 using MySqlConnector;
 using Dapper;
+using MISA.CUKUK.NGHIA.Core.Entities;
+using MISA.CUKUK.NGHIA.Core.Interfaces;
 
 
 namespace MISA.CUKUK.NGHIA.Infrastructure.Repository
 {
+   
 
     public class MISADbContext<T> : IDisposable
-    {   
+    {
+
+     
         private string connectionString =
                         "Host=8.222.228.150;" +
                         "Port=3306;" +
@@ -28,7 +33,7 @@ namespace MISA.CUKUK.NGHIA.Infrastructure.Repository
         /// </summary>
         public MISADbContext()
         {
-           connnection = new MySqlConnection(connectionString);
+            connnection = new MySqlConnection(connectionString);
         }
 
         /// <summary>
