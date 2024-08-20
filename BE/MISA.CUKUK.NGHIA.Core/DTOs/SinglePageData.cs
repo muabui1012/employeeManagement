@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MISA.CUKCUK.NGHIA.Core.DTOs
 {
+    /// <summary>
+    /// Dữ liệu của một trang khi tổ chức lại dữ liệu thành từng trang
+    /// </summary>
     public class SinglePageData
     {
         public SinglePageData() { }

@@ -179,7 +179,7 @@ class EmployeePage extends NonePage{
                 // var option = document.createElement("option");
                 // option.innerHTML = "Tất cả";
                 // option.value =  "";
-                depForm.selectedIndex = 0;
+                
                 // depForm.appendChild(option);
                 // this.loadData();
                 document.querySelector("#department-loader").classList.add("hidden");
@@ -251,7 +251,7 @@ class EmployeePage extends NonePage{
                     posForm.appendChild(option);
                     
                 });
-                posForm.selectedIndex = 0;
+                
                 document.querySelector("#position-loader").classList.add("hidden");
                 try {
                     var editForm = document.querySelector("#edit-form");
@@ -292,6 +292,8 @@ class EmployeePage extends NonePage{
      * Author: Nghia (14/07/2024)
      */
     loadData() {
+        this.loadDepartmentData();
+        this.loadPositionData();
         var depForm = document.getElementById("department-form-select");
         console.log(depForm.value);
         const header = new Headers({
@@ -328,6 +330,7 @@ class EmployeePage extends NonePage{
             .catch(error => {
                 console.log(error);
             });
+        
     }
 
     /**
@@ -456,8 +459,8 @@ class EmployeePage extends NonePage{
             document.getElementById("to-blur").classList.add("blured");
             document.getElementById("employee-code").focus();
             getNewEmployeeCode();
-            employeePage.loadDepartmentData();
-            employeePage.loadPositionData();
+            // employeePage.loadDepartmentData();
+            // employeePage.loadPositionData();
             console.log("Form opened");
         } catch (error) {
             console.log(error);
@@ -473,7 +476,7 @@ class EmployeePage extends NonePage{
             document.getElementById("popup-form").classList.remove("hidden");
             document.getElementById("to-blur").classList.add("blured");
             document.getElementById("employee-code").focus();
-            employeePage.loadDepartmentData();
+            // employeePage.loadDepartmentData();
             console.log("Form opened");
         } catch (error) {
             console.log(error);
@@ -674,7 +677,7 @@ class EmployeePage extends NonePage{
                         console.log(response.body.errors);
                         if (!response.ok) {
                             console.log(response.body.errors);
-                            
+                            throw new Error(response.body.errors);
                         }
                         return response.text();
                     })
@@ -682,7 +685,7 @@ class EmployeePage extends NonePage{
                         //display data
                         console.log(data);
                         employeePage.loadData();
-                        employeePage.showSimpleDialog("Thành công", "Bạn đã thêm thành công nhân viên: " + employeeData['employeeCode']);
+                        employeePage.showSimpleDialog("Thành công", "Bạn đã thêm thành công nhân viên: " + employeeData['EmployeeCode']);
                         employeePage.closeForm();
                     })
                     .catch(error => {
@@ -752,14 +755,12 @@ class EmployeePage extends NonePage{
             searchName = document.getElementById("search-input").value;
             // console.log(employees);
             var filter = searchName.toUpperCase;
-            console.log(filter);
             var searchResults = [];
             employees.forEach((filter) => {
                 if (filter['FullName'].toUpperCase().indexOf(searchName) > -1 || filter['EmployeeCode'].toUpperCase().indexOf(searchName) > -1) {
                     searchResults.push(filter);
                 }
             });
-            console.log(searchName);
             employeePage.displayData(searchResults);
             // this.loadData();
         } catch (error) {
@@ -847,7 +848,6 @@ function getNewEmployeeCode() {
         let url = "http://localhost:5223/api/v1/employees/newEmployeeCode";
         fetch(url)
             .then(response => {
-                console.log(response.body);
                 if (!response.ok) {
                     throw new Error('Network response error');
                 }
@@ -855,7 +855,6 @@ function getNewEmployeeCode() {
             })
             .then(data => {
                 //display data
-                console.log(data);
                 document.getElementById("employee-code").value = data;
                 document.querySelector("#employee-code-loader").classList.add("hidden");
             })
@@ -897,10 +896,9 @@ function highlightRow(event, rowElement, eid, eCode, currentEmployee) {
     editButton.appendChild(editIcon);
     editButton.classList.add("grey-button");
     editButton.classList.add("small-icon-button");
-    employeePage.loadDepartmentData();
-    employeePage.loadPositionData();
+    // employeePage.loadDepartmentData();
+    // employeePage.loadPositionData();
     editButton.addEventListener('click', () => {
-        
         editEmployee(eid, eCode, currentEmployee);
     });
     groupButton.appendChild(editButton);
@@ -932,8 +930,6 @@ function editEmployee(eid, eCode, currentEmployee) {
         var form = document.querySelector("#popup-form");
         var editForm = form.cloneNode(true);
         editForm.id = "edit-form";
-        console.log("current", currentEmployee);
-
         // close2.addEventListener('click', closeEditForm);
 
         document.querySelector("body").insertBefore(editForm, form);
@@ -942,15 +938,19 @@ function editEmployee(eid, eCode, currentEmployee) {
         editForm.querySelector("#employee-code-loader").classList.add("hidden");
         editForm.querySelector("#employee-code").value = currentEmployee['EmployeeCode'];
         editForm.querySelector("#employee-name").value = currentEmployee['FullName'];
-        editForm.querySelector("#dob").value = currentEmployee['DateOfBirth'];
+        var dateDOB = new Date(currentEmployee['DateOfBirth']);
+        dateDOB = dateDOB.toISOString().split('T')[0];
+        editForm.querySelector("#dob").value = dateDOB;
         editForm.querySelector("#department").value = currentEmployee['DepartmentId'];
         editForm.querySelector("#position").value = currentEmployee['PositionId'];
-        editForm.querySelector("#id-number").value = currentEmployee['IdentityNumber'];
-        editForm.querySelector("#id-issue-date").value = currentEmployee['IdentityDate'];
-        editForm.querySelector("#id-issue-place").value = currentEmployee['IdentityPlace'];
+        editForm.querySelector("#id-number").value = currentEmployee['NationalityId'];
+        var dateID = new Date(currentEmployee['NationalityIdDate']);
+        dateID = dateID.toISOString().split('T')[0];
+        editForm.querySelector("#id-issue-date").value = dateID;
+        editForm.querySelector("#id-issue-place").value = currentEmployee['NationalityIdPlace'];
         editForm.querySelector("#address").value = currentEmployee['Address'];
-        editForm.querySelector("#mobile").value = currentEmployee['PhoneNumber'];
-        editForm.querySelector("#phone").value = currentEmployee['PhoneNumber'];
+        editForm.querySelector("#mobile").value = currentEmployee['MobilePhoneNumber'];
+        editForm.querySelector("#phone").value = currentEmployee['TelephoneNumber'];
         editForm.querySelector("#email").value = currentEmployee['Email'];
         editForm.querySelector("#bank-account").value = currentEmployee['BankAccount'];
         editForm.querySelector("#bank-name").value = currentEmployee['BankName'];
@@ -963,9 +963,9 @@ function editEmployee(eid, eCode, currentEmployee) {
             editForm.querySelector("#other").checked = true
         }
         
+
         var depForm = editForm.querySelector("#department");
         var depList = editForm.querySelector("#department option");
-        console.log(depList);
         openEditForm();
         var employeeId = currentEmployee['EmployeeId'];
         editForm.querySelector("#form-submit-btn").addEventListener('click', () => {
@@ -1080,7 +1080,7 @@ function submitEdit(employeeId) {
                 console.log(response.body);
                 if (!response.ok) {
                     console.log(response.body.errors);
-                    throw new Error('Network response error');
+                    throw new Error(response.body.errors);
                 }
                 return response.text();
             })
@@ -1089,12 +1089,12 @@ function submitEdit(employeeId) {
                 console.log(data);
                 employeePage.loadData();
                 document.getElementById("edit-form").classList.add("blured");
-                employeePage.showSimpleDialog("Thành công", "Bạn đã sửa thành công nhân viên: " + employeeData['employeeCode']);
+                employeePage.showSimpleDialog("Thành công", "Bạn đã sửa thành công nhân viên: " + employeeData['EmployeeCode']);
                 
             })
             .catch(error => {
                 document.getElementById("edit-form").classList.add("blured");
-                employeePage.showSimpleDialog("Lỗi mạng", "Sửa không thành công do lỗi mạng");
+                employeePage.showSimpleDialog("Đã có lỗi", error);
                 console.log(error);
             });
        
@@ -1138,7 +1138,6 @@ function removeMainBlur() {
  * Opens the edit form and loads department data.
  */
 function openEditForm(){
-    employeePage.loadDepartmentData();
     document.getElementById("to-blur").classList.add("blured");
     document.querySelector("#edit-form").classList.remove("hidden");
 }
