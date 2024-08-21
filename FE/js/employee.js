@@ -95,6 +95,12 @@ class EmployeePage extends NonePage{
             //Select số bản ghi/trang
             document.getElementById("numpage-select").selectedIndex = 0;
             
+            document.getElementById("numpage-select").addEventListener('change', () => {
+                pageSize = document.getElementById("numpage-select").value;
+                currentDataPage = 1;
+                this.loadData();    
+            });
+
             //Button excel  
             document.getElementById("excel-btn").addEventListener('click', this.btnExcelOnClick);
 
@@ -175,7 +181,12 @@ class EmployeePage extends NonePage{
         fetch(url)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response error');
+                    if (response.status === 404) {
+                        employeePage.showSimpleDialog("Lỗi", "Không tìm thấy dữ liệu phòng ban");
+                        throw new Error('Không tìm thấy dữ liệu phòng ban');
+                    }
+                    showSimpleDialog("Lỗi", "Đã có lỗi xảy ra");
+                    throw new Error('Đã có lỗi xảy ra');
                 }
                 return response.json();
             })
@@ -252,6 +263,12 @@ class EmployeePage extends NonePage{
         fetch(url)
             .then(response => {
                 if (!response.ok) {
+                    if (response.status === 404) {
+                        employeePage.showSimpleDialog("Lỗi", "Không tìm thấy dữ liệu vị trí");
+                        throw new Error('Không tìm thấy dữ liệu vị trí');
+                    }
+                    showSimpleDialog("Lỗi", "Đã có lỗi xảy ra");
+                    
                     throw new Error('Network response error');
                 }
                 return response.json();
@@ -340,7 +357,12 @@ class EmployeePage extends NonePage{
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response error');
+                    if (response.status === 404) {
+                        employeePage.showSimpleDialog("Lỗi", "Không tìm thấy dữ liệu nhân viên");
+                        throw new Error('Không tìm thấy dữ liệu nhân viên');
+                    }
+                    showSimpleDialog("Lỗi", "Đã có lỗi xảy ra, không thể tải dữ liệu");
+                    throw new Error('Đã có lỗi xảy ra');
                 }
                 return response.json();
             })
@@ -493,7 +515,9 @@ class EmployeePage extends NonePage{
             fetch(url)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response error');
+
+                        employeePage.showSimpleDialog("Lỗi", "Không thể tải file Excel");
+                        
                     }
                     return response.blob();
                 })
@@ -642,6 +666,7 @@ class EmployeePage extends NonePage{
             console.log(response.body.errors);
             if (!response.ok) {
               console.log(response.body.errors);
+              employeePage.showSimpleDialog("Lỗi", "Thêm không thành công");
               throw new Error(response.body.errors);
             }
             return response.text();
@@ -784,7 +809,8 @@ class EmployeePage extends NonePage{
             console.log(response.body.errors);
             if (!response.ok) {
                 console.log(response.body.errors);
-                throw new Error(response.body.errors);
+                employeePage.showSimpleDialog("Lỗi", "Thêm không thành công");
+                throw new Error("Thêm không thành công");
             }
             return response.text();
         })
@@ -1027,6 +1053,7 @@ class EmployeePage extends NonePage{
             inputDate1.setHours(0, 0, 0, 0); // Set time to start of the day
 
             if (inputDate1 > today) {
+                isValidated = false;
                 msg.push("Ngày cấp CMTND không được vượt quá hiện tại\n");
             } 
 
@@ -1044,10 +1071,26 @@ class EmployeePage extends NonePage{
                 )
                     .then(response => {
                         console.log("-------",response.status);
-                        console.log(response.body.errors);
+                        console.log(response.body);
                         if (!response.ok) {
-                            console.log(response.body.errors);
-                            throw new Error(response.body.errors);
+                            if (response.status === 409) {
+                                employeePage.showSimpleDialog("Lỗi", "Mã nhân viên đã tồn tại");
+                               throw new Error("Mã nhân viên đã tồn tại");
+                            }
+
+                            if (response.status === 400) {
+                                employeePage.showSimpleDialog("Lỗi", "Dữ liệu không hợp lệ");
+                                throw new Error("Dữ liệu không hợp lệ");
+                            }
+
+                            if (response.status === 500) {
+                                employeePage.showSimpleDialog("Lỗi", "Lỗi server");
+                                throw new Error("Lỗi server");
+                            }
+
+                            employeePage.showSimpleDialog("Lỗi", "Lỗi server");
+                            throw new Error('Đã có lỗi xảy ra');
+
                         }
                         return response.text();
                     })
@@ -1383,12 +1426,12 @@ function submitEdit(employeeId) {
                     "EmployeeId": employeeId,
                     "EmployeeCode": document.querySelector("#edit-form #employee-code").value,
                     "FullName": document.querySelector("#edit-form #employee-name").value,
-                    "DateOfBirth": document.querySelector("#edit-form #dob").value,
+                    //"DateOfBirth": document.querySelector("#edit-form #dob").value,
                     // "Gender": document.getElementById("employee-gender").value,
                     "PositionId": document.querySelector("#edit-form #position").value,
                     "DepartmentId": document.querySelector("#edit-form #department").value,
                     "NationalityId": document.querySelector("#edit-form #id-number").value,
-                    "NationalityIdDate": document.querySelector("#edit-form #id-issue-date").value,
+                    //"NationalityIdDate": document.querySelector("#edit-form #id-issue-date").value,
                     "NationalityIdPlace": document.querySelector("#edit-form #id-issue-place").value,
                     "Address": document.querySelector("#edit-form #address").value,
                     "MobilePhoneNumber": document.querySelector("#edit-form #mobile").value,
@@ -1405,6 +1448,17 @@ function submitEdit(employeeId) {
     } else {
       employeeData["Gender"] = 2;
     }    
+
+    var dob = document.getElementById("dob").value;
+    if (dob) {
+      employeeData["DateOfBirth"] = dob;
+    }
+    var iddate = document.getElementById("id-issue-date").value;
+
+    if (iddate) {
+      employeeData["NationalityIdDate"] = iddate;
+    }
+
     console.log("submiting", employeeData);
     console.log("checking", employeeData["fullName"]);
     //Validate data
@@ -1469,6 +1523,7 @@ function submitEdit(employeeId) {
                 console.log(response.body);
                 if (!response.ok) {
                     console.log(response.body.errors);
+                    employeePage.showSimpleDialog("Lỗi", "Sửa không thành công.");
                     throw new Error(response.body.errors);
                 }
                 return response.text();
@@ -1589,6 +1644,7 @@ function onDeleteData(eid, eCode) {
                 .then(response => {
                     console.log(response.body);
                     if (!response.ok) {
+                        employeePage.showSimpleDialog("Lỗi", "Xoá không thành công.");
                         throw new Error('Network response error');
                     }
                     return response.text();
@@ -1646,6 +1702,7 @@ function onDeletePosition(position) {
                     .then(response => {
                         console.log(response.body);
                         if (!response.ok) {
+                            employeePage.showSimpleDialog("Lỗi", "Xoá không thành công.");
                             throw new Error('Network response error');
                         }
                         return response.text();
@@ -1703,6 +1760,7 @@ function submitEditPosition(position) {
         .then(response => {
             console.log("kdaslksdsalkdsa", response.body);
             if (!response.ok) {
+                employeePage.showSimpleDialog("Lỗi", "Sửa không thành công");
                 throw new Error('Network response error');
             }
             return response.text();
@@ -1733,6 +1791,7 @@ function onDeleteDepartment(department) {
                 .then (response => {
                     console.log(response.body);
                     if (!response.ok) {
+                        employeePage.showSimpleDialog("Lỗi", "Xoá không thành công.");
                         throw new Error('Network response error');
                     }
                     return response.text();
@@ -1795,6 +1854,7 @@ function submitEditDepartment(department){
         .then (response => {
             console.log("kdaslksdsalkdsa", response.body);
             if (!response.ok) {
+                employeePage.showSimpleDialog("Lỗi", "Dữ liệu không hợp lệ");
                 throw new Error('Network response error');
             }
             return response.text();
