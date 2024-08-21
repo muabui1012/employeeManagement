@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace MISA.CUKCUK.NGHIA.Core.DTOs
 {
+
+    /// <summary>
+    /// Gửi lỗi về cho client
+    /// </summary>
     public class ErrorMessage
     {
         public int StatusCode { get; set; }

@@ -11,6 +11,7 @@ namespace MISA.CUKUK.NGHIA.Core.Interfaces
 {
     public interface IEmployeeService: IBaseService<Employee>
     {
+       
         public object filter(List<Employee> employees, EmployeeFilter employeeFilter);
     }
 }

@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 
 namespace MISA.CUKCUK.NGHIA.Core.Exceptions
 {
+
+    /// <summary>
+    /// Xử lý exception 
+    /// </summary>
     public class HandleExceptionMiddleware
     {
         private RequestDelegate _next;

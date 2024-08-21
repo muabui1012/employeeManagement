@@ -14,7 +14,9 @@
         @import url("css/components/popupform.css");
         @import url("css/components/scrolltable.css");
         @import url("css/components/dialog.css");
+        @import url("css/components/pdtable.css");
         @import url("css/pages/employee.css");
+        
     </style>
     <title>Danh mục nhân viên | Nhân viên | Cukcuk</title>
 </head>
@@ -113,16 +115,24 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="mtch-item" id = "mtch-item2">
+                            <!-- <div class="mtch-item" id = "mtch-item2">
+                                <button class="green-button primary-button" id="" title="">Quản lý phòng</button>
+                            </div>
+                            <div class="mtch-item" id = "mtch-item3">
+                                <button class="green-button primary-button" id="" title="">Quản lý vị trí</button>
+                            </div> -->
+                           
+                            <div class="mtch-item" id = "mtch-item4">
                                 <button class="grey-button icon-button" id="excel-btn" title="excel">
                                     <img src="assets\icon\export-excel-50.png" alt="excel-btn">
                                 </button>
                             </div>
-                            <div class="mtch-item" id = "mtch-item3">
+                            <div class="mtch-item" id = "mtch-item5">
                                 <button class="grey-button icon-button" id="refresh-btn" title="reload">
                                     <img src="assets\icon\refresh.png" alt="refresh-btn">
                                 </button>
                             </div>
+                           
                         </div>
                         <div class="main-tbl-container-tbl">
                             <table class="scrolldown">
@@ -221,7 +231,9 @@
                     <div class="form-group form-position">
                         <div class="selection-container">
                             <label class="field-label font-heading3" for="position">Vị trí <span id="position-loader" class="loader hidden"></span></label>
+                            <span><button class="green-button primary-button" id="position-crud-btn" title="">Quản lý vị trí</button></span>
                             <select class="field-box fbp combobox" id="position">
+                                <!-- <option value="add-position" id="crud-position"><span class="select-text">-Thêm/Sửa/Xoá vị trí-</span></option> -->
                                 <option value="None" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
                             </select>
                             <div class="field-border field-border-p"></div>
@@ -238,6 +250,7 @@
                     <div class="form-group form-department">
                         <div class="selection-container">
                             <label class="field-label font-heading3" for="department">Phòng ban <span id="department-loader" class="loader"></span></label>
+                            <span><button class="green-button primary-button" id="department-crud-btn" title="">Quản lý phòng ban</button></span>
                             <select class="field-box fbp combobox" id="department">
                                 <option value="" disabled selected><span class="select-text">-Chọn giá trị-</span></option>
                                 
@@ -328,7 +341,75 @@
         </div>
     </span>
 
-    
+    <span class="msg-dialog-simple hidden" id="position-crud-dialog">
+        <div class="dlg-container">
+            <div class="dlg-heading">
+                <h1 class="dlg-title font-heading1" id="dlgs-title">Vị trí</h1>
+                <span class="close-dlg">
+                    <button class="grey-button icon-button" id="close-position-crud-dialog-btn" title="close">
+                        <img src="assets\icon\close-48.png" alt="close">
+                    </button>
+                </span>
+            </div>
+            <div class="dlg-main" id="dlg-main-id">
+                <div class="form-control">
+                    <form class="add-position-form font-body1">
+                        <div class="form-group">
+                            <label class="field-label font-heading3" for="new-position-name">Tên vị trí<span class="star">*</span></label>
+                            <input class="field-box" type="text" id="new-position-name" required>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="dlg-action">
+                <button id="submit-position-edit" class="primary-button green-button confirm-dlg-btn">Sửa</button>
+                <button id="submit-position-crud" class="primary-button green-button confirm-dlg-btn">Thêm</button>
+            </div>
+            <div>
+                <table class="pd-table" id>
+                    <thead>
+                        
+                    </thead>
+                    <tbody id="position-tbl-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </span>
+
+    <span class="msg-dialog-simple hidden" id="department-crud-dialog">
+        <div class="dlg-container">
+            <div class="dlg-heading">
+                <h1 class="dlg-title font-heading1" id="dlgs-title">Phòng ban</h1>
+                <span class="close-dlg">
+                    <button class="grey-button icon-button" id="close-department-crud-dialog-btn" title="close">
+                        <img src="assets\icon\close-48.png" alt="close">
+                    </button>
+                </span>
+            </div>
+            <div class="dlg-main" id="dlg-main-id">
+                <div class="form-control">
+                    <form class="add-department-form font-body1">
+                        <div class="form-group">
+                            <label class="field-label font-heading3" for="new-department-name">Phòng ban<span class="star">*</span></label>
+                            <input class="field-box" type="text" id="new-department-name" required>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="dlg-action">
+                <button id="submit-department-edit" class="primary-button green-button confirm-dlg-btn">Sửa</button>
+                <button id="submit-department-crud" class="primary-button green-button confirm-dlg-btn">Thêm</button>
+            </div>
+            <div>
+                <table class="pd-table" id>
+                    <thead>
+                        
+                    </thead>
+                    <tbody id="department-tbl-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </span>
     
     
     <script src="js/employee.js"></script>

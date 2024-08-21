@@ -60,7 +60,7 @@
     grid-row-start: 1;
     grid-row-end: 2;
     display: grid;
-    grid-template-columns: 200px auto 36px 8px 36px 8px;
+    grid-template-columns: 200px auto 80px 8px 80px 8px 36px 8px 36px 8px;
 }
 
 .mtcf-item {
@@ -70,6 +70,7 @@
 }
 
 #mtch-item1 {
+    
     grid-column-start: 1;
     grid-column-end: 2;
 }
@@ -79,11 +80,22 @@
     grid-column-start: 3;
     grid-column-end: 4;
 }
-
 #mtch-item3 {
     margin-top: 10px;
     grid-column-start: 5;
     grid-column-end: 6;
+}
+
+#mtch-item4 {
+    margin-top: 10px;
+    grid-column-start: 7;
+    grid-column-end: 8;
+}
+
+#mtch-item5 {
+    margin-top: 10px;
+    grid-column-start: 9;
+    grid-column-end: 10;
 }
 
 .main-tbl-container-tbl {

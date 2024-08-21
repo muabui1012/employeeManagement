@@ -12,6 +12,23 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+#msg-dialog-simple {
+    position: absolute;
+    z-index: 1000;
+}
+
+#position-crud-dialog{
+    position: absolute;
+    top: 35%;
+    z-index: 999;
+}
+
+
+#department-crud-dialog{
+    position: absolute;
+    top: 35%;
+    z-index: 999;
+}
 
 .dlg-container {
     width: 400px;

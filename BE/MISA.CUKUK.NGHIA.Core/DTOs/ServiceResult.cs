@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MISA.CUKUK.NGHIA.Core.DTOs
 {
+    /// <summary>
+    /// Kết quả thực hiện service
+    /// </summary>
     public class ServiceResult
     {
         public bool Success { get; set; }

@@ -46,6 +46,7 @@ let pageSize = document.getElementById("numpage-select").value;
 let totalRecord = 0;
 let totalPage = 0;
 let searchName = "";
+const baseURL = "http://localhost:5223/api/v1";
 /**
  * Represents the Employee Page.
  * @class
@@ -94,6 +95,30 @@ class EmployeePage extends NonePage{
             //Select số bản ghi/trang
             document.getElementById("numpage-select").selectedIndex = 0;
             
+            //Button excel  
+            document.getElementById("excel-btn").addEventListener('click', this.btnExcelOnClick);
+
+            //Button thêm/sửa/xoá vị trí
+            this.loadPositionDataToPositionForm();
+            // document.getElementById("position").addEventListener('change', () => {
+            //     const selectedValue = document.getElementById("position").value;
+            //     if (selectedValue === "add-position") {
+            //         this.btnCrudPositionOnClick();
+            //     }
+            // });
+            document.getElementById("position-crud-btn").addEventListener('click', (e) => {
+                console.log("Pos Clicked");
+                e.preventDefault();
+                employeePage.btnCrudPositionOnClick();
+            });
+
+            this.loadDeparmentDataToDepartmentForm();
+            document.getElementById("department-crud-btn").addEventListener('click', (e) => {
+                console.log("Dep Clicked");
+                e.preventDefault();
+                employeePage.btnCrudDepartmentOnClick();
+            });
+
             //Button reload
             this.btnOnChangeReload();
 
@@ -146,7 +171,7 @@ class EmployeePage extends NonePage{
      * Author: Nghia (14/07/2024) 
     */
     loadDepartmentData(){
-        let url = "http://localhost:5223/api/v1/departments";
+        let url = baseURL + "/departments";
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -223,7 +248,7 @@ class EmployeePage extends NonePage{
      * Author: Nghia (14/07/2024) 
     */
     loadPositionData(){
-        let url = "http://localhost:5223/api/v1/positions";
+        let url = baseURL + "/positions";
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -298,11 +323,10 @@ class EmployeePage extends NonePage{
         console.log(depForm.value);
         const header = new Headers({
         });
-        var url = new URL("http://localhost:5223/api/v1/employees/filter");
+        var url = new URL(baseURL + "/employees/filter");
         url.searchParams.append("PageNumber", currentDataPage);
         url.searchParams.append("PageSize", document.getElementById("numpage-select").value);
-        console.log(url);
-        console.log(header.toString());
+        console.log("page:", currentDataPage, document.getElementById("numpage-select").value);
         const requestBody = {
             PageNumber: parseInt(currentDataPage),
             PageSize: parseInt(document.getElementById("numpage-select").value)
@@ -420,6 +444,16 @@ class EmployeePage extends NonePage{
                 row.addEventListener('click', (function(index, id) {
                     return function(event) {
                         highlightRow(event, row, eid, employee['EmployeeCode'], employee );
+                        document.getElementById("position-crud-btn").addEventListener('click', (e) => {
+                            console.log("Pos Clicked");
+                            e.preventDefault();
+                            employeePage.btnCrudPositionOnClick();
+                        });
+                        document.getElementById("department-crud-btn").addEventListener('click', (e) => {
+                            console.log("Dep Clicked");
+                            e.preventDefault();
+                            employeePage.btnCrudDepartmentOnClick();
+                        });
                     };
                 })(i));
             
@@ -449,6 +483,37 @@ class EmployeePage extends NonePage{
             console.log(error);
         }
     }
+
+    btnExcelOnClick(){
+        try {
+            var url = baseURL + "/employees/exportExcel";
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response error');
+                    }
+                    return response.blob();
+                })
+                .then(data => {
+                    //display data
+                    console.log(data);
+                    var url = window.URL.createObjectURL(data);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'employees.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
     /**
      * Add click event for "Thêm mới"
      * Author: Nghia (14/07/2024)
@@ -467,6 +532,295 @@ class EmployeePage extends NonePage{
         }
     }
 
+
+    loadPositionDataToPositionForm(){
+        document.getElementById("submit-position-crud").addEventListener('click', (e) => {
+            employeePage.submitPosition(e);
+        });
+        var tbody = document.querySelector("#position-tbl-tbody");
+
+        try {
+            tbody.innerHTML = "";
+        } catch (error) {   
+            console.log(error);
+        }
+            let url = baseURL + "/positions";
+            
+            fetch(url,
+                {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                }
+            )
+                .then(response => {
+                    console.log("-------",response.status);
+                    console.log(response.body.errors);
+                    if (!response.ok) {
+                        console.log(response.body.errors);
+                        throw new Error(response.body.errors);
+                    }
+                    return response.text();
+                })
+                .then(positions => {
+                    console.log(positions);
+                    var positionsData = JSON.parse(positions);
+                    console.log(positionsData);
+                    positionsData.forEach((position) => {
+                        var row = document.createElement("tr");
+                        var cell = document.createElement("td");
+                        cell.innerHTML = position['PositionName'];
+                        
+                        var groupButton = document.createElement("span");
+                        groupButton.id = "crud-position-group-btn";
+                        var editButton = document.createElement("button");
+                        editButton.id = "edit-position-btn";
+                        var editIcon = document.createElement("img");
+                        editIcon.classList.add("smc-img");
+                        editIcon.src = "assets\\icon\\pencil.png";
+                        editButton.appendChild(editIcon);
+                        editButton.classList.add("grey-button");
+                        editButton.classList.add("small-icon-button");
+                        
+                        var deleteButton = document.createElement("button");
+                        var deleteIcon = document.createElement("img");
+                        deleteIcon.classList.add("smc-img");
+                        deleteIcon.src = "assets\\icon\\delete-48.png";
+                        deleteButton.appendChild(deleteIcon);
+                        deleteButton.classList.add("grey-button");
+                        deleteButton.classList.add("small-icon-button");
+                        
+                        deleteButton.addEventListener('click', () => {
+                            console.log("Delete position", position);
+                            onDeletePosition(position);
+                        });
+
+                        editButton.addEventListener('click', () => {
+                            console.log("Edit position", position);
+                            onEditPosition(position);
+                        });
+                        groupButton.appendChild(editButton);
+                        groupButton.appendChild(deleteButton);
+                        var cell2 = document.createElement("td");
+                        cell2.appendChild(groupButton);
+
+                        row.appendChild(cell);
+                        row.appendChild(cell2);
+                        tbody.appendChild(row);
+                    });
+
+                })
+                .catch(error => {
+                    console.log(error);
+                    employeePage.showSimpleDialog("Lỗi", error);
+                });
+    }
+
+    submitPosition(e) {
+        e.preventDefault();
+        console.log(
+          "Submit position",
+          document.getElementById("new-position-name").value
+        );
+        var positionData = {
+          PositionName: document.getElementById("new-position-name").value,
+        };
+        let url = baseURL + "/positions";
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(positionData),
+        })
+          .then((response) => {
+            console.log("-------", response.status);
+            console.log(response.body.errors);
+            if (!response.ok) {
+              console.log(response.body.errors);
+              throw new Error(response.body.errors);
+            }
+            return response.text();
+          })
+          .then((data) => {
+            //display data
+            console.log(data);
+            employeePage.loadData();
+            employeePage.showSimpleDialog(
+              "Thành công",
+              "Bạn đã thêm thành công vị trí: " + positionData["PositionName"]
+            );
+            document
+              .getElementById("position-crud-dialog")
+              .classList.add("hidden");
+          })
+          .catch((error) => {
+            console.log(error);
+            employeePage.showSimpleDialog("Lỗi", error);
+          });
+    }
+
+    /**
+     * Open crud dialog for position
+     */
+    btnCrudPositionOnClick(){
+        try {
+            document.getElementById("position-crud-dialog").classList.remove("hidden");
+            document.getElementById("close-position-crud-dialog-btn").addEventListener('click', () => {
+                document.getElementById("position-crud-dialog").classList.add("hidden");
+            });
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    loadDeparmentDataToDepartmentForm(){
+        document.getElementById("submit-department-crud").addEventListener('click', (e) => {
+            employeePage.submitDepartment(e);
+        });
+        var tbody = document.querySelector("#department-tbl-tbody");
+        
+        try {
+            tbody.innerHTML = "";
+        } catch (error) {   
+            console.log(error);
+        }
+    
+        let url = baseURL + "/departments";
+
+        fetch(url,
+            {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            }
+        )
+        .then(response => {
+            console.log("-------", response.status);
+            console.log(response.body.errors);
+            if (!response.ok) {
+              console.log(response.body.errors);
+              throw new Error(response.body.errors);
+            }
+            return response.text();
+        })
+        .then(departments => {
+            console.log(departments);
+            var departmentsData = JSON.parse(departments);
+            console.log(departmentsData);
+            departmentsData.forEach((department) => {
+                var row = document.createElement("tr");
+                var cell = document.createElement("td");
+                cell.innerHTML = department['DepartmentName'];
+                
+                var groupButton = document.createElement("span");
+                groupButton.id = "crud-department-group-btn";
+                var editButton = document.createElement("button");
+                editButton.id = "edit-department-btn";
+                var editIcon = document.createElement("img");
+                editIcon.classList.add("smc-img");
+                editIcon.src = "assets\\icon\\pencil.png";
+                editButton.appendChild(editIcon);
+                editButton.classList.add("grey-button");
+                editButton.classList.add("small-icon-button");
+                
+                var deleteButton = document.createElement("button");
+                var deleteIcon = document.createElement("img");
+                deleteIcon.classList.add("smc-img");
+                deleteIcon.src = "assets\\icon\\delete-48.png";
+                deleteButton.appendChild(deleteIcon);
+                deleteButton.classList.add("grey-button");
+                deleteButton.classList.add("small-icon-button");
+                
+                deleteButton.addEventListener('click', () => {
+                    console.log("Delete department", department);
+                    onDeleteDepartment(department);
+                });
+
+                editButton.addEventListener('click', () => {
+                    console.log("Edit department", department);
+                    onEditDepartment(department);
+                });
+                groupButton.appendChild(editButton);
+                groupButton.appendChild(deleteButton);
+                var cell2 = document.createElement("td");
+                cell2.appendChild(groupButton);
+
+                row.appendChild(cell);
+                row.appendChild(cell2);
+                tbody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.log(error);
+            employeePage.showSimpleDialog("Lỗi", error);
+        });
+    }
+
+
+
+    submitDepartment(e) {
+        e.preventDefault();
+        console.log("Subitting department");
+        var departmentData = {
+          DepartmentName: document.getElementById("new-department-name").value,
+        };
+        let url = baseURL + "/departments";
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(departmentData)
+        })
+        .then((response) => {
+            console.log("-------", response.status);
+            console.log(response.body.errors);
+            if (!response.ok) {
+                console.log(response.body.errors);
+                throw new Error(response.body.errors);
+            }
+            return response.text();
+        })
+        .then((data) => {
+            //display data
+            console.log(data);
+            employeePage.loadData();
+            employeePage.loadDeparmentDataToDepartmentForm();
+            employeePage.showSimpleDialog(
+                "Thành công",
+                "Bạn đã thêm thành công phòng ban: " + departmentData["DepartmentName"]
+            );
+            document
+                .getElementById("department-crud-dialog")
+                .classList.add("hidden");
+        })
+        .catch((error) => {
+            console.log(error);
+            employeePage.showSimpleDialog("Lỗi", error);
+        });
+    }
+
+    /**
+     * Open crud dialog for department
+     */
+    btnCrudDepartmentOnClick(){
+        try {
+            document.getElementById("department-crud-dialog").classList.remove("hidden");
+            document.getElementById("close-department-crud-dialog-btn").addEventListener('click', () => {
+                document.getElementById("department-crud-dialog").classList.add("hidden");
+            });
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
+
     /**
      * Add click event for "Thêm mới"
      * Author: Nghia (14/07/2024)
@@ -476,6 +830,8 @@ class EmployeePage extends NonePage{
             document.getElementById("popup-form").classList.remove("hidden");
             document.getElementById("to-blur").classList.add("blured");
             document.getElementById("employee-code").focus();
+            
+
             // employeePage.loadDepartmentData();
             console.log("Form opened");
         } catch (error) {
@@ -642,8 +998,10 @@ class EmployeePage extends NonePage{
                 msg.push("Email không hợp lệ\n");
             }
 
-            const inputDate = new Date(employeeData['DateOfBirth']); // Example: employeeData['dateOfBirth']
+            const inputDate = new Date(employeeData['DateOfBirth']); 
             inputDate.setHours(0, 0, 0, 0); // Set time to start of the day
+
+            console.log("Date", inputDate);
 
             const today = new Date();
             today.setHours(0, 0, 0, 0); // Set time to start of the day
@@ -662,7 +1020,7 @@ class EmployeePage extends NonePage{
 
             if (isValidated) {
                 //Send data to server
-                let url = "http://localhost:5223/api/v1/employees";
+                let url = baseURL + "/employees";
                 fetch(url,
                     {
                         method: "POST",
@@ -773,6 +1131,21 @@ class EmployeePage extends NonePage{
 
 }
 
+
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
 /**
  * Closes the sidebar by adding appropriate classes and updating button functionality.
  * @function
@@ -845,7 +1218,7 @@ function openNav(){
  */
 function getNewEmployeeCode() {
     try {
-        let url = "http://localhost:5223/api/v1/employees/newEmployeeCode";
+        let url = baseURL + "/employees/newEmployeeCode";
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -866,6 +1239,7 @@ function getNewEmployeeCode() {
         console.log(error);
     }
 }
+
 
 
 /**
@@ -915,6 +1289,7 @@ function highlightRow(event, rowElement, eid, eCode, currentEmployee) {
     groupButton.appendChild(deleteButton);
     lastCell.appendChild(groupButton); 
     lastCell.id = "last-selected-cell";
+    
 }
 
 /**
@@ -1065,7 +1440,7 @@ function submitEdit(employeeId) {
             }
 
     if (isValidated) {
-        let url = "http://localhost:5223/api/v1/employees/";
+        let url = baseURL + "/employees/";
 
         fetch(url,
             {
@@ -1223,6 +1598,197 @@ function onDeleteData(eid, eCode) {
         });
 
     
+}
+
+function confirmDeletePD(name) {
+    var msg = "Bạn có chắc chắn muốn xoá: " + name;
+    employeePage.showDialog("Xác nhận xoá", msg);
+    return new Promise(function(resolve, reject) {
+        document.getElementById("dlg-submit-btn").addEventListener('click', () => {
+            console.log("Confirmed");
+            resolve("Deleted");
+        });
+        document.getElementById("hide-dlg-btn").addEventListener('click', () => {
+            console.log("Canceled");
+            reject("Canceled");
+        });
+        document.getElementById("close-dlg-btn").addEventListener('click', () => {
+            console.log("Canceled");
+            reject("Canceled");
+        });
+    });
+}
+
+function onDeletePosition(position) {
+    try {
+        confirmDeletePD(position.PositionName)
+            .then((result) => {
+                let url = baseURL + "/positions/" + position.PositionId;
+                fetch(url,
+                    {
+                        method: "DELETE"
+                    }
+                )
+                    .then(response => {
+                        console.log(response.body);
+                        if (!response.ok) {
+                            throw new Error('Network response error');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        //display data
+                        console.log(data);
+                        employeePage.loadData();
+                        employeePage.loadPositionDataToPositionForm();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                console.log(result);
+                
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() => {
+                employeePage.hideDialog();
+            });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function onEditPosition(position) {
+    try {
+        var input = document.querySelector("#new-position-name");
+        input.value = position.PositionName;
+        
+        var submitButton = document.querySelector("#submit-position-edit");
+        submitButton.addEventListener('click', () => {
+            position.PositionName = input.value;
+            submitEditPosition(position);
+            input.value = "";
+        });
+
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+function submitEditPosition(position) {
+    try {
+        var url = baseURL + "/positions";
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(position)
+        })
+        .then(response => {
+            console.log("kdaslksdsalkdsa", response.body);
+            if (!response.ok) {
+                throw new Error('Network response error');
+            }
+            return response.text();
+        })
+        .then(data => {
+            //display data
+            console.log(data);
+            employeePage.loadData();
+            employeePage.loadPositionDataToPositionForm();
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function onDeleteDepartment(department) {
+    try {
+        confirmDeletePD(department.DepartmentName)
+            .then((result) => {
+                let url = baseURL + "/departments/" + department.DepartmentId;
+                fetch(url, {
+                    method: "DELETE"
+                })
+                .then (response => {
+                    console.log(response.body);
+                    if (!response.ok) {
+                        throw new Error('Network response error');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    console.log(data);
+                    employeePage.loadData();
+                    employeePage.loadDeparmentDataToDepartmentForm();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() => {
+                employeePage.hideDialog();
+            });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function onEditDepartment(department) {
+    try {
+        var input = document.querySelector("#new-department-name");
+        input.value = department.DepartmentName;
+        
+        var submitButton = document.querySelector("#submit-department-edit");
+        submitButton.addEventListener('click', () => {
+            department.DepartmentName = input.value;
+            submitEditDepartment(department);
+            input.value = "";
+        });
+    }
+    catch(e) {
+        console.log(e);
+    }   
+}
+
+function submitEditDepartment(department){
+    try {
+        var url = baseURL + "/departments";
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(department)
+        })
+        .then (response => {
+            console.log("kdaslksdsalkdsa", response.body);
+            if (!response.ok) {
+                throw new Error('Network response error');
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log(data);
+            employeePage.loadData();
+            employeePage.loadDeparmentDataToDepartmentForm();
+        })
+        .catch(error => {
+            console.log(error);
+        });    
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 

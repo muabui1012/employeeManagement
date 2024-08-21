@@ -18,6 +18,14 @@ namespace MISA.CUKUK.NGHIA.Core.Services
             employeeRepository = repository;
         }
 
+
+        /// <summary>
+        /// //Hàm lọc d
+        /// '
+        /// </summary>
+        /// <param name="employees">List nhân viên</param>
+        /// <param name="employeeFilter">Danh sách các tham số lọc</param>
+        /// <returns></returns>
         public object filter(List<Employee> employees, EmployeeFilter employeeFilter)
         {
             if (employeeFilter.EmployeeCode != null)
@@ -69,6 +77,11 @@ namespace MISA.CUKUK.NGHIA.Core.Services
             return employees;
         }
 
+        /// <summary>
+        /// Hàm kiểm tra dữ liệu trước khi thêm
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public object InsertService(Employee entity)
         {
             
@@ -91,6 +104,9 @@ namespace MISA.CUKUK.NGHIA.Core.Services
             };
 
         }
+
+        
+        
     }
 
 }

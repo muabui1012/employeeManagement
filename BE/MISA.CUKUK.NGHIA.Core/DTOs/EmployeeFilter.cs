@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MISA.CUKCUK.NGHIA.Core.DTOs
 {
+    /// <summary>
+    /// Tham số lọc nhân viên
+    /// </summary>
     public class EmployeeFilter
     {
         public Guid? EmployeeId { get; set; }

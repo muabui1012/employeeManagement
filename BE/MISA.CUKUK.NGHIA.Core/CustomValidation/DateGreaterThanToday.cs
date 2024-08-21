@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MISA.CUKUK.NGHIA.Core.CustomValidation
 {
+    /// <summary>
+    /// Ngày tháng không được lớn hơn ngày hiện tại
+    /// </summary>
     public class DateGreaterThanToday: ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

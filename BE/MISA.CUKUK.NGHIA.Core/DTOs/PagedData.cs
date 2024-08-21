@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace MISA.CUKCUK.NGHIA.Core.DTOs
 {
+
+    /// <summary>
+    /// Tổ chức lại dữ liệu thành từng trang    
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PagedData<T>
     {
         public PagedData()

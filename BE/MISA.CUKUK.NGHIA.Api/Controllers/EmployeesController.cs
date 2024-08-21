@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using MISA.CUKUK.NGHIA.Core.DTOs;
 using MISA.CUKCUK.NGHIA.Core.DTOs;
 using MISA.CUKUK.NGHIA.Infrastructure.Repository;
+using OfficeOpenXml;
 
 namespace MISA.CUKUK.NGHIA.Api.Controllers
 {
@@ -94,6 +95,11 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
 
         }
 
+        /// <summary>
+        /// Thêm mơi nhân viên
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
 
         [HttpPost]
         public IActionResult InsertEmployee(Employee employee)
@@ -123,6 +129,12 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
 
         }
 
+
+        /// <summary>
+        /// Sửa nhân viên
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
         [HttpPut]
         public IActionResult UpdateEmployee([FromBody] Employee employee)
         {
@@ -150,7 +162,11 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Xoá nhân viên
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
         [HttpDelete("{employeeId}")]
         public IActionResult DeleteEmployee(string employeeId)
         {
@@ -178,6 +194,11 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Lấy mã nhân viên mới (khi thêm mới,mã nhân viên sẽ tự động tăng)    
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("newEmployeeCode")]
         public IActionResult GetNewEmployeeCode()
         {
@@ -194,6 +215,19 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
             }
         }
 
+
+
+        /// <summary>
+        /// Get Employees with filter
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <param name="employeeCode"></param>
+        /// <param name="positionId"></param>
+        /// <param name="departmentId"></param>
+        /// <param name="fullName"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet("filter")]
         public IActionResult GetWithFilter(
             [FromQuery(Name = "EmployeeId")] Guid? employeeId,
@@ -234,5 +268,35 @@ namespace MISA.CUKUK.NGHIA.Api.Controllers
                 return StatusCode(500, error);
             }
         }
+
+
+        [HttpGet("exportExcel")]
+        public IActionResult Export()
+        {
+            try
+            {
+                var employees = employeeRepository.Get();
+
+                var stream = new MemoryStream();
+
+                using (var package = new ExcelPackage(stream))
+                {
+                    var workSheet = package.Workbook.Worksheets.Add("Sheet1");
+                    workSheet.Cells.LoadFromCollection(employees, true);
+                    package.Save();
+                }
+
+                stream.Position = 0;
+
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DanhSachNhanVien.xlsx");
+            }
+            catch (System.Exception e)
+            {
+                ErrorMessage error = new ErrorMessage("Đã có lỗi xảy ra", e.Message);
+                return StatusCode(500, error);
+            }
+        }
     }
+
+    
 }
