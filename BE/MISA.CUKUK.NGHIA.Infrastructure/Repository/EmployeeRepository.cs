@@ -33,11 +33,11 @@ namespace MISA.CUKUK.NGHIA.Infrastructure.Repository
 
             List<Employee> employees = base.connnection.Query<Employee>(sql).ToList();
 
-            employees.Reverse();
-
             var sortedEmployees = employees.OrderBy(e => e.EmployeeCode).ToList();
 
-            return employees;
+            sortedEmployees.Reverse();
+
+            return sortedEmployees;
         }
 
         public new Employee GetById(string id)
