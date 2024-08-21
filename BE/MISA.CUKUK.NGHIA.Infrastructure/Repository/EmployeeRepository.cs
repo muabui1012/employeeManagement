@@ -35,6 +35,8 @@ namespace MISA.CUKUK.NGHIA.Infrastructure.Repository
 
             employees.Reverse();
 
+            var sortedEmployees = employees.OrderBy(e => e.EmployeeCode).ToList();
+
             return employees;
         }
 
