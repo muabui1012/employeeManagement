@@ -1058,6 +1058,16 @@ class EmployeePage extends NonePage{
                 msg.push("Ngày cấp CMTND không được vượt quá hiện tại\n");
             } 
 
+            if (employeeData['PositionId'] === "" || employeeData['PositionId'] === null) {
+                isValidated = false;
+                msg.push("Nếu chưa có vị trí vui lòng chọn vị trí là \"Không\"\n");
+            }
+
+            if (employeeData['DepartmentId'] === "" || employeeData['DepartmentId'] === null) {
+                isValidated = false;
+                msg.push("Nếu chưa có phòng ban vui lòng chọn phòng ban là \"Không\"\n");
+            }
+
             if (isValidated) {
                 //Send data to server
                 let url = baseURL + "/employees";
