@@ -353,6 +353,9 @@ class EmployeePage extends NonePage{
             })
             .catch(error => {
                 console.log(error);
+            })
+            .finally(() => {
+
             });
         
     }
@@ -933,11 +936,11 @@ class EmployeePage extends NonePage{
                 {
                     "EmployeeCode": document.getElementById("employee-code").value,
                     "FullName": document.getElementById("employee-name").value,
-                    "DateOfBirth": document.getElementById("dob").value,
+                    
                     "PositionId": document.getElementById("position").value,
                     "DepartmentId": document.getElementById("department").value,
                     "NationalityId": document.getElementById("id-number").value,
-                    "NationalityIdDate": document.getElementById("id-issue-date").value,
+                    
                     "NationalityIdPlace": document.getElementById("id-issue-place").value,
                     "Address": document.getElementById("address").value,
                     "MobilePhoneNumber": document.getElementById("mobile").value,
@@ -955,6 +958,15 @@ class EmployeePage extends NonePage{
                 employeeData["Gender"] = 2;
             }
             
+            var dob = document.getElementById("dob").value;
+            if (dob) {
+                employeeData["DateOfBirth"] = dob;
+            }
+            var iddate = document.getElementById("id-issue-date").value;
+
+            if (iddate) {
+                employeeData["NationalityIdDate"] = iddate;
+            }
 
             console.log("submiting", employeeData);
             console.log("checking", employeeData['fullName']);
@@ -1041,9 +1053,11 @@ class EmployeePage extends NonePage{
                     })
                     .then(data => {
                         //display data
+
                         console.log(data);
                         employeePage.loadData();
                         employeePage.showSimpleDialog("Thành công", "Bạn đã thêm thành công nhân viên: " + employeeData['EmployeeCode']);
+                        clearForm();
                         employeePage.closeForm();
                     })
                     .catch(error => {
@@ -1744,6 +1758,7 @@ function onDeleteDepartment(department) {
     }
 }
 
+
 function onEditDepartment(department) {
     try {
         var input = document.querySelector("#new-department-name");
@@ -1761,6 +1776,12 @@ function onEditDepartment(department) {
     }   
 }
 
+/**
+ * Submits the edited department to the server.
+ * 
+ * @param {Object} department - The department object to be submitted.
+ * @returns {void}
+ */
 function submitEditDepartment(department){
     try {
         var url = baseURL + "/departments";
@@ -1789,6 +1810,21 @@ function submitEditDepartment(department){
     } catch (error) {
         console.log(error);
     }
+}
+
+
+/**
+ * Clears the form by resetting the input fields and generating a new employee code.
+ */
+function clearForm(){
+    try {
+        var form = document.querySelector("#popup-form");
+        form.reset();
+        getNewEmployeeCode();
+    } catch (error) {
+        console.log(error);
+    }
+
 }
 
 

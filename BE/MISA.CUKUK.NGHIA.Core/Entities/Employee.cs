@@ -65,7 +65,7 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// Ngày cấp
         /// </summary>
         [DateGreaterThanToday]
-        public DateTime NationalityIdDate { get; set; }
+        public DateTime? NationalityIdDate { get; set; }
 
         /// <summary>
         /// Nơi cấp
@@ -128,7 +128,7 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// Ngày tạo
         /// </summary>
         [DateGreaterThanToday]
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
         /// <summary>
         /// Người sửa
@@ -139,7 +139,7 @@ namespace MISA.CUKUK.NGHIA.Core.Entities
         /// Ngày sửa
         /// </summary>
         [DateGreaterThanToday]
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
 
     
     }

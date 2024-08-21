@@ -33,6 +33,7 @@ namespace MISA.CUKUK.NGHIA.Infrastructure.Repository
 
             List<Employee> employees = base.connnection.Query<Employee>(sql).ToList();
 
+            employees.Reverse();
 
             return employees;
         }
