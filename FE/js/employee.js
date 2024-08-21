@@ -664,7 +664,7 @@ class EmployeePage extends NonePage{
           .then((response) => {
             console.log("-------", response.status);
             console.log(response.body.errors);
-            if (!response.ok) {
+            if (!response.ok && response.status !== 201) {
               console.log(response.body.errors);
               employeePage.showSimpleDialog("Lỗi", "Thêm không thành công");
               throw new Error(response.body.errors);
@@ -675,6 +675,7 @@ class EmployeePage extends NonePage{
             //display data
             console.log(data);
             employeePage.loadData();
+            employeePage.loadPositionDataToPositionForm();
             employeePage.showSimpleDialog(
               "Thành công",
               "Bạn đã thêm thành công vị trí: " + positionData["PositionName"]
@@ -807,7 +808,7 @@ class EmployeePage extends NonePage{
         .then((response) => {
             console.log("-------", response.status);
             console.log(response.body.errors);
-            if (!response.ok) {
+            if (!response.ok  && response.status !== 201) {
                 console.log(response.body.errors);
                 employeePage.showSimpleDialog("Lỗi", "Thêm không thành công");
                 throw new Error("Thêm không thành công");
@@ -1072,7 +1073,7 @@ class EmployeePage extends NonePage{
                     .then(response => {
                         console.log("-------",response.status);
                         console.log(response.body);
-                        if (!response.ok) {
+                        if (!response.ok  && response.status !== 201) {
                             if (response.status === 409) {
                                 employeePage.showSimpleDialog("Lỗi", "Mã nhân viên đã tồn tại");
                                throw new Error("Mã nhân viên đã tồn tại");
