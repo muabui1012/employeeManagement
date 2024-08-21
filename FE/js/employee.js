@@ -1809,3 +1809,4 @@ function getFormattedDate(date) {
     
     return day + '/' + month + '/' + year;
 }
+
