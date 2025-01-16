@@ -58,7 +58,6 @@ const baseURL = "http://localhost:5223/api/v1";
 class EmployeePage extends NonePage{
     pageTitle = "Danh mục nhân viên | Nhân viên | Cukcuk";
     
-    
     /**
      * Construct employee page
      * @constructor
@@ -85,9 +84,6 @@ class EmployeePage extends NonePage{
             //Dong form
             document.getElementById("close-form-btn").addEventListener('click', this.closeForm);
             document.getElementById("hide-form-btn").addEventListener('click', this.closeForm);
-
-            // document.getElementById("close-dlg-btn").addEventListener('click', this.hideDialog);
-            // document.getElementById("hide-dlg-btn").addEventListener('click', this.hideDialog);
 
             //Button cat
             document.getElementById("form-submit-btn").addEventListener('click', this.submitEmployeeForm); 
